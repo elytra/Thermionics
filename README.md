@@ -20,7 +20,6 @@ expected to become a hard dependency to enable temperature interop.
 * Spaces for cosmetic alignment
 * If it doesn't line up right when you change your tab spacing, you did it wrong
 * License information at the top of every java source file, above the package declaration.
-* One commit only per pull request
 
 # Making Friends with This Mod
 Thermionics, in one form or another, has been around since 1.7.10, and gone through
