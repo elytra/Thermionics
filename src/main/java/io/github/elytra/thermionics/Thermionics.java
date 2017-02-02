@@ -27,15 +27,19 @@ package io.github.elytra.thermionics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid=Thermionics.MODID, version="@VERSION@")
 public class Thermionics {
@@ -44,6 +48,8 @@ public class Thermionics {
 	public static Configuration CONFIG;
 	@Instance(MODID)
 	private static Thermionics instance;
+	@SidedProxy(clientSide="io.github.elytra.thermionics.ClientProxy", serverSide="io.github.elytra.thermionics.Proxy")
+	Proxy proxy;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		private ItemStack ICON = new ItemStack(Blocks.IRON_BLOCK); //TODO: Replace with a Thermionics block
@@ -65,5 +71,15 @@ public class Thermionics {
 	
 	public static Thermionics instance() {
 		return instance;
+	}
+	
+	
+	
+	public void registerBlock(Block block) {
+		ItemBlock item = new ItemBlock(block);
+		item.setRegistryName(block.getRegistryName());
+		GameRegistry.register(item);
+		GameRegistry.register(block);
+		proxy.registerItemModel(item);
 	}
 }
