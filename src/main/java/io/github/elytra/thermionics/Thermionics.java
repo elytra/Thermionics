@@ -27,11 +27,19 @@ package io.github.elytra.thermionics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.github.elytra.thermionics.api.IHeatStorage;
+import io.github.elytra.thermionics.api.impl.DefaultHeatStorageSerializer;
+import io.github.elytra.thermionics.api.impl.HeatStorage;
+import io.github.elytra.thermionics.block.BlockHeatPipe;
+import io.github.elytra.thermionics.tileentity.TileEntityHeatStorage;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -49,7 +57,9 @@ public class Thermionics {
 	@Instance(MODID)
 	private static Thermionics instance;
 	@SidedProxy(clientSide="io.github.elytra.thermionics.ClientProxy", serverSide="io.github.elytra.thermionics.Proxy")
-	Proxy proxy;
+	public static Proxy proxy;
+	@CapabilityInject(IHeatStorage.class)
+	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		private ItemStack ICON = new ItemStack(Blocks.IRON_BLOCK); //TODO: Replace with a Thermionics block
@@ -62,6 +72,12 @@ public class Thermionics {
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
 		LOG = LogManager.getLogger(Thermionics.MODID);
+		
+		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
+		
+		
+		registerBlock(new BlockHeatPipe());
+		GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
 	}
 	
 	@EventHandler

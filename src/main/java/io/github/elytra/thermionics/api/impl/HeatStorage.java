@@ -41,12 +41,14 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public class HeatStorage implements IHeatStorage {
 	private int cur = 0;
-	private int max = 1000;
+	private int max = 200;
 	private int minReceive = 0;
 	private int maxReceive = 10;
 	private int maxExtract = 10;
 	
 	private ArrayList<Consumer<HeatStorage>> listeners = new ArrayList<>();
+	
+	public HeatStorage() {}
 	
 	public HeatStorage(int max) {
 		this.max = max;
@@ -105,28 +107,6 @@ public class HeatStorage implements IHeatStorage {
 		Validate.notNull(c);
 		
 		listeners.add(c);
-	}
-	
-	/**
-	 * Serialize heat information into the specified NBT tag
-	 * @param tag NBT tag to save heat information into
-	 */
-	public void writeToNBT(NBTTagCompound tag) {
-		Validate.notNull(tag);
-		
-		tag.setInteger("enthalpyCur", cur);
-		tag.setInteger("enthalpyMax", max);
-	}
-	
-	/**
-	 * Deserialize heat information from the specified NBT tag
-	 * @param tag NBT tag to load heat information from
-	 */
-	public void readFromNBT(NBTTagCompound tag) {
-		Validate.notNull(tag);
-		
-		cur = tag.getInteger("enthalpyCur");
-		max = tag.getInteger("enthalpyMax");
 	}
 	
 	public HeatStorage withTransferAttributes(int maxExtract, int minReceive, int maxReceive) {
