@@ -21,28 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package io.github.elytra.thermionics.tileentity;
 
 import io.github.elytra.thermionics.Thermionics;
 import io.github.elytra.thermionics.api.impl.HeatStorage;
 import io.github.elytra.thermionics.api.impl.HeatStorageView;
-import net.minecraft.util.ITickable;
 
-public class TileEntityHeatStorage extends TileEntityMachine  implements ITickable {
+public class TileEntityFirebox extends TileEntityMachine {
+	//private CapabilityProvider capabilities = new CapabilityProvider();
 	private HeatStorage heatStorage;
 	
-	public TileEntityHeatStorage() {
+	public TileEntityFirebox() {
 		heatStorage = new HeatStorage(200);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-	}
-	
-	public TileEntityHeatStorage(int capacity) {
-		heatStorage = new HeatStorage(capacity);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-	}
-
-	@Override
-	public void update() {
-		//TODO: trigger diffusion
 	}
 }

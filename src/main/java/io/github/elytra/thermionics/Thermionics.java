@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2017 The Elytra Team
@@ -62,10 +62,9 @@ public class Thermionics {
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
-		private ItemStack ICON = new ItemStack(Blocks.IRON_BLOCK); //TODO: Replace with a Thermionics block
 		@Override
 		public ItemStack getTabIconItem() {
-			return ICON; 
+			return new ItemStack(Blocks.IRON_BLOCK); //TODO: Replace with a Thermionics block
 		}
 	};
 	

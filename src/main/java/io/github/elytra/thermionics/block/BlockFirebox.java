@@ -21,28 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.elytra.thermionics.tileentity;
 
-import io.github.elytra.thermionics.Thermionics;
-import io.github.elytra.thermionics.api.impl.HeatStorage;
-import io.github.elytra.thermionics.api.impl.HeatStorageView;
-import net.minecraft.util.ITickable;
+package io.github.elytra.thermionics.block;
 
-public class TileEntityHeatStorage extends TileEntityMachine  implements ITickable {
-	private HeatStorage heatStorage;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+
+public class BlockFirebox extends Block {
+	public static PropertyDirection PROPERTY_FACING = PropertyDirection.create("facing");
 	
-	public TileEntityHeatStorage() {
-		heatStorage = new HeatStorage(200);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
+	public BlockFirebox(String id) {
+		super(Material.IRON);
 	}
 	
-	public TileEntityHeatStorage(int capacity) {
-		heatStorage = new HeatStorage(capacity);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-	}
-
 	@Override
-	public void update() {
-		//TODO: trigger diffusion
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		world.setBlockState( pos,
+				this.blockState.getBaseState().withProperty(PROPERTY_FACING, placer.getAdjustedHorizontalFacing().getOpposite())
+				);
 	}
 }

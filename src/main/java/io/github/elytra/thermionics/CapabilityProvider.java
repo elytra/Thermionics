@@ -1,4 +1,4 @@
-/*
+/**
  * MIT License
  *
  * Copyright (c) 2017 The Elytra Team
@@ -43,12 +43,15 @@ import net.minecraftforge.common.capabilities.Capability;
 public class CapabilityProvider {
 	private ArrayList<Entry<?>> entries = new ArrayList<>();
 	
-	public boolean canProvide (@Nonnull RelativeDirection side, @Nonnull Capability<?> capability) {
-		Validate.notNull(side);
+	public boolean canProvide (@Nullable RelativeDirection side, @Nonnull Capability<?> capability) {
 		Validate.notNull(capability);
 		
 		for(Entry<?> entry : entries) {
-			if (entry.directions.contains(side) && capability.equals(entry.capability)) return true;
+			if (side!=null) {
+				if (entry.directions.contains(side) && capability.equals(entry.capability)) return true;
+			} else {
+				if (capability.equals(entry.capability)) return true;
+			}
 		}
 		
 		return false;
@@ -57,18 +60,21 @@ public class CapabilityProvider {
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T provide(@Nonnull RelativeDirection side, @Nonnull Capability<T> capability) {
-		Validate.notNull(side);
 		Validate.notNull(capability);
 		
 		for(Entry<?> entry : entries) {
-			if (entry.directions.contains(side) && capability.equals(entry.capability)) return (T)entry.provide();
+			if (side!=null) {
+				if (entry.directions.contains(side) && capability.equals(entry.capability)) return (T)entry.provide();
+			} else {
+				if (capability.equals(entry.capability)) return (T)entry.provide();
+			}
 		}
 		
 		return null;
 	}
 	
 	public <T> void registerForAllSides(Capability<T> cap, Supplier<T> provider) {
-		
+		entries.add(new Entry<T>(cap,provider));
 	}
 	
 	public static class Entry<T> {

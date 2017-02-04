@@ -21,30 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package io.github.elytra.thermionics.api.impl;
 
-import io.github.elytra.thermionics.api.IHeatStorage;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+package io.github.elytra.thermionics.tileentity;
+
+import io.github.elytra.thermionics.CapabilityProvider;
+import io.github.elytra.thermionics.data.RelativeDirection;
+import net.minecraft.block.BlockDirectional;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class DefaultHeatStorageSerializer implements Capability.IStorage<IHeatStorage> {
-
-	@Override
-	public NBTBase writeNBT(Capability<IHeatStorage> capability, IHeatStorage instance, EnumFacing side) {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("enthalpy", instance.getHeatStored());
-		return tag;
-	}
-
-	@Override
-	public void readNBT(Capability<IHeatStorage> capability, IHeatStorage instance, EnumFacing side, NBTBase nbt) {
-		if (nbt instanceof NBTTagCompound) {
-			NBTTagCompound tag = (NBTTagCompound)nbt;
-		
-			int toReceive = tag.getInteger("enthalpy") - instance.getHeatStored();
-			instance.receiveHeat(toReceive, false);
+public class TileEntityMachine extends TileEntity {
+	protected CapabilityProvider capabilities = new CapabilityProvider();
+	
+	public EnumFacing getFacing() {
+		try {
+			return this.world.getBlockState(this.pos).getValue(BlockDirectional.FACING);
+		} catch (Throwable t) {
+			return EnumFacing.NORTH;
 		}
+	}
+	
+	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing side) {
+		if (capabilities.canProvide(RelativeDirection.of(getFacing(), side), cap)) return true;
+		else return super.hasCapability(cap, side);
+	}
+	
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
+		//If it's going to throw an exception here in my code, I'd rather it did.
+		T result = capabilities.provide(RelativeDirection.of(getFacing(), side), cap);
+		
+		//I'd rather return null (which is valid according to the contract) than throw an exception down here.
+		if (result==null) {
+			try {
+				return super.getCapability(cap, side);
+			} catch (Throwable t) {}
+		}
+		return result;
 	}
 }

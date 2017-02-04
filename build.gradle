@@ -19,6 +19,10 @@ buildscript {
   }
 }
 
+plugins {
+    id "com.github.hierynomus.license" version "0.13.1"
+}
+
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'me.tatarka.retrolambda'
@@ -65,4 +69,10 @@ processResources {
     exclude 'mcmod.info'
     exclude '*.xcf' //Always exclude gimp source files.
   }
+}
+
+license {
+	exclude("*.json");
+	exclude("*.png");
+	exclude("*.lang");
 }

@@ -1,7 +1,7 @@
-/*
+/**
  * MIT License
  *
- * Copyright (c) 2016 Isaac Ellingson (Falkreon)
+ * Copyright (c) 2017 The Elytra Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package io.github.elytra.thermionics.data;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.Validate;
 
@@ -45,9 +45,9 @@ public enum RelativeDirection {
 	BOTTOM;
 	
 	@Nonnull
-	public static RelativeDirection of(@Nonnull EnumFacing deviceFacing, @Nonnull EnumFacing side) {
+	public static RelativeDirection of(@Nonnull EnumFacing deviceFacing, @Nullable EnumFacing side) {
+		if (side==null) return null; //valid configuration
 		Validate.notNull(deviceFacing);
-		Validate.notNull(side);
 		
 		if (deviceFacing==side) return BOW;
 		if (deviceFacing==side.getOpposite()) return STERN;
