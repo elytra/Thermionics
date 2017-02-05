@@ -1,0 +1,24 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"minecraft:cube_all",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures":{
+			"all":"thermionics:blocks/machine.heatpipe"
+		}
+	},
+	
+	"variants":{
+		"normal": {
+			"model":"minecraft:cube_all"
+		},
+		"inventory": {
+			"model":"minecraft:cube_all",
+			"transform": "forge:default-block"
+		}
+	}
+}

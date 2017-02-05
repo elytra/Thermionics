@@ -64,7 +64,7 @@ public enum RelativeDirection {
 			case WEST:
 				return STARBOARD;
 			default:
-				throw new AssertionError("Unreachable code reached.");
+				throw new AssertionError("Unreachable code reached (side="+side.getName()+" deviceFacing="+deviceFacing.getName()+")");
 			}
 		}
 		
@@ -85,9 +85,11 @@ public enum RelativeDirection {
 		
 		//From here on we're dealing with planar rotations
 		
+		if (side==EnumFacing.DOWN) return BOTTOM;
+		if (side==EnumFacing.UP) return TOP;
 		if (side==deviceFacing.rotateY()) return STARBOARD;
 		if (side==deviceFacing.rotateYCCW()) return PORT;
 		
-		throw new AssertionError("Unreachable code reached.");
+		throw new AssertionError("Unreachable code reached (side="+side.getName()+" deviceFacing="+deviceFacing.getName()+")");
 	}
 }

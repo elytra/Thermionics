@@ -24,27 +24,52 @@
 
 package io.github.elytra.thermionics.block;
 
-import net.minecraft.block.Block;
+import io.github.elytra.thermionics.tileentity.TileEntityFirebox;
+import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
-public class BlockFirebox extends Block {
-	public static PropertyDirection PROPERTY_FACING = PropertyDirection.create("facing");
+public class BlockFirebox extends InspectableBlock implements ITileEntityProvider {
 	
-	public BlockFirebox(String id) {
-		super(Material.IRON);
+	public BlockFirebox() {
+		super(Material.IRON, "machine.firebox");
+		
+		this.setDefaultState(blockState.getBaseState().withProperty(BlockHorizontal.FACING, EnumFacing.NORTH));
 	}
 	
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		world.setBlockState( pos,
-				this.blockState.getBaseState().withProperty(PROPERTY_FACING, placer.getAdjustedHorizontalFacing().getOpposite())
+				this.blockState.getBaseState().withProperty(BlockHorizontal.FACING, placer.getAdjustedHorizontalFacing().getOpposite())
 				);
+	}
+	
+	@Override
+	public BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, BlockHorizontal.FACING);
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return this.blockState.getBaseState().withProperty(BlockHorizontal.FACING, EnumFacing.getHorizontal(meta & 0x03));
+	}
+	
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(BlockHorizontal.FACING).getHorizontalIndex();
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityFirebox();
 	}
 }

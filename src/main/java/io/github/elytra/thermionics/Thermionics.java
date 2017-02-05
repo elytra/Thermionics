@@ -30,7 +30,9 @@ import org.apache.logging.log4j.Logger;
 import io.github.elytra.thermionics.api.IHeatStorage;
 import io.github.elytra.thermionics.api.impl.DefaultHeatStorageSerializer;
 import io.github.elytra.thermionics.api.impl.HeatStorage;
+import io.github.elytra.thermionics.block.BlockFirebox;
 import io.github.elytra.thermionics.block.BlockHeatPipe;
+import io.github.elytra.thermionics.tileentity.TileEntityFirebox;
 import io.github.elytra.thermionics.tileentity.TileEntityHeatStorage;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -74,9 +76,11 @@ public class Thermionics {
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
 		
-		
+		registerBlock(new BlockFirebox());
 		registerBlock(new BlockHeatPipe());
+		
 		GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
+		GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
 	}
 	
 	@EventHandler
@@ -93,8 +97,9 @@ public class Thermionics {
 	public void registerBlock(Block block) {
 		ItemBlock item = new ItemBlock(block);
 		item.setRegistryName(block.getRegistryName());
-		GameRegistry.register(item);
+		
 		GameRegistry.register(block);
+		GameRegistry.register(item);
 		proxy.registerItemModel(item);
 	}
 }
