@@ -72,7 +72,10 @@ processResources {
 }
 
 license {
-	exclude("*.json");
-	exclude("*.png");
-	exclude("*.lang");
+	exclude "**/*.json";
+	exclude "**/*.png";
+	exclude "**/*.mcmeta";
+	exclude "**/*.ogg";
+	exclude "**/*.lang";
+	exclude "/src/main/resources/**";
 }

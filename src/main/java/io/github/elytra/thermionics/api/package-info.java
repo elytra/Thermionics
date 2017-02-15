@@ -1,7 +1,7 @@
-/*
+/**
  * MIT License
  *
- * Copyright (c) 2017 The Elytra Team
+ * Copyright (c) 2017 The Isaac Ellingson (Falkreon) and contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 @API(apiVersion="1.0", owner="thermionics", provides="ThermionicsAPI")
 package io.github.elytra.thermionics.api;
 
