@@ -34,7 +34,6 @@ import org.apache.commons.lang3.Validate;
 import com.google.common.primitives.Ints;
 
 import io.github.elytra.thermionics.api.IHeatStorage;
-import net.minecraft.nbt.NBTTagCompound;
 
 /**
  * Basic, insecure implementation of IHeatStorage.

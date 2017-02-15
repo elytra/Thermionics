@@ -24,8 +24,8 @@
 package io.github.elytra.thermionics.block;
 
 import io.github.elytra.thermionics.Thermionics;
+import io.github.elytra.thermionics.block.behavior.ConnectivityBlockStateBehavior;
 import io.github.elytra.thermionics.tileentity.TileEntityHeatStorage;
-import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockHeatPipe extends InspectableBlock implements ITileEntityProvider {
+public class BlockHeatPipe extends BlockImpl implements ITileEntityProvider {
 	public static PropertyBool NORTH = PropertyBool.create("north");
 	public static PropertyBool EAST  = PropertyBool.create("east");
 	public static PropertyBool SOUTH = PropertyBool.create("south");
@@ -59,6 +59,7 @@ public class BlockHeatPipe extends InspectableBlock implements ITileEntityProvid
 				.withProperty(DOWN, false)
 				);
 	}
+	
 	
 	@Override
 	public BlockStateContainer createBlockState() {

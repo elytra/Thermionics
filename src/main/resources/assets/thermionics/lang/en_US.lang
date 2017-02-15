@@ -1,3 +1,4 @@
 itemGroup.thermionics=Thermionics
 
 tile.thermionics.machine.heatpipe.name=Copper Heat Pipe
+tile.thermionics.machine.firebox.name=Firebox

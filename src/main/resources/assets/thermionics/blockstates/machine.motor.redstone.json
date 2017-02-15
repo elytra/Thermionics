@@ -8,11 +8,11 @@
 		"y":0,
 		"uvlock":true,
 		"textures":{
-			"front":"thermionics:blocks/machine.firebox",
+			"front":"thermionics:blocks/machine.motor.redstone",
 			"side":"thermionics:blocks/machine.side",
 			"top":"thermionics:blocks/machine.top",
 			"down":"thermionics:blocks/machine.bottom",
-			"south":"thermionics:blocks/machine.plug.heat",
+			"south":"thermionics:blocks/machine.plug.rotary",
 			"particle":"thermionics:blocks/machine.top"
 		}
 	},

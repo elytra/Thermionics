@@ -32,6 +32,7 @@ import io.github.elytra.thermionics.api.impl.DefaultHeatStorageSerializer;
 import io.github.elytra.thermionics.api.impl.HeatStorage;
 import io.github.elytra.thermionics.block.BlockFirebox;
 import io.github.elytra.thermionics.block.BlockHeatPipe;
+import io.github.elytra.thermionics.block.BlockMotorBase;
 import io.github.elytra.thermionics.tileentity.TileEntityFirebox;
 import io.github.elytra.thermionics.tileentity.TileEntityHeatStorage;
 import net.minecraft.block.Block;
@@ -78,6 +79,7 @@ public class Thermionics {
 		
 		registerBlock(new BlockFirebox());
 		registerBlock(new BlockHeatPipe());
+		registerBlock(new BlockMotorBase("redstone"));
 		
 		GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
 		GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");

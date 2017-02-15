@@ -33,6 +33,8 @@ public class TileEntityHeatStorage extends TileEntityMachine  implements ITickab
 	
 	public TileEntityHeatStorage() {
 		heatStorage = new HeatStorage(200);
+		
+		heatStorage.listen((it)->markDirty());
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
 	}
 	
@@ -40,6 +42,23 @@ public class TileEntityHeatStorage extends TileEntityMachine  implements ITickab
 		heatStorage = new HeatStorage(capacity);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
 	}
+	/*
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+		tag.setTag("heatStorage", Thermionics.CAPABILITY_HEATSTORAGE.getStorage().writeNBT(Thermionics.CAPABILITY_HEATSTORAGE, heatStorage, null));
+		
+		return super.writeToNBT(tag);
+	}
+	
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		
+		if (tag.hasKey("heatStorage")) {
+			NBTBase heatTag = tag.getTag("heatStorage");
+			Thermionics.CAPABILITY_HEATSTORAGE.getStorage().readNBT(Thermionics.CAPABILITY_HEATSTORAGE, heatStorage, null, heatTag);
+		}
+	}*/
 
 	@Override
 	public void update() {

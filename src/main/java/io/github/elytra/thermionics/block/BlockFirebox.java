@@ -24,6 +24,7 @@
 
 package io.github.elytra.thermionics.block;
 
+import io.github.elytra.thermionics.block.behavior.BlockStateBehavior;
 import io.github.elytra.thermionics.tileentity.TileEntityFirebox;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -38,14 +39,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 
-public class BlockFirebox extends InspectableBlock implements ITileEntityProvider {
+public class BlockFirebox extends BlockImpl implements ITileEntityProvider {
 	
 	public BlockFirebox() {
-		super(Material.IRON, "machine.firebox");
+		super(Material.IRON, "machine.firebox", BlockStateBehavior.HORIZONTAL);
 		
 		this.setDefaultState(blockState.getBaseState().withProperty(BlockHorizontal.FACING, EnumFacing.NORTH));
 	}
 	
+	/*
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		world.setBlockState( pos,
@@ -66,7 +68,7 @@ public class BlockFirebox extends InspectableBlock implements ITileEntityProvide
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return state.getValue(BlockHorizontal.FACING).getHorizontalIndex();
-	}
+	}*/
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
