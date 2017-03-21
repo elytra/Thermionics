@@ -15,7 +15,6 @@ buildscript {
   }
   dependencies {
     classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-    classpath 'me.tatarka:gradle-retrolambda:3.2.0'
   }
 }
 
@@ -25,7 +24,16 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'me.tatarka.retrolambda'
+
+repositories {
+	maven {
+		url = 'https://repo.elytradev.com'
+	}
+}
+
+dependencies {
+	deobfCompile 'com.elytradev:probedataproviderapi:MC1.11.2_ver1.1.1'
+}
 
 
 
@@ -35,11 +43,6 @@ version = "MC1.11.0_ver1.0"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-retrolambda {
-  javaVersion JavaVersion.VERSION_1_6
-  defaultMethods true
-}
 
 minecraft {
   version = "1.11.2-13.20.0.2226";

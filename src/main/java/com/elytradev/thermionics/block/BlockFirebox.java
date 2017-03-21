@@ -32,7 +32,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 
-public class BlockFirebox extends BlockImpl implements ITileEntityProvider {
+public class BlockFirebox extends BlockImplOld implements ITileEntityProvider {
 	
 	public BlockFirebox() {
 		super(Material.IRON, "machine.firebox", BlockStateBehavior.HORIZONTAL);

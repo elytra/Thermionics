@@ -59,7 +59,7 @@ public class Thermionics {
 	public static Configuration CONFIG;
 	@Instance(MODID)
 	private static Thermionics instance;
-	@SidedProxy(clientSide="io.github.elytra.thermionics.ClientProxy", serverSide="io.github.elytra.thermionics.Proxy")
+	@SidedProxy(clientSide="com.elytradev.thermionics.ClientProxy", serverSide="com.elytradev.thermionics.Proxy")
 	public static Proxy proxy;
 	@CapabilityInject(IHeatStorage.class)
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;

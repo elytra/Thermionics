@@ -37,7 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockHeatPipe extends BlockImpl implements ITileEntityProvider {
+public class BlockHeatPipe extends BlockImplOld implements ITileEntityProvider {
 	public static PropertyBool NORTH = PropertyBool.create("north");
 	public static PropertyBool EAST  = PropertyBool.create("east");
 	public static PropertyBool SOUTH = PropertyBool.create("south");

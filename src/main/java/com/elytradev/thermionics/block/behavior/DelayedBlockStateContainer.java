@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang3.Validate;
 
-import com.elytradev.thermionics.block.BlockImpl;
+import com.elytradev.thermionics.block.BlockImplOld;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
