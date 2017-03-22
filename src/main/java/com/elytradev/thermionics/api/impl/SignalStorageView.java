@@ -21,49 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.thermionics.api.impl;
 
-import java.util.ArrayList;
+import com.elytradev.thermionics.api.ISignalStorage;
 
-import javax.annotation.Nonnull;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
-
-public class ObservableItemHandler extends ItemStackHandler {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
+public class SignalStorageView implements ISignalStorage {
+	private final ISignalStorage parent;
 	
-	public ObservableItemHandler(int slots) {
-		super(slots);
-	}
-
-	private void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
-	}
-	
-	public void listen(@Nonnull Runnable r) {
-		listeners.add(r);
+	public SignalStorageView(ISignalStorage storage) {
+		this.parent = storage;
 	}
 	
 	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
+	public float getSignal() {
+		return parent.getSignal();
 	}
 
 	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
-		return result;
+	public float getMaxSignal() {
+		return parent.getMaxSignal();
 	}
 
 	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
-		markDirty();
+	public boolean isInsulated() {
+		return parent.isInsulated();
 	}
+
 }

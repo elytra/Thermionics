@@ -35,7 +35,7 @@ public class TileEntityHeatStorage extends TileEntityMachine  implements ITickab
 	public TileEntityHeatStorage() {
 		heatStorage = new HeatStorage(200);
 		
-		heatStorage.listen((it)->markDirty());
+		heatStorage.listen(this::markDirty);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
 	}
 	

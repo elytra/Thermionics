@@ -43,8 +43,8 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 		heatStorage = new HeatStorage(200);
 		itemStorage = new ObservableItemHandler(1);
 		
-		heatStorage.listen((it)->markDirty());
-		itemStorage.listen((it)->markDirty());
+		heatStorage.listen(this::markDirty);
+		itemStorage.listen(this::markDirty);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
 		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->itemStorage);
 	}

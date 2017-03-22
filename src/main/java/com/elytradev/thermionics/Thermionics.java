@@ -23,15 +23,25 @@
  */
 package com.elytradev.thermionics;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
+import com.elytradev.thermionics.block.BlockBase;
+import com.elytradev.thermionics.block.BlockCable;
 import com.elytradev.thermionics.block.BlockFirebox;
 import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockMotorBase;
+import com.elytradev.thermionics.block.BlockScaffold;
+import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.tileentity.TileEntityCable;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHeatStorage;
 
@@ -51,6 +61,8 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 @Mod(modid=Thermionics.MODID, version="@VERSION@")
 public class Thermionics {
@@ -77,24 +89,37 @@ public class Thermionics {
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
 		
-		registerBlock(new BlockFirebox());
-		registerBlock(new BlockHeatPipe());
-		registerBlock(new BlockMotorBase("redstone"));
 		
-		GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
-		GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
+		registerBlock(new BlockScaffold("basic"));
+		registerBlock(new BlockCable("rf"));
+		//registerBlock(new BlockFirebox());
+		//registerBlock(new BlockHeatPipe());
+		//registerBlock(new BlockMotorBase("redstone"));
+		
+		//GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
+		//GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
+		
+		GameRegistry.registerTileEntity(TileEntityCable.class, "thermionics:cable");
 	}
 	
 	@EventHandler
 	public void onInit(FMLInitializationEvent e) {
-		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.CABLE_RF,8),
+				"wlw", 'w', new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE), 'l', "ingotLead"));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SCAFFOLD_BASIC,4),
+				"x x", " x ", "x x", 'x', "ingotIron"));
 	}
 	
 	public static Thermionics instance() {
 		return instance;
 	}
 	
-	
+	public void registerBlock(BlockBase block) {
+		GameRegistry.register(block);
+		ItemBlockEquivalentState itemBlock = new ItemBlockEquivalentState(block);
+		GameRegistry.register(itemBlock);
+		proxy.registerItemModel(itemBlock);
+	}
 	
 	public void registerBlock(Block block) {
 		ItemBlock item = new ItemBlock(block);

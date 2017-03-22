@@ -43,7 +43,7 @@ public class HeatStorage implements IHeatStorage {
 	private int maxReceive = 10;
 	private int maxExtract = 10;
 	
-	private ArrayList<Consumer<HeatStorage>> listeners = new ArrayList<>();
+	private ArrayList<Runnable> listeners = new ArrayList<>();
 	
 	public HeatStorage() {}
 	
@@ -95,15 +95,15 @@ public class HeatStorage implements IHeatStorage {
 
 	
 	private void markDirty() {
-		for(Consumer<HeatStorage> listener : listeners) {
-			listener.accept(this);
+		for(Runnable listener : listeners) {
+			listener.run();
 		}
 	}
 	
-	public void listen(@Nonnull Consumer<HeatStorage> c) {
-		Validate.notNull(c);
+	public void listen(@Nonnull Runnable r) {
+		Validate.notNull(r);
 		
-		listeners.add(c);
+		listeners.add(r);
 	}
 	
 	public HeatStorage withTransferAttributes(int maxExtract, int minReceive, int maxReceive) {

@@ -63,11 +63,11 @@ public class CapabilityProvider {
 		Validate.notNull(capability);
 		
 		for(Entry<?> entry : entries) {
-			if (side!=null) {
+			//if (side!=null) {
 				if (entry.directions.contains(side) && capability.equals(entry.capability)) return (T)entry.provide();
-			} else {
-				if (capability.equals(entry.capability)) return (T)entry.provide();
-			}
+			//} else {
+			//	if (capability.equals(entry.capability)) return (T)entry.provide();
+			//}
 		}
 		
 		return null;

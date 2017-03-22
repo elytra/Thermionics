@@ -21,8 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.block;
+package com.elytradev.thermionics.api;
 
-public class BlockImpl {
-
+/**
+ * Represents a block, entity, or item which initiates, transmits, or stores a redstone signal in extremely
+ * finely-grained steps. This Capability does NOT cause a block to interact with vanilla redstone!
+ */
+public interface ISignalStorage {
+	/** Get the current signal level in this block. This typically ranges from 0..15 inclusive, but mod blocks can add
+	 * much stronger signal levels. */
+	public float getSignal();
+	
+	/** Get the maximum signal level this block can accommodate. A redstone-analogue would report 15 even if it had a
+	 * much longer transmission distance. */
+	public float getMaxSignal();
+	
+	/**
+	 * Reports whether or not this block will respond to vanilla signals. Imagine a redstone torch or block was placed
+	 * next to this block. If it would report a signal in response, then it's not insulated.
+	 * @return true if this block is sensitive/responsive to vanilla redstone blocks around it, otherwise false.
+	 */
+	public boolean isInsulated();
 }

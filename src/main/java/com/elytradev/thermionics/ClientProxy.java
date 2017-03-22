@@ -23,6 +23,8 @@
  */
 package com.elytradev.thermionics;
 
+import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,11 +43,19 @@ public class ClientProxy extends Proxy {
 		ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 		NonNullList<ItemStack> variantList = NonNullList.create();
 		item.getSubItems(item, Thermionics.TAB_THERMIONICS, variantList);
-		if (variantList.size()==1) {
-			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, "inventory"));
+		if (item instanceof ItemBlockEquivalentState) {
+			ItemBlockEquivalentState itemBlock = (ItemBlockEquivalentState)item;
+			for(ItemStack stack : variantList) {
+				String state = itemBlock.getStateStringForItem(stack);
+				ModelLoader.setCustomModelResourceLocation(item, stack.getItemDamage(), new ModelResourceLocation(loc, state));
+			}
 		} else {
-			for(ItemStack subItem : variantList) {
-				ModelLoader.setCustomModelResourceLocation(item, subItem.getItemDamage(), new ModelResourceLocation(loc, "variant="+subItem.getItemDamage()));
+			if (variantList.size()==1) {
+				ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, "inventory"));
+			} else {
+				for(ItemStack subItem : variantList) {
+					ModelLoader.setCustomModelResourceLocation(item, subItem.getItemDamage(), new ModelResourceLocation(loc, "variant="+subItem.getItemDamage()));
+				}
 			}
 		}
 	}

@@ -21,49 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.thermionics.block;
 
-import java.util.ArrayList;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 
-import javax.annotation.Nonnull;
+public abstract class BlockBase extends Block {
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
-
-public class ObservableItemHandler extends ItemStackHandler {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	
-	public ObservableItemHandler(int slots) {
-		super(slots);
+	public BlockBase(Material materialIn) {
+		super(materialIn);
 	}
 
-	private void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
-	}
-	
-	public void listen(@Nonnull Runnable r) {
-		listeners.add(r);
-	}
-	
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
-		return result;
-	}
-
-	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
-		markDirty();
-	}
 }

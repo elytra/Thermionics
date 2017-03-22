@@ -1,0 +1,18 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"minecraft:cube_column",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures": {
+			"side":"thermionics:blocks/scaffold.basic.side",
+			"end":"thermionics:blocks/scaffold.basic.end"
+		}
+	},
+	"variants":{
+		"normal": [{}]
+	}
+}

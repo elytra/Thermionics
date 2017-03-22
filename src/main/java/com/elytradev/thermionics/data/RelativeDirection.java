@@ -42,11 +42,13 @@ public enum RelativeDirection {
 	/** From the device's perspective, its top face */
 	TOP,
 	/** From the device's perspective, its bottom face */
-	BOTTOM;
+	BOTTOM,
+	/** From the device's perspective, inside itself */
+	WITHIN;
 	
-	@Nonnull
+	@Nullable
 	public static RelativeDirection of(@Nonnull EnumFacing deviceFacing, @Nullable EnumFacing side) {
-		if (side==null) return null; //valid configuration
+		if (side==null) return WITHIN; //valid configuration
 		Validate.notNull(deviceFacing);
 		
 		if (deviceFacing==side) return BOW;

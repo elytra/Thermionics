@@ -27,14 +27,24 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.energy.EnergyStorage;
 
-public class ObservableItemHandler extends ItemStackHandler {
+/**
+ * A version of forge energy that can be asked to automatically mark a TileEntity dirty when accessed
+ */
+public class ObservableEnergyStorage extends EnergyStorage {
 	private ArrayList<Runnable> listeners = new ArrayList<>();
+
+	public ObservableEnergyStorage(int capacity) {
+		super(capacity);
+	}
 	
-	public ObservableItemHandler(int slots) {
-		super(slots);
+	public ObservableEnergyStorage(int capacity, int maxTransfer) {
+		super(capacity, maxTransfer);
+	}
+	
+	public ObservableEnergyStorage(int capacity, int maxReceive, int maxExtract) {
+		super(capacity, maxReceive, maxExtract);
 	}
 
 	private void markDirty() {
@@ -47,23 +57,19 @@ public class ObservableItemHandler extends ItemStackHandler {
 		listeners.add(r);
 	}
 	
+	/* Hook mutator methods only, to send events on a successful mutation */
+	
 	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+		int result = super.receiveEnergy(maxReceive, simulate);
+		if (!simulate && result!=0) markDirty();
 		return result;
-	}
+    }
 
-	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
-		markDirty();
-	}
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+    	int result = super.extractEnergy(maxExtract, simulate);
+    	if (!simulate && result!=0) markDirty();
+    	return result;
+    }
 }
