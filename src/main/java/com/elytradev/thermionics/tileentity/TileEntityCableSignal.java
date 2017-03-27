@@ -21,18 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.block;
+package com.elytradev.thermionics.tileentity;
 
-import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import com.elytradev.thermionics.CapabilityProvider;
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.api.impl.SignalStorage;
 
-@ObjectHolder("thermionics")
-public class ThermionicsBlocks {
-	@ObjectHolder("scaffold.basic")
-	public static final BlockScaffold SCAFFOLD_BASIC = null;
+import net.minecraft.tileentity.TileEntity;
+
+public class TileEntityCableSignal extends TileEntity {
+	private static final int MAX_TICK_COUNTER = 5;
+	private int tickCounter = 0;
+	CapabilityProvider capabilities = new CapabilityProvider();
+	SignalStorage signal;
 	
+	public TileEntityCableSignal() {
+		signal = new SignalStorage(32, false);
+		
+		capabilities.registerForAllSides(Thermionics.CAPABILITY_SIGNALSTORAGE, ()->signal);
+	}
 	
-	@ObjectHolder("cable.rf")
-	public static final Block CABLE_RF = null;
 	
 }

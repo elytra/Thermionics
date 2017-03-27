@@ -21,66 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.api.impl;
+package com.elytradev.thermionics.data;
 
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang3.Validate;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemStackHandler;
 
-import com.elytradev.thermionics.api.ISignalStorage;
-
-public class SignalStorage implements ISignalStorage {
-	private final float max;
-	private final boolean insulated;
-	private float signal;
+public class ObservableItemStorage extends ItemStackHandler {
 	private ArrayList<Runnable> listeners = new ArrayList<>();
 	
-	public SignalStorage() {
-		this(16f, false);
+	public ObservableItemStorage(int slots) {
+		super(slots);
 	}
-	
-	public SignalStorage(float max, boolean insulated) {
-		this.max = 16f;
-		this.insulated = insulated;
-	}
-	
+
 	private void markDirty() {
-		for(Runnable listener : listeners) {
-			listener.run();
+		for(Runnable r : listeners) {
+			r.run();
 		}
 	}
 	
 	public void listen(@Nonnull Runnable r) {
-		Validate.notNull(r);
-		
 		listeners.add(r);
 	}
 	
 	@Override
-	public float getSignal() {
-		return signal;
+	public ItemStack extractItem(int slot, int amount, boolean simulate) {
+		ItemStack stack = super.extractItem(slot, amount, simulate);
+		if (!simulate) markDirty();
+		return stack;
 	}
 
 	@Override
-	public float getMaxSignal() {
-		return max;
+	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
+		ItemStack result = super.insertItem(slot, itemStack, simulate);
+		if (!simulate) markDirty();
+		return result;
 	}
 
 	@Override
-	public boolean isInsulated() {
-		return insulated;
-	}
-	
-	/**
-	 * Sets the signal level of this block
-	 * @param signal the new level to set
-	 * @return the level which was actually set. This may be less than the requested amount.
-	 */
-	public float setSignal(float signal) {
-		this.signal = Math.min(signal, this.max);
+	public void setStackInSlot(int slot, ItemStack itemStack) {
+		super.setStackInSlot(slot, itemStack);
 		markDirty();
-		return this.signal;
 	}
 }

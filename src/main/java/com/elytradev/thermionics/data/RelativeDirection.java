@@ -46,6 +46,10 @@ public enum RelativeDirection {
 	/** From the device's perspective, inside itself */
 	WITHIN;
 	
+	public static final RelativeDirection[] SIDES = {
+		BOW, PORT, STARBOARD, STERN, TOP, BOTTOM	
+	};
+	
 	@Nullable
 	public static RelativeDirection of(@Nonnull EnumFacing deviceFacing, @Nullable EnumFacing side) {
 		if (side==null) return WITHIN; //valid configuration

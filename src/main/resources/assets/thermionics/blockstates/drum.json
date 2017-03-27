@@ -1,0 +1,12 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+		"uvlock": false,
+		"transform": "forge:default-block",
+		"model":"thermionics:tank"
+	},
+	"variants": {
+		"normal": [{}],
+		"inventory": [{}]
+	}
+}

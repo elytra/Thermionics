@@ -9,3 +9,7 @@ tile.thermionics.scaffold.basic.name=Iron Scaffold
 tile.thermionics.cable.rf.name=Energy Cable
 tile.thermionics.cable.redstone.name=Signal Cable
 tile.thermionics.cable.rf_redstone.name=Signal/Energy Cable
+
+
+#Probe Data
+data.energystorage.maxtransfer=Transfer Rate: 

@@ -26,44 +26,45 @@ package com.elytradev.thermionics.data;
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.fluids.FluidEvent;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 
-public class ObservableItemHandler extends ItemStackHandler {
+public class ObservableFluidStorage extends FluidTank {
 	private ArrayList<Runnable> listeners = new ArrayList<>();
-	
-	public ObservableItemHandler(int slots) {
-		super(slots);
-	}
 
+	public ObservableFluidStorage(int capacity) {
+		super(capacity);
+		this.setCanFill(true);
+		this.setCanDrain(true);
+	}
+	
 	private void markDirty() {
 		for(Runnable r : listeners) {
 			r.run();
 		}
 	}
+	/*
+	@Override
+	public int fill(FluidStack resource, boolean doFill) {
+		if (doFill) System.out.println("FILL "+resource);
+		return super.fill(resource, doFill);
+	}
+	
+	@Override
+	@Nullable
+	public FluidStack drain(FluidStack resource, boolean doDrain) {
+		if (doDrain) System.out.println("DRAIN "+resource);
+		return super.drain(resource, doDrain);
+	}*/
 	
 	public void listen(@Nonnull Runnable r) {
 		listeners.add(r);
 	}
 	
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
-		return result;
-	}
-
-	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
+	protected void onContentsChanged() {
 		markDirty();
 	}
 }

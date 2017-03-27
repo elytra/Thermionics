@@ -23,16 +23,40 @@
  */
 package com.elytradev.thermionics.block;
 
-import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 
-@ObjectHolder("thermionics")
-public class ThermionicsBlocks {
-	@ObjectHolder("scaffold.basic")
-	public static final BlockScaffold SCAFFOLD_BASIC = null;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.energy.CapabilityEnergy;
+
+public class BlockCableRF extends BlockCableBase implements ITileEntityProvider {
 	
+	public BlockCableRF(String subId) {
+		super(subId);
+	}
 	
-	@ObjectHolder("cable.rf")
-	public static final Block CABLE_RF = null;
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityCableRF();
+	}
+	
+	@Override
+	public boolean canConnectCable(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+		if (state.getBlock().hasTileEntity(state)) {
+			TileEntity te = world.getTileEntity(pos);
+			try {
+				if (te.hasCapability(CapabilityEnergy.ENERGY, side)) return true;
+			} catch (Throwable t) {
+				return false; //If it hates us, don't connect. Capabilities are funny.
+			}
+		}
+		return false;
+	}
+	
 	
 }

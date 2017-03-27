@@ -1,19 +1,31 @@
 # Thermionics
-A new generation of user-friendly energy, transport, and logic devices
+A new generation of industrial machines, transport, and logic devices
 
 # License: MIT
 See LICENSE for details. Go ahead and add this mod to your modpack!
 
+# Installing on a Server or Client
+
+This mod uses the ore dictionary to find mod ores, but does not add them! In
+order to start building your unholy towers of steel in survival mode, you'll
+also need to install something like Substratum, Forestry, or TechReborn to get
+ores spawning.
+
+Thermionics **requires** CommonCapabilities 1.3.1 or higher.
+
+FruitPhone and TheOneProbe are both able to make sense of Thermionics blocks.
+Since I also wrote the underlying ProbeData API that FruitPhone uses, I highly
+recommend giving FruitPhone a try, it'll give you the most comprehensive info.
+On the other hand, if you're anti-probe and anti-hwyla/waila, there's no hard
+dependency on any of them, so you can safely leave them out.
+
 # Cloning and Compiling
-For now, this mod integrates with TheOneProbe. You can settle this dependency by
-dropping the plugin jar (as well as the compatlayer jar, if applicable) into the
-"libs" folder in the root directory of the project. ForgeGradle will automatically
-recognize and link to the plugin, and use it in test runs.
+This mod has a "hard" dependency on https://github.com/CyclopsMC/CommonCapabilities
+in order to expose things like temperatures and slotless inventories, and to
+respond in friendly ways to interactions from other mods' wrenches. Gradle
+should Just Handle It, because that is literally what gradle is for.
 
-
-In the future, inspection will instead be made through ProbeDataProvider (such as
-FruitPhone). This will change the dependency map. CommonCapabilities is also
-expected to become a hard dependency to enable temperature interop.
+TL,DR; You should be able to run a gradle build out-of-the-box from a fresh clone.
 
 # Code Style
 * Tabs for indentation
@@ -27,8 +39,8 @@ a lot of changes along the way, but has always held to a few hard guarantees:
 
 Thermionics embraces simple, open standards. This is doubly true for Capabilities.
 If you're requesting items, grab an IItemHandler. If you're finding out how hot
-something is, ask for an ITemperature. If you want to implement a wrench, use
-ITweakable. If the most open standard is not supported, put in an Issue.
+something is, ask for an ITemperature. If you want to implement a wrench, inherit
+IWrench. If the most open standard is not supported, put in an Issue.
 
 Coming from the same mindset, interoperability is incredibly important. Each system
 has its own character, and historically, combining machines has resulted in some
@@ -75,7 +87,10 @@ structure.
 * When an item can be used as furnace fuel, it can often be burned to produce energy. It
 should produce no more than 30FU per furnace fuel tick. It can produce this as slowly or
 as quickly as you want.
-* Wireless interactions are permitted, and encouraged because they are often good for servers.
+* ~Wireless interactions are permitted, and encouraged because they are often good for servers.~
+It has been pointed out to me, rightly, that well-designed network-topography-aware
+systems often outstrip the performance of wireless transfer systems, and occasionally
+even dumb cellular systems do. More importantly, wireless is unsatisfying gameplay.
 * Time is not a balancing mechanic. Free energy that takes a long time to generate is still free
 energy. (this is why there are no time constraints placed on energy generation)
 * Material cost is not a balancing mechanic. An overpowered machine that requires 26 expensive

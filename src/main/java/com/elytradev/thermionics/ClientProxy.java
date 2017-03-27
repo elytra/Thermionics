@@ -23,7 +23,9 @@
  */
 package com.elytradev.thermionics;
 
+import com.elytradev.thermionics.client.tesr.RenderTileDrum;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.tileentity.TileEntityDrum;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -31,11 +33,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 public class ClientProxy extends Proxy {
 	@Override
 	public void init() {
 		//TODO: register cable and machine TESRs
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityDrum.class, new RenderTileDrum());
 	}
 	
 	@Override

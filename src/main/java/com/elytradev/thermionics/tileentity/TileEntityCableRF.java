@@ -36,23 +36,24 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-public class TileEntityCable extends TileEntity implements ITickable {
+public class TileEntityCableRF extends TileEntity implements ITickable {
 	private static final int MAX_TICK_COUNTER = 5;
 	private int tickCounter = 0;
 	CapabilityProvider capabilities = new CapabilityProvider();
 	private ObservableEnergyStorage energyStorage = new ObservableEnergyStorage(4000, 800);
 	
-	public TileEntityCable() {
+	public TileEntityCableRF() {
 		capabilities.registerForAllSides(CapabilityEnergy.ENERGY, ()->energyStorage);
 		energyStorage.listen(this::markDirty);
 	}
 	
+	/*
 	public TileEntityCable(boolean rf, boolean redstone) {
 		if (rf) capabilities.registerForAllSides(CapabilityEnergy.ENERGY, ()->energyStorage);
 		if (redstone) capabilities.registerForAllSides(null, null);
 		
 		
-	}
+	}*/
 	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {

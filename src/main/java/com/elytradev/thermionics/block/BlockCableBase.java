@@ -1,23 +1,42 @@
+/**
+ * MIT License
+ *
+ * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
-import com.elytradev.thermionics.tileentity.TileEntityCable;
-import com.elytradev.thermionics.tileentity.TileEntityHeatStorage;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.energy.CapabilityEnergy;
 
-public class BlockCable extends BlockBase implements ITileEntityProvider {
+public abstract class BlockCableBase extends BlockBase implements ITileEntityProvider {
 	public static PropertyBool NORTH = PropertyBool.create("north");
 	public static PropertyBool EAST  = PropertyBool.create("east");
 	public static PropertyBool SOUTH = PropertyBool.create("south");
@@ -25,7 +44,7 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 	public static PropertyBool UP    = PropertyBool.create("up");
 	public static PropertyBool DOWN  = PropertyBool.create("down");
 	
-	public BlockCable(String subId) {
+	public BlockCableBase(String subId) {
 		super(Material.CLOTH);
 		this.setLightOpacity(0);
 		this.setRegistryName("cable."+subId);
@@ -35,6 +54,7 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 		//Creepers, withers, and exploding machines should be pretty catastrophic to these blocks.
 		this.setHardness(1.0f);
 		this.setResistance(8.0f);
+		this.setHarvestLevel("pickaxe",0);
 		
 		this.setDefaultState(blockState.getBaseState()
 				.withProperty(NORTH, false)
@@ -45,6 +65,7 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 				.withProperty(DOWN, false)
 				);
 	}
+
 	
 	@Override
 	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
@@ -77,6 +98,17 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 	}
 	
 	@Override
+	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return state
+				.withProperty(NORTH, canConnectCable(state, world, pos.north(), EnumFacing.SOUTH))
+				.withProperty(EAST,  canConnectCable(state, world, pos.east(),  EnumFacing.WEST))
+				.withProperty(SOUTH, canConnectCable(state, world, pos.south(), EnumFacing.NORTH))
+				.withProperty(WEST,  canConnectCable(state, world, pos.west(),  EnumFacing.EAST))
+				.withProperty(DOWN,  canConnectCable(state, world, pos.down(),  EnumFacing.UP))
+				.withProperty(UP,    canConnectCable(state, world, pos.up(),    EnumFacing.DOWN));
+	}
+	
+	@Override
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
 		return getBoundingBox(state, world, pos).offset(pos);
 	}
@@ -97,35 +129,11 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 	}
 	
 	@Override
-	public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos) {
-		return state
-				.withProperty(NORTH, isRFCapable(state, world, pos.north(), EnumFacing.SOUTH))
-				.withProperty(EAST,  isRFCapable(state, world, pos.east(),  EnumFacing.WEST))
-				.withProperty(SOUTH, isRFCapable(state, world, pos.south(), EnumFacing.NORTH))
-				.withProperty(WEST,  isRFCapable(state, world, pos.west(),  EnumFacing.EAST))
-				.withProperty(DOWN,  isRFCapable(state, world, pos.down(),  EnumFacing.UP))
-				.withProperty(UP,    isRFCapable(state, world, pos.up(),    EnumFacing.DOWN));
-	}
-	
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileEntityCable();
-	}
-	
-	@Override
 	public boolean hasTileEntity(IBlockState state) {
 		return true;
 	}
 	
-	public static boolean isRFCapable(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-		if (state.getBlock().hasTileEntity(state)) {
-			TileEntity te = world.getTileEntity(pos);
-			try {
-				if (te.hasCapability(CapabilityEnergy.ENERGY, side)) return true;
-			} catch (Throwable t) {
-				return false; //If it hates us, don't connect. Capabilities are funny.
-			}
-		}
+	public boolean canConnectCable(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
 		return false;
 	}
 	
@@ -140,5 +148,4 @@ public class BlockCable extends BlockBase implements ITileEntityProvider {
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
-
 }

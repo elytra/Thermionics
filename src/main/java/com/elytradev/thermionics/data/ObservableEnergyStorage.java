@@ -72,4 +72,9 @@ public class ObservableEnergyStorage extends EnergyStorage {
     	if (!simulate && result!=0) markDirty();
     	return result;
     }
+    
+    /* Extra methods beyond IEnergyStorage to measure bandwidth */
+    public int getMaxTransfer() {
+    	return maxExtract;
+    }
 }

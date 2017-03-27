@@ -25,7 +25,7 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
-import com.elytradev.thermionics.data.ObservableItemHandler;
+import com.elytradev.thermionics.data.ObservableItemStorage;
 
 import com.elytradev.thermionics.Thermionics;
 import net.minecraft.item.ItemStack;
@@ -36,16 +36,17 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 	private HeatStorage heatStorage;
-	private ObservableItemHandler itemStorage;
+	private ObservableItemStorage itemStorage;
 	private int furnaceTicks = 0;
 	
 	public TileEntityFirebox() {
 		heatStorage = new HeatStorage(200);
-		itemStorage = new ObservableItemHandler(1);
+		itemStorage = new ObservableItemStorage(1);
 		
 		heatStorage.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
+		capabilities.
 		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->itemStorage);
 	}
 	

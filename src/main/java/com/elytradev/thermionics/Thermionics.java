@@ -31,17 +31,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.elytradev.thermionics.api.IHeatStorage;
+import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.block.BlockBase;
-import com.elytradev.thermionics.block.BlockCable;
+import com.elytradev.thermionics.block.BlockCableRF;
+import com.elytradev.thermionics.block.BlockDrum;
 import com.elytradev.thermionics.block.BlockFirebox;
 import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockMotorBase;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
-import com.elytradev.thermionics.tileentity.TileEntityCable;
+import com.elytradev.thermionics.tileentity.TileEntityCableRF;
+import com.elytradev.thermionics.tileentity.TileEntityCableSignal;
+import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHeatStorage;
 
@@ -64,7 +68,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
-@Mod(modid=Thermionics.MODID, version="@VERSION@")
+@Mod(modid=Thermionics.MODID, version="@VERSION@", name="Thermionics|Core")
 public class Thermionics {
 	public static final String MODID = "thermionics";
 	public static Logger LOG;
@@ -75,6 +79,8 @@ public class Thermionics {
 	public static Proxy proxy;
 	@CapabilityInject(IHeatStorage.class)
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
+	@CapabilityInject(ISignalStorage.class)
+	public static Capability<ISignalStorage> CAPABILITY_SIGNALSTORAGE;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		@Override
@@ -91,7 +97,8 @@ public class Thermionics {
 		
 		
 		registerBlock(new BlockScaffold("basic"));
-		registerBlock(new BlockCable("rf"));
+		registerBlock(new BlockCableRF("rf"));
+		registerBlock(new BlockDrum());
 		//registerBlock(new BlockFirebox());
 		//registerBlock(new BlockHeatPipe());
 		//registerBlock(new BlockMotorBase("redstone"));
@@ -99,7 +106,9 @@ public class Thermionics {
 		//GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
 		//GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
 		
-		GameRegistry.registerTileEntity(TileEntityCable.class, "thermionics:cable");
+		GameRegistry.registerTileEntity(TileEntityCableRF.class, "thermionics:cable");
+		GameRegistry.registerTileEntity(TileEntityDrum.class   , "thermionics:drum");
+		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 	}
 	
 	@EventHandler

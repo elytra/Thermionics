@@ -77,6 +77,11 @@ public class CapabilityProvider {
 		entries.add(new Entry<T>(cap,provider));
 	}
 	
+	public <T> void registerForAllSides(Capability<T> cap, Supplier<T> side, Supplier<T> within) {
+		entries.add(new Entry<T>(cap, within, RelativeDirection.WITHIN));
+		entries.add(new Entry<T>(cap, side,   RelativeDirection.SIDES));
+	}
+	
 	public static class Entry<T> {
 		private Capability<T> capability;
 		private Supplier<T> supplier;
