@@ -31,8 +31,12 @@ public class ThermionicsBlocks {
 	@ObjectHolder("scaffold.basic")
 	public static final BlockScaffold SCAFFOLD_BASIC = null;
 	
-	
 	@ObjectHolder("cable.rf")
 	public static final Block CABLE_RF = null;
 	
+	@ObjectHolder("drum")
+	public static final BlockDrum DRUM = null;
+	
+	@ObjectHolder("machine.firebox")
+	public static final BlockFirebox FIREBOX = null;
 }

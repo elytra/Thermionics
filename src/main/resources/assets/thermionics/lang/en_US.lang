@@ -12,4 +12,6 @@ tile.thermionics.cable.rf_redstone.name=Signal/Energy Cable
 
 
 #Probe Data
-data.energystorage.maxtransfer=Transfer Rate: 
+thermionics.data.energystorage=Stored Power
+thermionics.data.energystorage.maxtransfer=Transfer Rate
+

@@ -25,6 +25,7 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.data.ObservableEnergyStorage;
+import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.data.RelativeDirection;
 import com.elytradev.thermionics.transport.RFTransport;
 
@@ -37,14 +38,20 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 
 public class TileEntityCableRF extends TileEntity implements ITickable {
-	private static final int MAX_TICK_COUNTER = 5;
+	private static final int MAX_TICK_COUNTER = 1;
+	private static final int CAPACITANCE = 6000;
 	private int tickCounter = 0;
 	CapabilityProvider capabilities = new CapabilityProvider();
-	private ObservableEnergyStorage energyStorage = new ObservableEnergyStorage(4000, 800);
+	private ObservableEnergyStorage energyStorage = new ObservableEnergyStorage(CAPACITANCE, CAPACITANCE, 800*MAX_TICK_COUNTER).withPollTime(MAX_TICK_COUNTER);
 	
 	public TileEntityCableRF() {
 		capabilities.registerForAllSides(CapabilityEnergy.ENERGY, ()->energyStorage);
 		energyStorage.listen(this::markDirty);
+		
+		
+		if (ProbeDataSupport.PROBE_PRESENT) {
+			capabilities.registerForAllSides(ProbeDataSupport.PROBE_CAPABILITY, ()->new ProbeDataSupport.RFCableInspector(this));
+		}
 	}
 	
 	/*
@@ -97,6 +104,7 @@ public class TileEntityCableRF extends TileEntity implements ITickable {
 
 	@Override
 	public void update() {
+		this.energyStorage.tick();
 		tickCounter++;
 		if (tickCounter>=MAX_TICK_COUNTER) {
 			tickCounter=0;

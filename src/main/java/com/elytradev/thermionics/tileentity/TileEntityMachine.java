@@ -24,15 +24,24 @@
 package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.CapabilityProvider;
+import com.elytradev.thermionics.block.BlockMachineBase;
+import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.data.RelativeDirection;
 
 import net.minecraft.block.BlockDirectional;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityMachine extends TileEntity {
 	protected CapabilityProvider capabilities = new CapabilityProvider();
+	
+	public TileEntityMachine() {
+		if (ProbeDataSupport.PROBE_PRESENT) {
+			capabilities.registerForAllSides(ProbeDataSupport.PROBE_CAPABILITY, ()->new ProbeDataSupport.MachineInspector(this));
+		}
+	}
 	
 	public EnumFacing getFacing() {
 		try {
@@ -60,5 +69,11 @@ public class TileEntityMachine extends TileEntity {
 			} catch (Throwable t) {}
 		}
 		return result;
+	}
+	
+	public void markActive(boolean active) {
+		IBlockState cur = world.getBlockState(pos);
+		if (cur.getValue(BlockMachineBase.ACTIVE)==active) return;
+		world.setBlockState(pos, cur.withProperty(BlockMachineBase.ACTIVE,active));
 	}
 }

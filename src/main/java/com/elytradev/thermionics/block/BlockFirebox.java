@@ -23,23 +23,23 @@
  */
 package com.elytradev.thermionics.block;
 
-import com.elytradev.thermionics.block.behavior.BlockStateBehavior;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
 
-public class BlockFirebox extends BlockImplOld implements ITileEntityProvider {
+public class BlockFirebox extends BlockMachineBase implements ITileEntityProvider {
 	
 	public BlockFirebox() {
-		super(Material.IRON, "machine.firebox", BlockStateBehavior.HORIZONTAL);
+		super("firebox");
 	}
 	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityFirebox();
 	}
+	
+	
 }

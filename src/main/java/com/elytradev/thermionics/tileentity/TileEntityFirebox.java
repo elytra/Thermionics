@@ -25,6 +25,7 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
+import com.elytradev.thermionics.data.NoExtractItemStorage;
 import com.elytradev.thermionics.data.ObservableItemStorage;
 
 import com.elytradev.thermionics.Thermionics;
@@ -38,6 +39,8 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 	private HeatStorage heatStorage;
 	private ObservableItemStorage itemStorage;
 	private int furnaceTicks = 0;
+	private static final int MAX_COLD = 20;
+	private int timeCold = MAX_COLD;
 	
 	public TileEntityFirebox() {
 		heatStorage = new HeatStorage(200);
@@ -46,8 +49,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 		heatStorage.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-		capabilities.
-		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->itemStorage);
+		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()-> new NoExtractItemStorage(itemStorage), ()->itemStorage);
 	}
 	
 	@Override
@@ -79,7 +81,11 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 	@Override
 	public void update() {
 		if (world.isRemote) return; //don't run furnace ticks on the client
+		
+		if (timeCold<MAX_COLD) timeCold++;
+		
 		if (furnaceTicks>0) {
+			timeCold = 0;
 			int ticksToConsume = Math.min(1, furnaceTicks);
 			if (ticksToConsume<=0) return; //should never happen, but it pays to be prepared
 			furnaceTicks -= Math.min(ticksToConsume, heatStorage.receiveHeat(ticksToConsume, false));
@@ -87,6 +93,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 		} else {
 			ItemStack fuelItem = itemStorage.extractItem(0, 1, true);
 			if (!fuelItem.isEmpty()) {
+				timeCold = 0;
 				int ticks = TileEntityFurnace.getItemBurnTime(fuelItem);
 				if (ticks>0) {
 					furnaceTicks+=ticks;
@@ -95,6 +102,8 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable {
 				}
 			}
 		}
+		
+		super.markActive(timeCold<MAX_COLD);
 	}
 	
 	

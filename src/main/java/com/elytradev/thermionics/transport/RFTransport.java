@@ -44,15 +44,48 @@ public class RFTransport {
 		ArrayList<IEnergyStorage> consumers = getAdjacentStorage(world, pos);
 		reorder(consumers); //We want to sample them in random order
 		for(IEnergyStorage consumer : consumers) {
-			int available = host.getEnergyStored();
+			//int totalEnergy = host.getEnergyStored() + consumer.getEnergyStored();
+			//float energyRatio = host.getMaxEnergyStored() / (float)consumer.getMaxEnergyStored();
 			float sourceLevel = host.getEnergyStored()/(float)host.getMaxEnergyStored();
 			float destLevel = consumer.getEnergyStored()/(float)consumer.getMaxEnergyStored();
 			if (sourceLevel>destLevel) {
 				//Figure out how many quanta to transfer
-				int availableQuanta = (int)((sourceLevel-destLevel)*host.getMaxEnergyStored())/2 - 1;
+				//int desiredSource = (int)(totalEnergy*energyRatio);
+				//int desiredDest = (int)(totalEnergy/energyRatio);
+				/*
+				 * Example: 2200 source, 1700 dest, capacity for each is 4000.
+				 * 
+				 *   totalEnergy: 3900
+				 *   energyRatio: 1.0f
+				 *   sourceLevel: 0.55f
+				 *   destLevel: 0.425f
+				 *   availableQuanta: 500 / 2 - 1 = 249
+				 * 
+				 */
+				
+				/*
+				 * Transmission data:
+				 * 0 blocks: 775.0
+				 * 1 block : 393.6
+				 * 2 blocks: 260.8
+				 * 3 blocks: 196.6
+				 * 4 blocks: 157.8
+				 * 5 blocks: 131.8
+				 */
+				
+				int availableQuanta = ((int)((sourceLevel-destLevel)*host.getMaxEnergyStored())/2); //trunc leaves fractional power differences where they are
 				if (availableQuanta<=0) continue;
+				//StringBuilder debugString = new StringBuilder("RFTransfer: ");
+				//debugString.append(host.getEnergyStored());
+				//debugString.append("("); debugString.append((int)(sourceLevel*100)); debugString.append("%) -> ");
+				//debugString.append(consumer.getEnergyStored());
+				//debugString.append("("); debugString.append((int)(destLevel*100)); debugString.append("%) :");
+				
+				//debugString.append(" req="); debugString.append(availableQuanta);
 				int transferred = consumer.receiveEnergy(availableQuanta, true);
 				if (transferred>0) transferred = host.extractEnergy(transferred, false);
+				//debugString.append(" rec="); debugString.append(transferred);
+				//System.out.println(debugString.toString());
 				consumer.receiveEnergy(transferred, false);
 			}
 		}
@@ -63,22 +96,22 @@ public class RFTransport {
 		
 		if (pos.getY()<255) {
 			IEnergyStorage up = getStorage(world,pos.up(),EnumFacing.DOWN);
-			if (up!=NULL_ENERGY) consumers.add(up);
+			if (up.canReceive()) consumers.add(up);
 		}
 		
 		if (pos.getY()>0) {
 			IEnergyStorage down = getStorage(world, pos.down(), EnumFacing.UP);
-			if (down!=NULL_ENERGY) consumers.add(down);
+			if (down.canReceive()) consumers.add(down);
 		}
 		
 		IEnergyStorage north = getStorage(world, pos.north(), EnumFacing.SOUTH);
-		if (north!=NULL_ENERGY) consumers.add(north);
+		if (north.canReceive()) consumers.add(north);
 		IEnergyStorage south = getStorage(world, pos.south(), EnumFacing.NORTH);
-		if (south!=NULL_ENERGY) consumers.add(south);
+		if (south.canReceive()) consumers.add(south);
 		IEnergyStorage east = getStorage(world, pos.east(), EnumFacing.WEST);
-		if (east!=NULL_ENERGY) consumers.add(east);
+		if (east.canReceive()) consumers.add(east);
 		IEnergyStorage west = getStorage(world, pos.west(), EnumFacing.EAST);
-		if (west!=NULL_ENERGY) consumers.add(west);
+		if (west.canReceive()) consumers.add(west);
 		
 		return consumers;
 	}

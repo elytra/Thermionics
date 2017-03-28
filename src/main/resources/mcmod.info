@@ -1,0 +1,18 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "thermionics",
+    "name": "Thermionics|Core",
+    "description": "Creative Industrial Automation",
+    "version": "1.0",
+    "mcversion": "1.11.2",
+    "url": "",
+    "updateUrl": "",
+    "authorList": [ "Falkreon" ],
+    "credits": "Made by Falkreon",
+    "logoFile": "",
+    "requiredMods": [ "forge", "commoncapabilities" ],
+    "dependencies": [ "probedataprovider" ],
+    "useDependencyInformation": true
+  }]
+}

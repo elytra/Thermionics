@@ -32,15 +32,22 @@ import com.elytradev.probe.api.UnitDictionary;
 import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
 import com.elytradev.thermionics.api.ISignalStorage;
+import com.elytradev.thermionics.tileentity.TileEntityCableRF;
+import com.elytradev.thermionics.tileentity.TileEntityMachine;
 
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Loader;
 
 public class ProbeDataSupport {
-	public static boolean PROBE_PRESENT;
+	public static boolean PROBE_PRESENT = false;
 	public static IUnit UNIT_SIGNAL;
+	@CapabilityInject(IProbeDataProvider.class)
+	public static final Capability<IProbeDataProvider> PROBE_CAPABILITY = null;
 	
 	public static void init() {
 		if (Loader.isModLoaded("probedataprovider")) {
@@ -49,6 +56,47 @@ public class ProbeDataSupport {
 			UnitDictionary.getInstance().register(UNIT_SIGNAL);
 		}
 	}
+	
+	public static class MachineInspector implements IProbeDataProvider {
+		private final TileEntityMachine machine;
+		
+		public MachineInspector(TileEntityMachine machine) {
+			this.machine = machine;
+		}
+		
+		@Override
+		public void provideProbeData(List<IProbeData> data) {
+			data.add(new ProbeData("MEMES: 9001"));
+		}
+	}
+	
+	public static class RFCableInspector implements IProbeDataProvider {
+		private final TileEntityCableRF cable;
+		
+		public RFCableInspector(TileEntityCableRF cable) {
+			this.cable = cable;
+		}
+		
+		@Override
+		public void provideProbeData(List<IProbeData> data) {
+			addRFData(cable.getCapability(CapabilityEnergy.ENERGY, null), data);
+		}
+	}
+	
+	public static void addRFData(IEnergyStorage storage, List<IProbeData> list) {
+		list.add(new ProbeData(new TextComponentTranslation("thermionics.data.energystorage"))
+				.withBar(0, storage.getEnergyStored(), storage.getMaxEnergyStored(), UnitDictionary.FORGE_ENERGY));
+		if (storage instanceof ITransferRate) {
+			ITransferRate o = (ITransferRate) storage;
+			
+			list.add(new ProbeData(new TextComponentTranslation("thermionics.data.energystorage.maxtransfer"))
+					.withBar(0, o.getCurTransfer(), o.getMaxTransfer(), UnitDictionary.FU_PER_TICK));
+			
+		}
+		
+	}
+	
+	
 	
 	public static class BandwidthHandler implements IProbeDataProvider {
 		private ObservableEnergyStorage storage;

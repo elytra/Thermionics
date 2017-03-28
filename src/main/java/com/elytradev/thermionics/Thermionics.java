@@ -42,6 +42,7 @@ import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockMotorBase;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityCableSignal;
@@ -63,6 +64,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -95,10 +97,13 @@ public class Thermionics {
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
 		
+		ProbeDataSupport.init();
+		
 		
 		registerBlock(new BlockScaffold("basic"));
 		registerBlock(new BlockCableRF("rf"));
 		registerBlock(new BlockDrum());
+		registerBlock(new BlockFirebox());
 		//registerBlock(new BlockFirebox());
 		//registerBlock(new BlockHeatPipe());
 		//registerBlock(new BlockMotorBase("redstone"));
@@ -108,6 +113,7 @@ public class Thermionics {
 		
 		GameRegistry.registerTileEntity(TileEntityCableRF.class, "thermionics:cable");
 		GameRegistry.registerTileEntity(TileEntityDrum.class   , "thermionics:drum");
+		GameRegistry.registerTileEntity(TileEntityFirebox.class, "thermionics:machine.firebox");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 	}
 	
@@ -117,6 +123,8 @@ public class Thermionics {
 				"wlw", 'w', new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE), 'l', "ingotLead"));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SCAFFOLD_BASIC,4),
 				"x x", " x ", "x x", 'x', "ingotIron"));
+		
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
 	
 	public static Thermionics instance() {

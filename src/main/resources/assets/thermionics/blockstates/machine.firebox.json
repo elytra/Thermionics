@@ -8,12 +8,12 @@
 		"y":0,
 		"uvlock":true,
 		"textures":{
-			"front":"thermionics:blocks/machine.firebox",
-			"side":"thermionics:blocks/machine.side",
-			"top":"thermionics:blocks/machine.top",
-			"down":"thermionics:blocks/machine.bottom",
-			"south":"thermionics:blocks/machine.plug.heat",
-			"particle":"thermionics:blocks/machine.top"
+			"front":"thermionics:blocks/machine/firebox",
+			"side":"thermionics:blocks/machine/side",
+			"top":"thermionics:blocks/machine/top",
+			"down":"thermionics:blocks/machine/bottom",
+			"south":"thermionics:blocks/machine/plug.heat",
+			"particle":"thermionics:blocks/machine/top"
 		}
 	},
 	
@@ -24,6 +24,11 @@
 			"south": { "x": 0, "y":180},
 			"west" : { "x": 0, "y":270}
 		},
-		"inventory" : [{}]
+		"active" : {
+			"true": {
+				"textures":{ "front":"thermionics:blocks/machine/firebox.active" }
+			},
+			"false": {}
+		}
     }
 }
