@@ -31,10 +31,15 @@ import com.elytradev.probe.api.IUnit;
 import com.elytradev.probe.api.UnitDictionary;
 import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityMachine;
+import com.google.common.collect.ImmutableList;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -42,18 +47,23 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class ProbeDataSupport {
 	public static boolean PROBE_PRESENT = false;
 	public static IUnit UNIT_SIGNAL;
+	public static IUnit UNIT_ENTHALPY;
 	@CapabilityInject(IProbeDataProvider.class)
 	public static final Capability<IProbeDataProvider> PROBE_CAPABILITY = null;
 	
 	public static void init() {
 		if (Loader.isModLoaded("probedataprovider")) {
 			PROBE_PRESENT = true;
-			UNIT_SIGNAL = new SIUnit("Signal", "", 0xFFCCCC);
+			UNIT_SIGNAL = new SIUnit("Signal", "", 0xFF0066);
 			UnitDictionary.getInstance().register(UNIT_SIGNAL);
+			UNIT_ENTHALPY = new SIUnit("Enthalpy", "H", 0xFF7700);
+			UnitDictionary.getInstance().register(UNIT_ENTHALPY);
 		}
 	}
 	
@@ -66,14 +76,33 @@ public class ProbeDataSupport {
 		
 		@Override
 		public void provideProbeData(List<IProbeData> data) {
-			data.add(new ProbeData("MEMES: 9001"));
+			if (machine.hasCapability(Thermionics.CAPABILITY_HEATSTORAGE, null)) {
+				addHeatData(machine.getCapability(Thermionics.CAPABILITY_HEATSTORAGE, null), data);
+			}
+			
+			if (machine.hasCapability(CapabilityEnergy.ENERGY, null)) {
+				addRFData(machine.getCapability(CapabilityEnergy.ENERGY, null), data);
+			}
+			
+			if (machine instanceof IMachineProgress) {
+				float progress = ((IMachineProgress)machine).getMachineProgress();
+				data.add(new ProbeData()
+						.withLabel(new TextComponentTranslation("thermionics.data.progress"))
+						.withBar(0, (int)(progress*100), 100, UnitDictionary.PERCENT));
+			}
+			
+			if (machine.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+				addInventoryData(machine.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), data);
+			}
+			
+			//data.add(new ProbeData("MEMES: 9001"));
 		}
 	}
 	
-	public static class RFCableInspector implements IProbeDataProvider {
-		private final TileEntityCableRF cable;
+	public static class RFInspector implements IProbeDataProvider {
+		private final TileEntity cable;
 		
-		public RFCableInspector(TileEntityCableRF cable) {
+		public RFInspector(TileEntity cable) {
 			this.cable = cable;
 		}
 		
@@ -91,12 +120,28 @@ public class ProbeDataSupport {
 			
 			list.add(new ProbeData(new TextComponentTranslation("thermionics.data.energystorage.maxtransfer"))
 					.withBar(0, o.getCurTransfer(), o.getMaxTransfer(), UnitDictionary.FU_PER_TICK));
-			
 		}
-		
 	}
 	
+	public static void addHeatData(IHeatStorage storage, List<IProbeData> list) {
+		list.add(new ProbeData(new TextComponentTranslation("thermionics.data.heatstorage"))
+				.withBar(0, storage.getHeatStored(), storage.getMaxHeatStored(), UNIT_ENTHALPY)
+				);
+	}
 	
+	public static void addInventoryData(IItemHandler storage, List<IProbeData> list) {
+		ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
+		for(int i=0; i<storage.getSlots(); i++) {
+			builder.add(storage.getStackInSlot(i));
+		}
+		list.add(
+				new ProbeData().withInventory(builder.build())
+				);
+	}
+	
+	//public static void addProgressData(TileEntityMachine machine, List<IProbeData> list) {
+	//	
+	//}
 	
 	public static class BandwidthHandler implements IProbeDataProvider {
 		private ObservableEnergyStorage storage;

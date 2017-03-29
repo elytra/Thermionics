@@ -32,6 +32,8 @@ import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileEntityMachine extends TileEntity {
@@ -69,6 +71,12 @@ public class TileEntityMachine extends TileEntity {
 			} catch (Throwable t) {}
 		}
 		return result;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		if (oldState.getBlock()==newState.getBlock()) return false;
+		else return super.shouldRefresh(world, pos, oldState, newState);
 	}
 	
 	public void markActive(boolean active) {

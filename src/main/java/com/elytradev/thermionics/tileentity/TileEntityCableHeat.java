@@ -25,25 +25,24 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
-
+import com.elytradev.thermionics.transport.HeatTransport;
 import com.elytradev.thermionics.Thermionics;
+
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
-public class TileEntityHeatStorage extends TileEntityMachine  implements ITickable {
+public class TileEntityCableHeat extends TileEntityMachine  implements ITickable {
 	private HeatStorage heatStorage;
 	
-	public TileEntityHeatStorage() {
+	public TileEntityCableHeat() {
 		heatStorage = new HeatStorage(200);
 		
 		heatStorage.listen(this::markDirty);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
 	}
 	
-	public TileEntityHeatStorage(int capacity) {
-		heatStorage = new HeatStorage(capacity);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-	}
-	/*
+	
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tag) {
 		tag.setTag("heatStorage", Thermionics.CAPABILITY_HEATSTORAGE.getStorage().writeNBT(Thermionics.CAPABILITY_HEATSTORAGE, heatStorage, null));
@@ -59,10 +58,10 @@ public class TileEntityHeatStorage extends TileEntityMachine  implements ITickab
 			NBTBase heatTag = tag.getTag("heatStorage");
 			Thermionics.CAPABILITY_HEATSTORAGE.getStorage().readNBT(Thermionics.CAPABILITY_HEATSTORAGE, heatStorage, null, heatTag);
 		}
-	}*/
+	}
 
 	@Override
 	public void update() {
-		//TODO: trigger diffusion
+		HeatTransport.diffuse(world, pos, heatStorage);
 	}
 }

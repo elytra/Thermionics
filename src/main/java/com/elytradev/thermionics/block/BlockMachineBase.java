@@ -24,7 +24,7 @@ public class BlockMachineBase extends BlockBase {
 		this.setUnlocalizedName("thermionics.machine."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
-		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.SOUTH).withProperty(ACTIVE, false));
+		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
 
 	@Override

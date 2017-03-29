@@ -35,6 +35,8 @@ import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.block.BlockBase;
+import com.elytradev.thermionics.block.BlockBattery;
+import com.elytradev.thermionics.block.BlockBatteryCreative;
 import com.elytradev.thermionics.block.BlockCableRF;
 import com.elytradev.thermionics.block.BlockDrum;
 import com.elytradev.thermionics.block.BlockFirebox;
@@ -44,11 +46,13 @@ import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.tileentity.TileEntityBattery;
+import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityCableSignal;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
-import com.elytradev.thermionics.tileentity.TileEntityHeatStorage;
+import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -99,21 +103,31 @@ public class Thermionics {
 		
 		ProbeDataSupport.init();
 		
-		
+		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
+		
+		//RF
 		registerBlock(new BlockCableRF("rf"));
+		registerBlock(new BlockBattery("lead"));
+		registerBlock(new BlockBatteryCreative());
+		
+		//Fluid Handlers
 		registerBlock(new BlockDrum());
+		
+		//Heat
 		registerBlock(new BlockFirebox());
-		//registerBlock(new BlockFirebox());
-		//registerBlock(new BlockHeatPipe());
+		registerBlock(new BlockHeatPipe());
+		
 		//registerBlock(new BlockMotorBase("redstone"));
 		
-		//GameRegistry.registerTileEntity(TileEntityHeatStorage.class, "thermionics:machine.heatstorage");
 		//GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
 		
-		GameRegistry.registerTileEntity(TileEntityCableRF.class, "thermionics:cable");
-		GameRegistry.registerTileEntity(TileEntityDrum.class   , "thermionics:drum");
-		GameRegistry.registerTileEntity(TileEntityFirebox.class, "thermionics:machine.firebox");
+		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
+		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
+		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
+		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
+		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
+		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 	}
 	

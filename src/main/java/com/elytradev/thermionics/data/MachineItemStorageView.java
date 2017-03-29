@@ -1,14 +1,17 @@
 package com.elytradev.thermionics.data;
 
-import javax.annotation.Nullable;
+import org.apache.commons.lang3.Validate;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public class NoExtractItemStorage implements IItemHandler {
+public class MachineItemStorageView implements IItemHandler {
+	public static final int SLOT_MACHINE_INPUT  = 0;
+	public static final int SLOT_MACHINE_OUTPUT = 1;
 	private final IItemHandler delegate;
 	
-	public NoExtractItemStorage(IItemHandler delegate) {
+	public MachineItemStorageView(IItemHandler delegate) {
+		Validate.isTrue(delegate.getSlots()>=2, "Cannot create a machine storage view of an inventory with less than 2 slots.");
 		this.delegate = delegate;
 	}
 	
@@ -18,26 +21,24 @@ public class NoExtractItemStorage implements IItemHandler {
 	}
 
 	@Override
-	@Nullable
 	public ItemStack getStackInSlot(int slot) {
 		return delegate.getStackInSlot(slot);
 	}
 
 	@Override
 	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		return delegate.insertItem(slot, stack, simulate);
+		if (slot==SLOT_MACHINE_INPUT) return delegate.insertItem(slot, stack, simulate);
+		else return stack;
 	}
 
 	@Override
-	@Nullable
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		//No extract available!
-		return null;
+		if (slot==SLOT_MACHINE_OUTPUT) return delegate.extractItem(slot, amount, simulate);
+		else return ItemStack.EMPTY;
 	}
 
 	@Override
 	public int getSlotLimit(int slot) {
 		return delegate.getSlotLimit(slot);
 	}
-
 }

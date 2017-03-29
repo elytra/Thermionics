@@ -82,6 +82,10 @@ public class CapabilityProvider {
 		entries.add(new Entry<T>(cap, side,   RelativeDirection.SIDES));
 	}
 	
+	public <T> void registerForSides(Capability<T> cap, Supplier<T> provider, RelativeDirection... sides) {
+		entries.add(new Entry<T>(cap, provider, sides));
+	}
+	
 	public static class Entry<T> {
 		private Capability<T> capability;
 		private Supplier<T> supplier;

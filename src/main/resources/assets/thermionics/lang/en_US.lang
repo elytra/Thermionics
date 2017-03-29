@@ -1,17 +1,23 @@
 itemGroup.thermionics=Thermionics
 
-#Old
-tile.thermionics.machine.heatpipe.name=Copper Heat Pipe
-tile.thermionics.machine.firebox.name=Firebox
 
-#New
 tile.thermionics.scaffold.basic.name=Iron Scaffold
+
+#Cables
 tile.thermionics.cable.rf.name=Energy Cable
 tile.thermionics.cable.redstone.name=Signal Cable
 tile.thermionics.cable.rf_redstone.name=Signal/Energy Cable
+tile.thermionics.cable.heat.name=Copper Heat Pipe
 
+tile.thermionics.battery.lead.name=Lead Battery
+tile.thermionics.battery.creative.name=Creative Battery
+
+#Boxmachines
+tile.thermionics.machine.firebox.name=Firebox
 
 #Probe Data
 thermionics.data.energystorage=Stored Power
 thermionics.data.energystorage.maxtransfer=Transfer Rate
+thermionics.data.heatstorage=Stored Heat
+thermionics.data.progress=Progress
 

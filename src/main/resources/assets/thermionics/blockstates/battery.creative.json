@@ -1,0 +1,32 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"minecraft:cube",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":false,
+		"textures":{
+			"north":"thermionics:blocks/machine/battery.creative",
+			"south":"thermionics:blocks/machine/battery.creative",
+			"east":"thermionics:blocks/machine/battery.creative",
+			"west":"thermionics:blocks/machine/battery.creative",
+			"down":"thermionics:blocks/machine/battery.bottom",
+			"up":"thermionics:blocks/machine/battery.top",
+			"top":"thermionics:blocks/machine/battery.creative",
+			"particle":"thermionics:blocks/machine/battery.creative"
+		}
+	},
+	
+	"variants": {
+		"facing": {
+			"north": { "x":90, "y":  0},
+			"east" : { "x":90, "y": 90},
+			"south": { "x":90, "y":180},
+			"west" : { "x":90, "y":270},
+			"up"   : { "x":0, "y":  0},
+			"down" : { "x":270,"y":  0}
+		}
+    }
+}

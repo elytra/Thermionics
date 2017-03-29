@@ -40,8 +40,8 @@ public class HeatStorage implements IHeatStorage {
 	private int cur = 0;
 	private int max = 200;
 	private int minReceive = 0;
-	private int maxReceive = 10;
-	private int maxExtract = 10;
+	private int maxReceive = 200;
+	private int maxExtract = 200;
 	
 	private ArrayList<Runnable> listeners = new ArrayList<>();
 	
@@ -49,6 +49,8 @@ public class HeatStorage implements IHeatStorage {
 	
 	public HeatStorage(int max) {
 		this.max = max;
+		this.maxReceive = max;
+		this.maxExtract = max;
 	}
 	
 	@Override

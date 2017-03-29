@@ -130,7 +130,7 @@ public class RFTransport {
 	 * Flushes and re-adds items to the supplied List in pseudorandom order.
 	 * @param t the List to reorder. Do not pass this method an immutable list!!!
 	 */
-	private static <T> void reorder(List<T> t) {
+	static <T> void reorder(List<T> t) {
 		Random rnd = new Random();
 		ArrayList<T> scratch = new ArrayList<>();
 		scratch.addAll(t);
