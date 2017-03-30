@@ -25,7 +25,6 @@ package com.elytradev.thermionics.network;
 
 import java.util.Iterator;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 
 import net.minecraft.util.math.BlockPos;

@@ -46,7 +46,7 @@ public enum RelativeDirection {
 	/** From the device's perspective, inside itself */
 	WITHIN;
 	
-	public static final RelativeDirection[] SIDES = {
+	public static final RelativeDirection[] ALL_SIDES = {
 		BOW, PORT, STARBOARD, STERN, TOP, BOTTOM	
 	};
 	

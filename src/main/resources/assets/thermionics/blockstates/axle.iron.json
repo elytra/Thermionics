@@ -1,0 +1,24 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"thermionics:axle",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":false,
+		"textures":{
+			"axle":"thermionics:blocks/machine/axle.iron",
+			"end":"thermionics:blocks/machine/axle.iron",
+			"particle":"thermionics:blocks/machine/axle.iron"
+		}
+	},
+	
+	"variants": {
+		"axis": {
+			"x":  { "x": 90, "y": 90},
+			"y" : { "x":  0, "y":  0},
+			"z":  { "x": 90, "y":  0}
+		}
+    }
+}

@@ -23,25 +23,26 @@
  */
 package com.elytradev.thermionics;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.elytradev.thermionics.api.IHeatStorage;
+import com.elytradev.thermionics.api.IRotaryPower;
 import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
+import com.elytradev.thermionics.api.impl.DefaultRotaryPowerSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
+import com.elytradev.thermionics.api.impl.RotaryPower;
+import com.elytradev.thermionics.block.BlockAxle;
 import com.elytradev.thermionics.block.BlockBase;
 import com.elytradev.thermionics.block.BlockBattery;
 import com.elytradev.thermionics.block.BlockBatteryCreative;
 import com.elytradev.thermionics.block.BlockCableRF;
+import com.elytradev.thermionics.block.BlockConvectionMotor;
 import com.elytradev.thermionics.block.BlockDrum;
 import com.elytradev.thermionics.block.BlockFirebox;
+import com.elytradev.thermionics.block.BlockGearbox;
 import com.elytradev.thermionics.block.BlockHeatPipe;
-import com.elytradev.thermionics.block.BlockMotorBase;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
@@ -49,12 +50,13 @@ import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
-import com.elytradev.thermionics.tileentity.TileEntityCableSignal;
+import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
@@ -85,13 +87,15 @@ public class Thermionics {
 	public static Proxy proxy;
 	@CapabilityInject(IHeatStorage.class)
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
+	@CapabilityInject(IRotaryPower.class)
+	public static Capability<IRotaryPower> CAPABILITY_ROTARYPOWER;
 	@CapabilityInject(ISignalStorage.class)
 	public static Capability<ISignalStorage> CAPABILITY_SIGNALSTORAGE;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		@Override
 		public ItemStack getTabIconItem() {
-			return new ItemStack(Blocks.IRON_BLOCK); //TODO: Replace with a Thermionics block
+			return new ItemStack(ThermionicsBlocks.FIREBOX);
 		}
 	};
 	
@@ -100,6 +104,7 @@ public class Thermionics {
 		LOG = LogManager.getLogger(Thermionics.MODID);
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
+		CapabilityManager.INSTANCE.register(IRotaryPower.class, new DefaultRotaryPowerSerializer(), RotaryPower::new);
 		
 		ProbeDataSupport.init();
 		
@@ -117,17 +122,21 @@ public class Thermionics {
 		//Heat
 		registerBlock(new BlockFirebox());
 		registerBlock(new BlockHeatPipe());
+		registerBlock(new BlockConvectionMotor());
 		
+		//Rotary
+		registerBlock(new BlockAxle(Material.WOOD, "wood"));
+		registerBlock(new BlockAxle(Material.IRON, "iron"));
+		registerBlock(new BlockGearbox());
 		//registerBlock(new BlockMotorBase("redstone"));
-		
-		//GameRegistry.registerTileEntity(TileEntityFirebox.class,     "thermionics:machine.firebox");
-		
+
 		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
 		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
 		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
 		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
 		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
+		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 	}
 	

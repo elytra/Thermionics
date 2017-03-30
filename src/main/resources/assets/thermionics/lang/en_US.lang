@@ -9,15 +9,23 @@ tile.thermionics.cable.redstone.name=Signal Cable
 tile.thermionics.cable.rf_redstone.name=Signal/Energy Cable
 tile.thermionics.cable.heat.name=Copper Heat Pipe
 
+#Axles
+tile.thermionics.axle.wood.name=Wood Axle
+tile.thermionics.axle.iron.name=Iron Axle
+
+#RF Storage
 tile.thermionics.battery.lead.name=Lead Battery
 tile.thermionics.battery.creative.name=Creative Battery
 
 #Boxmachines
 tile.thermionics.machine.firebox.name=Firebox
+tile.thermionics.machine.convectionmotor.name=Convection Motor
+tile.thermionics.machine.gearbox.name=Gearbox
 
 #Probe Data
 thermionics.data.energystorage=Stored Power
 thermionics.data.energystorage.maxtransfer=Transfer Rate
 thermionics.data.heatstorage=Stored Heat
 thermionics.data.progress=Progress
-
+thermionics.data.torque=Torque
+thermionics.data.rpm=RPM

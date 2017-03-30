@@ -2,14 +2,15 @@ package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
 
-import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -23,6 +24,7 @@ public class BlockMachineBase extends BlockBase {
 		this.setRegistryName("machine."+id);
 		this.setUnlocalizedName("thermionics.machine."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		this.setHarvestLevel("pickaxe", 0);
 		
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
@@ -34,12 +36,17 @@ public class BlockMachineBase extends BlockBase {
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return this.getDefaultState();
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 0x03));
 	}
 	
 	@Override
 	public int getMetaFromState(IBlockState state) {
-		return 0;
+		return state.getValue(FACING).getHorizontalIndex();
+	}
+	
+	@Override
+	public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
+		return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
 	}
 	
 	@Override

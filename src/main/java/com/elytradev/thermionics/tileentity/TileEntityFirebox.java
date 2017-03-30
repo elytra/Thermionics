@@ -27,13 +27,10 @@ import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.IMachineProgress;
 import com.elytradev.thermionics.data.MachineItemStorageView;
-import com.elytradev.thermionics.data.NoExtractItemStorageView;
 import com.elytradev.thermionics.data.ObservableItemStorage;
-import com.elytradev.thermionics.data.RelativeDirection;
 import com.elytradev.thermionics.transport.HeatTransport;
 import com.elytradev.thermionics.Thermionics;
 
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,12 +54,10 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		
 		heatStorage.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.of(heatStorage));
-		capabilities.registerForSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->new MachineItemStorageView(itemStorage),
-				RelativeDirection.BOW, RelativeDirection.STERN, RelativeDirection.PORT, RelativeDirection.STARBOARD,
-				RelativeDirection.TOP, RelativeDirection.BOTTOM				
-				);
-		capabilities.registerForSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->itemStorage, RelativeDirection.WITHIN);
+		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE,
+				()->HeatStorageView.extractOnlyOf(heatStorage), ()->heatStorage);
+		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+				()->new MachineItemStorageView(itemStorage),    ()->itemStorage);
 	}
 	
 	@Override
@@ -112,23 +107,21 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		} else {
 			ItemStack fuelItem = itemStorage.extractItem(0, 1, true);
 			if (!fuelItem.isEmpty()) {
-				//timeCold = 0;
 				int ticks = TileEntityFurnace.getItemBurnTime(fuelItem);
 				if (ticks>0) {
 					furnaceTicks+=ticks;
 					maxFurnaceTicks = furnaceTicks;
-					
-					//System.out.println("Consumed "+fuelItem.getDisplayName()+" for "+ticks+" ticks of fuel (new total "+furnaceTicks+" ticks)");
-					
+
 					
 					ItemStack stack = itemStorage.extractItem(0, 1, false); //if we cared we could doublecheck against fuelItem here
-					ItemStack result = FurnaceRecipes.instance().getSmeltingResult(stack);
-					if (result!=null && !result.isEmpty()) {
-						EntityItem droppedItem = new EntityItem(world, pos.getX(), pos.getY()+1, pos.getZ(), result);
-						world.spawnEntity(droppedItem);
-					}
 					//but we can trust our own inventory. right? right????? (protip: we can't)
-					this.markDirty();
+					if (stack.getItem().hasContainerItem(stack)) {
+						ItemStack result = stack.getItem().getContainerItem(stack);
+						if (result!=null && !result.isEmpty()) {
+							this.itemStorage.setStackInSlot(1, result);
+						}
+					}
+					this.markDirty(); //To be doubly or triply certain that furnaceTicks is updated.
 				}
 			}
 		}
@@ -142,7 +135,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 	public float getMachineProgress() {
 		if (maxFurnaceTicks==0) maxFurnaceTicks = 1;
 		if (furnaceTicks>maxFurnaceTicks) maxFurnaceTicks = furnaceTicks; //Typically happens because of a cold boot, maxFurnaceTicks isn't serialized since it doesn't affect the system
-		float progress = (furnaceTicks / (float)maxFurnaceTicks);
+		float progress = 1 - (furnaceTicks / (float)maxFurnaceTicks);
 		return progress;
 	}
 }
