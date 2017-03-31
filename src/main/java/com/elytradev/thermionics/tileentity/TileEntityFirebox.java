@@ -28,14 +28,15 @@ import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.IMachineProgress;
 import com.elytradev.thermionics.data.MachineItemStorageView;
 import com.elytradev.thermionics.data.ObservableItemStorage;
+import com.elytradev.thermionics.data.ValidatedItemStorageView;
 import com.elytradev.thermionics.transport.HeatTransport;
 import com.elytradev.thermionics.Thermionics;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress {
@@ -57,7 +58,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE,
 				()->HeatStorageView.extractOnlyOf(heatStorage), ()->heatStorage);
 		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				()->new MachineItemStorageView(itemStorage),    ()->itemStorage);
+				()->new ValidatedItemStorageView(new MachineItemStorageView(itemStorage), TileEntityFirebox::validateItemInsert),    ()->itemStorage);
 	}
 	
 	@Override
@@ -132,12 +133,20 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		
 		super.markActive(timeCold<MAX_COLD);
 	}
-
+	
 	@Override
 	public float getMachineProgress() {
 		if (maxFurnaceTicks==0) maxFurnaceTicks = 1;
 		if (furnaceTicks>maxFurnaceTicks) maxFurnaceTicks = furnaceTicks; //Typically happens because of a cold boot, maxFurnaceTicks isn't serialized since it doesn't affect the system
 		float progress = 1 - (furnaceTicks / (float)maxFurnaceTicks);
 		return progress;
+	}
+	
+	public static boolean validateItemInsert(int slot, ItemStack item) {
+		if (slot==MachineItemStorageView.SLOT_MACHINE_INPUT) {
+			return TileEntityFurnace.getItemBurnTime(item)>0; //Sadly, GameRegistry.getFuelValue returns 0 for vanilla burnables.
+		} else {
+			return true;
+		}
 	}
 }

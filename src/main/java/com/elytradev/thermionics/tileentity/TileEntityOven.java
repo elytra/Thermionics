@@ -30,12 +30,14 @@ import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.IMachineProgress;
 import com.elytradev.thermionics.data.MachineItemStorageView;
 import com.elytradev.thermionics.data.ObservableItemStorage;
+import com.elytradev.thermionics.data.ValidatedItemStorageView;
 import com.google.common.primitives.Ints;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityOven extends TileEntityMachine implements ITickable, IMachineProgress {
@@ -54,7 +56,9 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 		itemStorage.listen(this::markDirty);
 		heatStorage.listen(this::markDirty);
 		
-		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->new MachineItemStorageView(itemStorage), ()->itemStorage);
+		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+				()->new ValidatedItemStorageView(new MachineItemStorageView(itemStorage), TileEntityOven::validateItemInsert),
+				()->itemStorage);
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.insertOnlyOf(heatStorage), ()->heatStorage);
 	}
 	
@@ -160,4 +164,11 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 		}
 	}
 
+	public static boolean validateItemInsert(int slot, ItemStack item) {
+		if (slot==MachineItemStorageView.SLOT_MACHINE_INPUT) {
+			return !FurnaceRecipes.instance().getSmeltingResult(item).isEmpty();
+		} else {
+			return true;
+		}
+	}
 }
