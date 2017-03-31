@@ -70,6 +70,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -201,6 +202,14 @@ public class Thermionics {
 				));
 		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
+		
+		NonNullList<ItemStack> variants = NonNullList.create();
+		ThermionicsBlocks.ROAD.getSubBlocks(ItemBlock.getItemFromBlock(ThermionicsBlocks.ROAD), Thermionics.TAB_THERMIONICS, variants);
+		ItemStack prev = variants.remove(0);
+		for(ItemStack item : variants) {
+			GameRegistry.addShapelessRecipe(item.copy(), prev.copy());
+			prev = item;
+		}
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
