@@ -61,7 +61,9 @@ import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -69,6 +71,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -84,6 +87,8 @@ import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -227,12 +232,23 @@ public class Thermionics {
 	}
 	
 	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
 	public void updateFOV(FOVUpdateEvent event) {
 		if (event.getEntity().getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
 			event.setNewfov(1.0f);
-		} else {
-			if (event.getFov() > event.getNewfov()) event.setNewfov(1.0f);
-			
+		}
+	}
+	
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onFovModifier(EntityViewRenderEvent.FOVModifier event) {
+		if (event.getEntity() instanceof EntityLivingBase) {
+			EntityLivingBase living = (EntityLivingBase)event.getEntity();
+			if (living.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
+				event.setFOV( Minecraft.getMinecraft().gameSettings.fovSetting );
+				
+				//event.setFOV(1.0f);
+			}
 		}
 	}
 }

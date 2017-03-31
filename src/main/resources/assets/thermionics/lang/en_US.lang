@@ -1,7 +1,8 @@
 itemGroup.thermionics=Thermionics
 
-
+#Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold
+tile.thermionics.road.name=Road
 
 #Cables
 tile.thermionics.cable.rf.name=Energy Cable
