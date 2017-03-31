@@ -38,13 +38,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class TileEntityBattery extends TileEntity implements ITickable {
 	protected CapabilityProvider capabilities = new CapabilityProvider();
-	protected ObservableEnergyStorage energyStorage = new ObservableEnergyStorage(80_000, 800, 800);
+	protected ObservableEnergyStorage energyStorage = new ObservableEnergyStorage(BlockBattery.CAPACITY, 800, 800);
 	
 	public TileEntityBattery() {
 		//Batteries have a bit of a complicated relationship with their neighbors.
@@ -83,15 +85,26 @@ public class TileEntityBattery extends TileEntity implements ITickable {
 	
 	@Override
 	public boolean hasCapability(Capability<?> cap, EnumFacing side) {
+		EnumFacing front = EnumFacing.UP;
+		IBlockState state = world.getBlockState(pos);
+		if (state.getProperties().keySet().contains(BlockBattery.FACING)) {
+			front = state.getValue(BlockBattery.FACING);
+		}
 		
-		if (capabilities.canProvide(RelativeDirection.of(world.getBlockState(pos).getValue(BlockBattery.FACING), side), cap)) return true;
+		if (capabilities.canProvide(RelativeDirection.of(front, side), cap)) return true;
 		else return super.hasCapability(cap, side);
 	}
 	
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
+		EnumFacing front = EnumFacing.UP;
+		IBlockState state = world.getBlockState(pos);
+		if (state.getProperties().keySet().contains(BlockBattery.FACING)) {
+			front = state.getValue(BlockBattery.FACING);
+		}
+		
 		//If it's going to throw an exception here in my code, I'd rather it did.
-		T result = capabilities.provide(RelativeDirection.of(world.getBlockState(pos).getValue(BlockBattery.FACING), side), cap);
+		T result = capabilities.provide(RelativeDirection.of(front, side), cap);
 		
 		//I'd rather return null (which is valid according to the contract) than throw an exception down here.
 		if (result==null) {
@@ -100,6 +113,12 @@ public class TileEntityBattery extends TileEntity implements ITickable {
 			} catch (Throwable t) {}
 		}
 		return result;
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		if (oldState.getBlock()==newState.getBlock()) return false;
+		else return super.shouldRefresh(world, pos, oldState, newState);
 	}
 	
 	@Override

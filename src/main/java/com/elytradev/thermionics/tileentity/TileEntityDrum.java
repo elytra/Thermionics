@@ -27,12 +27,15 @@ import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.data.ObservableFluidStorage;
 import com.elytradev.thermionics.data.RelativeDirection;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -89,6 +92,12 @@ public class TileEntityDrum extends TileEntity {
 	public ObservableFluidStorage getFluidStorage() {
 		//return storage;
 		return (ObservableFluidStorage) capabilities.provide(RelativeDirection.BOW, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+	}
+	
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
+		if (oldState.getBlock()==newState.getBlock()) return false;
+		else return super.shouldRefresh(world, pos, oldState, newState);
 	}
 	
 	@Override

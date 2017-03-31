@@ -47,6 +47,7 @@ import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
+import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
@@ -62,6 +63,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -116,8 +118,11 @@ public class Thermionics {
 		
 		//RF
 		registerBlock(new BlockCableRF("rf"));
-		registerBlock(new BlockBattery("lead"));
-		registerBlock(new BlockBatteryCreative());
+		
+		BlockBattery leadBattery = new BlockBattery("lead");
+		registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));
+		BlockBatteryCreative creativeBattery = new BlockBatteryCreative();
+		registerBlockAndItem(creativeBattery, new ItemBlockBattery(creativeBattery));
 		
 		//Fluid Handlers
 		registerBlock(new BlockDrum());
@@ -189,6 +194,12 @@ public class Thermionics {
 		ItemBlock item = new ItemBlock(block);
 		item.setRegistryName(block.getRegistryName());
 		
+		GameRegistry.register(block);
+		GameRegistry.register(item);
+		proxy.registerItemModel(item);
+	}
+	
+	public void registerBlockAndItem(BlockBase block, Item item) {
 		GameRegistry.register(block);
 		GameRegistry.register(item);
 		proxy.registerItemModel(item);

@@ -23,6 +23,10 @@
  */
 package com.elytradev.thermionics.block;
 
+import java.util.ArrayList;
+
+import javax.annotation.Nullable;
+
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
@@ -34,15 +38,23 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBanner;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
 
 public class BlockBattery extends BlockBase implements ITileEntityProvider, IPreferredRenderState {
+	public static final int CAPACITY = 80_000;
 	public static PropertyEnum<EnumFacing> FACING = BlockDirectional.FACING;
-	
 	
 	public BlockBattery(String id) {
 		super(Material.IRON);
@@ -97,6 +109,49 @@ public class BlockBattery extends BlockBase implements ITileEntityProvider, IPre
 		return true;
 	}
 
+	public ItemStack getBatteryItem(TileEntity te) {
+		ItemStack result = new ItemStack(this);
+		if (te==null) return result;
+		
+		if (te.hasCapability(CapabilityEnergy.ENERGY, null)) {
+        	IEnergyStorage rf = te.getCapability(CapabilityEnergy.ENERGY, null);
+        	if (!result.hasTagCompound()) result.setTagCompound(new NBTTagCompound());
+        	NBTTagCompound tag = result.getTagCompound();
+        	
+        	tag.setTag("energy", CapabilityEnergy.ENERGY.getStorage().writeNBT(CapabilityEnergy.ENERGY, rf, null));
+		}
+		
+		return result;
+	}
+	
+	@Override
+	public java.util.List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+		ArrayList<ItemStack> result = new ArrayList<>();
+		result.add(getBatteryItem(world.getTileEntity(pos)));
+		return result;
+	}
+	
+	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
+		ItemStack toDrop = getBatteryItem(te);
+		System.out.println("toDrop: "+toDrop);
+		spawnAsEntity(world, pos, toDrop);
+		//world.removeTileEntity(pos);
+    }
+	
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		super.onBlockPlacedBy(world, pos, state, placer, stack);
+		
+		if (!stack.hasTagCompound() || !stack.getTagCompound().hasKey("energy")) return;
+		
+		TileEntity te = world.getTileEntity(pos);
+		if (te.hasCapability(CapabilityEnergy.ENERGY, null)) {
+        	IEnergyStorage rf = te.getCapability(CapabilityEnergy.ENERGY, null);
+        	
+        	CapabilityEnergy.ENERGY.getStorage().readNBT(CapabilityEnergy.ENERGY, rf, null, stack.getTagCompound().getTag("energy"));
+		}
+	}
+	
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityBattery();

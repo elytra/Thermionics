@@ -33,10 +33,17 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class BlockMachineBase extends BlockBase implements IPreferredRenderState {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
@@ -68,6 +75,49 @@ public class BlockMachineBase extends BlockBase implements IPreferredRenderState
 	@Override
 	public int getMetaFromState(IBlockState state) {
 		return state.getValue(FACING).getHorizontalIndex();
+	}
+	
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+        TileEntity tileentity = worldIn.getTileEntity(pos);
+        
+        if (tileentity!=null && tileentity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+        	IItemHandler inventory = tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        	for (int i=0; i<inventory.getSlots(); i++) {
+                ItemStack itemstack = inventory.getStackInSlot(i);
+
+                if (!itemstack.isEmpty()) {
+                    InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), itemstack);
+                }
+            }
+        	worldIn.updateComparatorOutputLevel(pos, this);
+        }
+        super.breakBlock(worldIn, pos, state);
+    }
+	
+	@Override
+	public boolean hasComparatorInputOverride(IBlockState state) {
+		return true;
+	}
+	
+	@Override
+	public int getComparatorInputOverride(IBlockState blockState, World world, BlockPos pos) {
+		TileEntity tileentity = world.getTileEntity(pos);
+		if (tileentity!=null && tileentity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
+        	IItemHandler inventory = tileentity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        	
+        	int capacity = inventory.getSlots();
+        	int filled = 0;
+        	for(int i=0; i<capacity; i++) {
+        		if (!inventory.getStackInSlot(i).isEmpty()) filled++;
+        	}
+        	
+        	float fraction = filled / (float)capacity;
+        	
+        	return (int)(fraction*15);
+		} else {
+			return 0;
+		}
 	}
 	
 	@Override
