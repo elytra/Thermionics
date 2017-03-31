@@ -1,6 +1,7 @@
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.data.IPreferredRenderState;
 
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.material.Material;
@@ -14,7 +15,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockMachineBase extends BlockBase {
+public class BlockMachineBase extends BlockBase implements IPreferredRenderState {
 	public static final PropertyBool ACTIVE = PropertyBool.create("active");
 	public static final PropertyEnum<EnumFacing> FACING = BlockHorizontal.FACING; //Yes, I'm stealing it.
 	private static final EnumFacing[] VALID_FACING = { EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.WEST };
@@ -25,6 +26,8 @@ public class BlockMachineBase extends BlockBase {
 		this.setUnlocalizedName("thermionics.machine."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setHarvestLevel("pickaxe", 0);
+		this.setHardness(1.4f);
+		this.setResistance(8f); //actually quite susceptible to explosions
 		
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(ACTIVE, false));
 	}
@@ -68,5 +71,10 @@ public class BlockMachineBase extends BlockBase {
 		
 		world.setBlockState(pos, cur.withProperty(FACING, cur.getValue(FACING).rotateY()));
 		return true;
+	}
+
+	@Override
+	public String getPreferredRenderState() {
+		return "active=false,facing=north";
 	}
 }

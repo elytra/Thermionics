@@ -24,11 +24,13 @@
 package com.elytradev.thermionics;
 
 import com.elytradev.thermionics.client.tesr.RenderTileDrum;
+import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -47,7 +49,10 @@ public class ClientProxy extends Proxy {
 		ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 		NonNullList<ItemStack> variantList = NonNullList.create();
 		item.getSubItems(item, Thermionics.TAB_THERMIONICS, variantList);
-		if (item instanceof ItemBlockEquivalentState) {
+		if (item instanceof ItemBlock && ((ItemBlock)item).getBlock() instanceof IPreferredRenderState) {
+			String state = ((IPreferredRenderState)((ItemBlock)item).getBlock()).getPreferredRenderState();
+			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, state));
+		} else if (item instanceof ItemBlockEquivalentState) {
 			ItemBlockEquivalentState itemBlock = (ItemBlockEquivalentState)item;
 			for(ItemStack stack : variantList) {
 				String state = itemBlock.getStateStringForItem(stack);

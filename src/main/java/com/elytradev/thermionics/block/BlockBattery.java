@@ -1,6 +1,7 @@
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 
 import net.minecraft.block.BlockDirectional;
@@ -16,7 +17,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockBattery extends BlockBase implements ITileEntityProvider {
+public class BlockBattery extends BlockBase implements ITileEntityProvider, IPreferredRenderState {
 	public static PropertyEnum<EnumFacing> FACING = BlockDirectional.FACING;
 	
 	
@@ -25,6 +26,10 @@ public class BlockBattery extends BlockBase implements ITileEntityProvider {
 		this.setRegistryName("battery."+id);
 		this.setUnlocalizedName("thermionics.battery."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		
+		this.setHarvestLevel("pickaxe", 0);
+		this.setHardness(1.0f);
+		this.setResistance(8f);
 		
 		this.setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.UP));
 	}
@@ -72,5 +77,10 @@ public class BlockBattery extends BlockBase implements ITileEntityProvider {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityBattery();
+	}
+
+	@Override
+	public String getPreferredRenderState() {
+		return "facing=up";
 	}
 }

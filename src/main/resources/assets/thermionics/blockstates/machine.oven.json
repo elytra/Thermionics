@@ -1,0 +1,34 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"minecraft:orientable",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures":{
+			"front":"thermionics:blocks/machine/oven",
+			"side":"thermionics:blocks/machine/side",
+			"top":"thermionics:blocks/machine/top",
+			"down":"thermionics:blocks/machine/bottom",
+			"south":"thermionics:blocks/machine/plug.heat",
+			"particle":"thermionics:blocks/machine/top"
+		}
+	},
+	
+	"variants": {
+		"facing": {
+			"north": { "x": 0, "y":  0},
+			"east" : { "x": 0, "y": 90},
+			"south": { "x": 0, "y":180},
+			"west" : { "x": 0, "y":270}
+		},
+		"active" : {
+			"true": {
+				"textures":{ "front":"thermionics:blocks/machine/oven.active" }
+			},
+			"false": {}
+		}
+    }
+}

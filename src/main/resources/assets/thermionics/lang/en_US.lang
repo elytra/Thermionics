@@ -21,6 +21,10 @@ tile.thermionics.battery.creative.name=Creative Battery
 tile.thermionics.machine.firebox.name=Firebox
 tile.thermionics.machine.convectionmotor.name=Convection Motor
 tile.thermionics.machine.gearbox.name=Gearbox
+tile.thermionics.machine.oven.name=Oven
+
+#Fluids
+tile.thermionics.drum.name=Iron Drum
 
 #Probe Data
 thermionics.data.energystorage=Stored Power

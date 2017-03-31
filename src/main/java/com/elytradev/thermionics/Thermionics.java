@@ -43,6 +43,7 @@ import com.elytradev.thermionics.block.BlockDrum;
 import com.elytradev.thermionics.block.BlockFirebox;
 import com.elytradev.thermionics.block.BlockGearbox;
 import com.elytradev.thermionics.block.BlockHeatPipe;
+import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
@@ -53,12 +54,14 @@ import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
+import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
@@ -122,10 +125,13 @@ public class Thermionics {
 		//Heat
 		registerBlock(new BlockFirebox());
 		registerBlock(new BlockHeatPipe());
+		registerBlock(new BlockOven());
 		registerBlock(new BlockConvectionMotor());
 		
 		//Rotary
-		registerBlock(new BlockAxle(Material.WOOD, "wood"));
+		BlockAxle woodAxle = new BlockAxle(Material.WOOD, "wood");
+		woodAxle.setHardness(1.0f).setHarvestLevel("axe", 0);
+		registerBlock(woodAxle);
 		registerBlock(new BlockAxle(Material.IRON, "iron"));
 		registerBlock(new BlockGearbox());
 		//registerBlock(new BlockMotorBase("redstone"));
@@ -135,6 +141,7 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
 		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
 		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
+		GameRegistry.registerTileEntity(TileEntityOven.class,            "thermionics:machine.oven");
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
@@ -146,6 +153,23 @@ public class Thermionics {
 				"wlw", 'w', new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE), 'l', "ingotLead"));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SCAFFOLD_BASIC,4),
 				"x x", " x ", "x x", 'x', "ingotIron"));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.FIREBOX,1),
+				"xxx", "x x", "xxx", 'x', "ingotIron"));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.OVEN,1),
+				"xxx", "x x", "xcx", 'x', "ingotIron", 'c', "ingotCopper"));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.BATTERY_LEAD,1),
+				" c ", "pLp", " r ", 'L', "blockLead", 'c', "ingotCopper", 'r', new ItemStack(Items.REDSTONE), 'p', new ItemStack(Items.PAPER)));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.AXLE_WOOD,4),
+				"w", "w", "w", 'w', new ItemStack(Blocks.PLANKS)
+				));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.AXLE_IRON,4),
+				"i", "i", "i", 'i', "ingotIron"
+				));
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}

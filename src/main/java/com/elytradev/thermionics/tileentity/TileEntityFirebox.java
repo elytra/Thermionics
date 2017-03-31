@@ -68,6 +68,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		tagOut.setTag("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(itemStorage, null));
 		
 		tagOut.setInteger("furnaceticks", furnaceTicks);
+		tagOut.setInteger("maxFurnaceticks", maxFurnaceTicks);
 		
 		return tagOut;
 	}
@@ -84,6 +85,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		}
 		
 		if (tag.hasKey("furnaceticks")) furnaceTicks = tag.getInteger("furnaceticks");
+		if (tag.hasKey("maxFurnaceticks")) maxFurnaceTicks = tag.getInteger("maxFurnaceticks");
 	}
 	
 	@Override

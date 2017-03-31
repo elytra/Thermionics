@@ -45,7 +45,7 @@ dependencies {
 
 group = "io.github.elytra"
 archivesBaseName = "Thermionics"
-version = "MC1.11.2_ver1.0"
+version = "MC1.11.2_ver1.0.4"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

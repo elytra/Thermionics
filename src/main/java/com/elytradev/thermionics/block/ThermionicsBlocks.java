@@ -39,4 +39,16 @@ public class ThermionicsBlocks {
 	
 	@ObjectHolder("machine.firebox")
 	public static final BlockFirebox FIREBOX = null;
+	
+	@ObjectHolder("machine.oven")
+	public static final BlockOven OVEN = null;
+	
+	@ObjectHolder("axle.wood")
+	public static final BlockAxle AXLE_WOOD = null;
+	
+	@ObjectHolder("axle.iron")
+	public static final BlockAxle AXLE_IRON = null;
+
+	@ObjectHolder("battery.lead")
+	public static final Block BATTERY_LEAD = null;
 }

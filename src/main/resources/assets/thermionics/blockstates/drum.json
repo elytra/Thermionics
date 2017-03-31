@@ -3,7 +3,7 @@
 	"defaults": {
 		"uvlock": false,
 		"transform": "forge:default-block",
-		"model":"thermionics:tank"
+		"model":"thermionics:drum"
 	},
 	"variants": {
 		"normal": [{}],
