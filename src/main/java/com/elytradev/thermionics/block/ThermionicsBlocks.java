@@ -32,7 +32,10 @@ public class ThermionicsBlocks {
 	public static final BlockScaffold SCAFFOLD_BASIC = null;
 	
 	@ObjectHolder("cable.rf")
-	public static final Block CABLE_RF = null;
+	public static final BlockCableRF CABLE_RF = null;
+	
+	@ObjectHolder("cable.heat")
+	public static final BlockHeatPipe CABLE_HEAT = null;
 	
 	@ObjectHolder("drum")
 	public static final BlockDrum DRUM = null;
@@ -51,4 +54,7 @@ public class ThermionicsBlocks {
 
 	@ObjectHolder("battery.lead")
 	public static final Block BATTERY_LEAD = null;
+	
+	@ObjectHolder("road")
+	public static final BlockRoad ROAD = null;
 }

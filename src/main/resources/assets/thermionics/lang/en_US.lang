@@ -33,3 +33,6 @@ thermionics.data.heatstorage=Stored Heat
 thermionics.data.progress=Progress
 thermionics.data.torque=Torque
 thermionics.data.rpm=RPM
+
+#Potions
+effect.moveSpeed.effortless=Effortless Speed

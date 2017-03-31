@@ -44,6 +44,7 @@ import com.elytradev.thermionics.block.BlockFirebox;
 import com.elytradev.thermionics.block.BlockGearbox;
 import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockOven;
+import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
@@ -66,6 +67,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -77,6 +82,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -97,6 +103,8 @@ public class Thermionics {
 	@CapabilityInject(ISignalStorage.class)
 	public static Capability<ISignalStorage> CAPABILITY_SIGNALSTORAGE;
 	
+	public static Potion POTION_EFFORTLESS_SPEED;
+	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		@Override
 		public ItemStack getTabIconItem() {
@@ -115,6 +123,7 @@ public class Thermionics {
 		
 		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
+		registerBlock(new BlockRoad());
 		
 		//RF
 		registerBlock(new BlockCableRF("rf"));
@@ -150,6 +159,12 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
+		
+		
+		POTION_EFFORTLESS_SPEED = new PotionEffortlessSpeed();
+		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
+		
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
 	@EventHandler
@@ -175,6 +190,12 @@ public class Thermionics {
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.AXLE_IRON,4),
 				"i", "i", "i", 'i', "ingotIron"
 				));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.CABLE_HEAT,4),
+				"c", "c", "c", 'c', "ingotCopper"
+				));
+		
+		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
@@ -203,5 +224,15 @@ public class Thermionics {
 		GameRegistry.register(block);
 		GameRegistry.register(item);
 		proxy.registerItemModel(item);
+	}
+	
+	@SubscribeEvent
+	public void updateFOV(FOVUpdateEvent event) {
+		if (event.getEntity().getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
+			event.setNewfov(1.0f);
+		} else {
+			if (event.getFov() > event.getNewfov()) event.setNewfov(1.0f);
+			
+		}
 	}
 }

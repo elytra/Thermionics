@@ -24,12 +24,17 @@
 package com.elytradev.thermionics.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
 public abstract class BlockBase extends Block {
 
-	public BlockBase(Material materialIn) {
-		super(materialIn);
+	public BlockBase(Material material) {
+		super(material);
+	}
+
+	public BlockBase(Material material, MapColor mapColor) {
+		super(material, mapColor);
 	}
 
 }
