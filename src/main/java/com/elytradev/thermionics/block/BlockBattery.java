@@ -133,7 +133,7 @@ public class BlockBattery extends BlockBase implements ITileEntityProvider, IPre
 	
 	public void harvestBlock(World world, EntityPlayer player, BlockPos pos, IBlockState state, @Nullable TileEntity te, ItemStack stack) {
 		ItemStack toDrop = getBatteryItem(te);
-		System.out.println("toDrop: "+toDrop);
+		//System.out.println("toDrop: "+toDrop);
 		spawnAsEntity(world, pos, toDrop);
 		//world.removeTileEntity(pos);
     }

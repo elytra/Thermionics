@@ -1,0 +1,23 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"minecraft:cube_all",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures":{ "all":"thermionics:blocks/road/c1.0" }
+	},
+	
+	"variants": {
+		"variant": {
+			"0": { "textures":{ "all":"thermionics:blocks/road/c1.0" } },
+			"1": { "textures":{ "all":"thermionics:blocks/road/c1.1" } },
+			"2": { "textures":{ "all":"thermionics:blocks/road/c1.2" } },
+			"3": { "textures":{ "all":"thermionics:blocks/road/c1.3" } },
+			"4": { "textures":{ "all":"thermionics:blocks/road/c1.4" } },
+			"5": { "textures":{ "all":"thermionics:blocks/road/c1.5" } }
+		}
+    }
+}

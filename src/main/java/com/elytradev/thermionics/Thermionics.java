@@ -50,6 +50,7 @@ import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.item.ItemHammer;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
@@ -67,6 +68,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -127,9 +129,20 @@ public class Thermionics {
 		
 		ProbeDataSupport.init();
 		
+		//Hammertime!
+		ItemHammer ironHammer = new ItemHammer(ToolMaterial.IRON, "iron");
+		ItemHammer goldHammer = new ItemHammer(ToolMaterial.GOLD, "gold");
+		GameRegistry.register(ironHammer);
+		GameRegistry.register(goldHammer);
+		proxy.registerItemModel(ironHammer);
+		proxy.registerItemModel(goldHammer);
+		
+		
+		
 		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
-		registerBlock(new BlockRoad());
+		registerBlock(new BlockRoad(0));
+		registerBlock(new BlockRoad(1));
 		
 		//RF
 		registerBlock(new BlockCableRF("rf"));
@@ -167,7 +180,7 @@ public class Thermionics {
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
 		
-		POTION_EFFORTLESS_SPEED = new PotionEffortlessSpeed();
+		POTION_EFFORTLESS_SPEED = new PotionExpedience();
 		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
 		
 		MinecraftForge.EVENT_BUS.register(this);
@@ -203,13 +216,26 @@ public class Thermionics {
 		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
 		
+		/*
 		NonNullList<ItemStack> variants = NonNullList.create();
 		ThermionicsBlocks.ROAD.getSubBlocks(ItemBlock.getItemFromBlock(ThermionicsBlocks.ROAD), Thermionics.TAB_THERMIONICS, variants);
 		ItemStack prev = variants.remove(0);
 		for(ItemStack item : variants) {
 			GameRegistry.addShapelessRecipe(item.copy(), prev.copy());
 			prev = item;
-		}
+		}*/
+		registerCraftingCircle(ThermionicsBlocks.ROAD);
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(
+				new ItemStack(ThermionicsBlocks.ROAD_COMPRESSED),
+				"xxx", "xgx", "xxx",
+				'x', new ItemStack(ThermionicsBlocks.ROAD, 1, OreDictionary.WILDCARD_VALUE),
+				'g', "ingotGold"));
+		
+		//Create a second list for compressed road and make the crafting cycle again
+		registerCraftingCircle(ThermionicsBlocks.ROAD_COMPRESSED);
+		
+		
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
@@ -238,6 +264,18 @@ public class Thermionics {
 		GameRegistry.register(block);
 		GameRegistry.register(item);
 		proxy.registerItemModel(item);
+	}
+	
+	public void registerCraftingCircle(Block block) {
+		NonNullList<ItemStack> variants = NonNullList.create();
+		block.getSubBlocks(ItemBlock.getItemFromBlock(block), Thermionics.TAB_THERMIONICS, variants);
+		ItemStack first = variants.remove(0);
+		ItemStack prev = first;
+		for(ItemStack item : variants) {
+			GameRegistry.addShapelessRecipe(item.copy(), prev.copy());
+			prev = item;
+		}
+		GameRegistry.addShapelessRecipe(first.copy(), variants.get(variants.size()-1).copy());
 	}
 	
 	@SubscribeEvent

@@ -57,4 +57,7 @@ public class ThermionicsBlocks {
 	
 	@ObjectHolder("road")
 	public static final BlockRoad ROAD = null;
+	
+	@ObjectHolder("road.1")
+	public static final BlockRoad ROAD_COMPRESSED = null;
 }

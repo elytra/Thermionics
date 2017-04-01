@@ -1,8 +1,13 @@
 itemGroup.thermionics=Thermionics
 
+#Tools
+item.thermionics.hammer.iron.name=Iron Hammer
+item.thermionics.hammer.gold.name=Gold Hammer
+
 #Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold
 tile.thermionics.road.name=Road
+tile.thermionics.road.1.name=Compressed Road
 
 #Cables
 tile.thermionics.cable.rf.name=Energy Cable
@@ -36,4 +41,4 @@ thermionics.data.torque=Torque
 thermionics.data.rpm=RPM
 
 #Potions
-effect.moveSpeed.effortless=Effortless Speed
+effect.moveSpeed.effortless=Expedience

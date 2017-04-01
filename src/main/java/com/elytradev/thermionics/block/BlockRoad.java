@@ -8,12 +8,10 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -21,16 +19,20 @@ import net.minecraft.world.World;
 
 public class BlockRoad extends BlockBase {
 	public static final PropertyInteger VARIANT = PropertyInteger.create("variant", 0, 5);
+	private final int level;
 	
-	public BlockRoad() {
+	public BlockRoad(int level) {
 		super(Material.ROCK, EnumDyeColor.WHITE.getMapColor());
 		
-		this.setRegistryName("road");
-		this.setUnlocalizedName("thermionics.road");
+		String registryName = "road";
+		if (level>0) registryName+="."+level;
+		this.setRegistryName(registryName);
+		this.setUnlocalizedName("thermionics."+registryName);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setHardness(1.4f);
 		this.setResistance(20f); //somewhat resistant to explosions
+		this.level = level;
 	}
 	
 	@Override
@@ -57,7 +59,7 @@ public class BlockRoad extends BlockBase {
 		if (entity instanceof EntityLivingBase) {
 			EntityLivingBase living = (EntityLivingBase)entity;
 			
-			living.addPotionEffect(new PotionEffect(Thermionics.POTION_EFFORTLESS_SPEED, 5, 1));
+			living.addPotionEffect(new PotionEffect(Thermionics.POTION_EFFORTLESS_SPEED, 20, level));
 			//living.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("speed"), 5, 2));
 		}
 	}
