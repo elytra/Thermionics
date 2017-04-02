@@ -3,6 +3,10 @@ itemGroup.thermionics=Thermionics
 #Tools
 item.thermionics.hammer.iron.name=Iron Hammer
 item.thermionics.hammer.gold.name=Gold Hammer
+item.thermionics.hammer.diamond.name=Diamond Hammer
+item.thermionics.hammer.copper.name=Copper Hammer
+item.thermionics.hammer.lead.name=Lead Hammer
+item.thermionics.hammer.invar.name=Invar Hammer
 
 #Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold

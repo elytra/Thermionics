@@ -154,7 +154,7 @@ public class Thermionics {
 		                           /*name      repairOre     level  uses eff dmg ench */
 		                           /*iron      ingotIron     2      250  6f  2f  14   */
 		registerItem(new ItemHammer("copper", "ingotCopper", 2,     200, 7f, 1f, 20));
-		registerItem(new ItemHammer("lead",   "ingotLead",   2,     250, 5f, 2f, 14));
+		registerItem(new ItemHammer("lead",   "ingotLead",   2,    1550, 4f, 2f, 8)); //Some specialcasing here, lead is durable but stone harvest speed and hard to enchant
 		registerItem(new ItemHammer("invar",  "ingotInvar",  2,     300, 6f, 2f, 14));
 		
 		//Locomotion
@@ -234,22 +234,22 @@ public class Thermionics {
 		
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_IRON,1),
-				"I", "s", "s", 'I', "blockIron", 's', "stick"
+				"I", "s", "s", 'I', "blockIron", 's', "stickWood"
 				));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_GOLD,1),
-				"I", "s", "s", 'I', "blockGold", 's', "stick"
+				"I", "s", "s", 'I', "blockGold", 's', "stickWood"
 				));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_DIAMOND,1),
-				"I", "s", "s", 'I', "blockDiamond", 's', "stick"
+				"I", "s", "s", 'I', "blockDiamond", 's', "stickWood"
 				));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_COPPER,1),
-				"I", "s", "s", 'I', "blockCopper", 's', "stick"
+				"I", "s", "s", 'I', "blockCopper", 's', "stickWood"
 				));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_LEAD,1),
-				"I", "s", "s", 'I', "blockLead", 's', "stick"
+				"I", "s", "s", 'I', "blockLead", 's', "stickWood"
 				));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_INVAR,1),
-				"I", "s", "s", 'I', "blockInvar", 's', "stick"
+				"I", "s", "s", 'I', "blockInvar", 's', "stickWood"
 				));
 		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
