@@ -51,6 +51,7 @@ import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.item.ItemHammer;
+import com.elytradev.thermionics.item.ThermionicsItems;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
 import com.elytradev.thermionics.tileentity.TileEntityCableRF;
@@ -81,6 +82,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -122,6 +124,8 @@ public class Thermionics {
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
+		CONFIG = new Configuration(e.getSuggestedConfigurationFile());
+		
 		LOG = LogManager.getLogger(Thermionics.MODID);
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
@@ -129,15 +133,29 @@ public class Thermionics {
 		
 		ProbeDataSupport.init();
 		
+		//Since we can't rely on the oredict for toolmaterials...
+		//PS, since these are enum constants, fully-capitalized is the correct Oracle convention.
+		/*                                                     name    level  uses   eff   dmg  enchant */
+		/*                                                     "iron"      2,  250,   6f,   2f,     14 */
+		//ToolMaterial toolCopper = EnumHelper.addToolMaterial("COPPER",     2,  200,   7f,   1f,     20);
+		//ToolMaterial toolLead   = EnumHelper.addToolMaterial("LEAD",       2,  250,   5f,   2f,     14);
+		
 		//Hammertime!
-		ItemHammer ironHammer = new ItemHammer(ToolMaterial.IRON, "iron");
-		ItemHammer goldHammer = new ItemHammer(ToolMaterial.GOLD, "gold");
-		GameRegistry.register(ironHammer);
-		GameRegistry.register(goldHammer);
-		proxy.registerItemModel(ironHammer);
-		proxy.registerItemModel(goldHammer);
 		
 		
+		
+		
+		
+		registerItem(new ItemHammer(ToolMaterial.IRON, "iron"));
+		registerItem(new ItemHammer(ToolMaterial.GOLD, "gold"));
+		registerItem(new ItemHammer(ToolMaterial.DIAMOND, "diamond"));
+		
+		//Since we can't *safely*, *cleanly* rendezvous with other mods about Item.ToolMaterial properties, make our own
+		                           /*name      repairOre     level  uses eff dmg ench */
+		                           /*iron      ingotIron     2      250  6f  2f  14   */
+		registerItem(new ItemHammer("copper", "ingotCopper", 2,     200, 7f, 1f, 20));
+		registerItem(new ItemHammer("lead",   "ingotLead",   2,     250, 5f, 2f, 14));
+		registerItem(new ItemHammer("invar",  "ingotInvar",  2,     300, 6f, 2f, 14));
 		
 		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
@@ -214,6 +232,26 @@ public class Thermionics {
 				"c", "c", "c", 'c', "ingotCopper"
 				));
 		
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_IRON,1),
+				"I", "s", "s", 'I', "blockIron", 's', "stick"
+				));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_GOLD,1),
+				"I", "s", "s", 'I', "blockGold", 's', "stick"
+				));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_DIAMOND,1),
+				"I", "s", "s", 'I', "blockDiamond", 's', "stick"
+				));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_COPPER,1),
+				"I", "s", "s", 'I', "blockCopper", 's', "stick"
+				));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_LEAD,1),
+				"I", "s", "s", 'I', "blockLead", 's', "stick"
+				));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_INVAR,1),
+				"I", "s", "s", 'I', "blockInvar", 's', "stick"
+				));
+		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
 		
 		/*
@@ -262,6 +300,11 @@ public class Thermionics {
 	
 	public void registerBlockAndItem(BlockBase block, Item item) {
 		GameRegistry.register(block);
+		GameRegistry.register(item);
+		proxy.registerItemModel(item);
+	}
+	
+	public void registerItem(Item item) {
 		GameRegistry.register(item);
 		proxy.registerItemModel(item);
 	}
