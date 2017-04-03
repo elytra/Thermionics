@@ -25,20 +25,23 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
+import com.elytradev.thermionics.data.ContainerInventoryHolder;
 import com.elytradev.thermionics.data.IMachineProgress;
 import com.elytradev.thermionics.data.MachineItemStorageView;
 import com.elytradev.thermionics.data.ObservableItemStorage;
+import com.elytradev.thermionics.data.ValidatedInventory;
 import com.elytradev.thermionics.data.ValidatedItemStorageView;
 import com.elytradev.thermionics.transport.HeatTransport;
 import com.elytradev.thermionics.Thermionics;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress {
+public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress, ContainerInventoryHolder {
 	public static final int HEAT_EFFICIENCY = 1;
 	
 	private HeatStorage heatStorage;
@@ -50,7 +53,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 	
 	public TileEntityFirebox() {
 		heatStorage = new HeatStorage(200);
-		itemStorage = new ObservableItemStorage(2);
+		itemStorage = new ObservableItemStorage(2,"tile.machine.firebox.name");
 		
 		heatStorage.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
@@ -131,6 +134,11 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		HeatTransport.diffuse(world, pos, heatStorage);
 		
 		super.markActive(timeCold<MAX_COLD);
+	}
+	
+	@Override
+	public IInventory getContainerInventory() {
+		return new ValidatedInventory(itemStorage, ValidatedInventory.FURNACE_FUELS, ValidatedInventory.NOTHING, ValidatedInventory.NOTHING);
 	}
 	
 	@Override

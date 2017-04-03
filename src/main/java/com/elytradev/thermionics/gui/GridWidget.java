@@ -21,45 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.thermionics.gui;
 
-import java.util.function.BiFunction;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
-
-public class ValidatedItemStorageView implements IItemHandler {
-	private IItemHandler delegate;
-	private BiFunction<Integer,ItemStack,Boolean> validator;
+public class GridWidget {
+	protected int x = 0;
+	protected int y = 0;
+	protected int width = 1;
+	protected int height = 1;
 	
-	public ValidatedItemStorageView(IItemHandler delegate, BiFunction<Integer,ItemStack,Boolean> validator) {
-		this.delegate = delegate;
-		this.validator = validator;
+	public void setLocation(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (!validator.apply(slot, stack)) return stack;
-		else return delegate.insertItem(slot, stack, simulate);
+	
+	public int getX() {
+		return x;
 	}
-
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
+	
+	public int getY() {
+		return y;
 	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
+	
+	public int getWidth() {
+		return 1;
 	}
-
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		return delegate.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
+	
+	public int getHeight() {
+		return 1;
 	}
 }

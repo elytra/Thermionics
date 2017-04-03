@@ -23,43 +23,49 @@
  */
 package com.elytradev.thermionics.data;
 
-import java.util.function.BiFunction;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.IItemHandler;
+import com.elytradev.thermionics.client.gui.GuiTesting;
 
-public class ValidatedItemStorageView implements IItemHandler {
-	private IItemHandler delegate;
-	private BiFunction<Integer,ItemStack,Boolean> validator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+
+public class ContainerTesting extends Container {
 	
-	public ValidatedItemStorageView(IItemHandler delegate, BiFunction<Integer,ItemStack,Boolean> validator) {
-		this.delegate = delegate;
-		this.validator = validator;
+	
+	private IInventory player;
+	private IInventory container;
+	
+	public ContainerTesting(@Nonnull IInventory player, @Nullable IInventory container) {
+		this.player = player;
+		this.container = container;
+		
+		
+	}
+	
+	@Override
+	public boolean canInteractWith(EntityPlayer playerIn) {
+		return true;
 	}
 
-	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (!validator.apply(slot, stack)) return stack;
-		else return delegate.insertItem(slot, stack, simulate);
+	
+	public void initContainerSlot(int slot, int x, int y) {
+		this.addSlotToContainer(new Slot(container, slot, x*18 + 6, y*18 + 6));
 	}
-
-	@Override
-	public int getSlots() {
-		return delegate.getSlots();
-	}
-
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		return delegate.getStackInSlot(slot);
-	}
-
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		return delegate.extractItem(slot, amount, simulate);
-	}
-
-	@Override
-	public int getSlotLimit(int slot) {
-		return delegate.getSlotLimit(slot);
+	
+	public void initPlayerInventory(int x, int y) {
+		for (int yi = 0; yi < 3; yi++) {
+            for (int xi = 0; xi < 9; xi++) {
+                addSlotToContainer(new Slot(player, xi + (yi * 9) + 9, x + (xi * 18), y + (yi * 18)));
+            }
+        }
+		
+		
+		for(int i=0; i<9; i++) {
+			
+		}
 	}
 }

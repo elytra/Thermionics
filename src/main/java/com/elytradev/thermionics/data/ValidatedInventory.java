@@ -24,150 +24,129 @@
 package com.elytradev.thermionics.data;
 
 import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraftforge.items.ItemStackHandler;
 
-public class ObservableItemStorage extends ItemStackHandler implements IInventory {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	private String name = "";
-	
-	public ObservableItemStorage(int slots) {
-		super(slots);
+public class ValidatedInventory implements IInventory {
+	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
+	private final IInventory delegate;
+
+	public ValidatedInventory(IInventory delegate) {
+		this.delegate = delegate;
 	}
 	
-	public ObservableItemStorage(int slots, String name) {
-		super(slots);
-		this.name = name;
+	@SafeVarargs
+	public ValidatedInventory(IInventory delegate, Predicate<ItemStack>... validators) {
+		this.delegate = delegate;
+		for(Predicate<ItemStack> validator : validators) this.validators.add(validator);
 	}
-
-	public void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
-	}
-	
-	public void listen(@Nonnull Runnable r) {
-		listeners.add(r);
-	}
-	
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
-		return result;
-	}
-
-	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
-		markDirty();
-	}
-
-	/* IInventory methods */
 	
 	@Override
 	public String getName() {
-		return name;
+		return delegate.getName();
 	}
 
 	@Override
 	public boolean hasCustomName() {
-		return false;
+		return delegate.hasCustomName();
 	}
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TextComponentString(name);
+		return delegate.getDisplayName();
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return this.getSlots();
+		return delegate.getSizeInventory();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		for(int i=0; i<this.getSlots(); i++) {
-			if (!this.getStackInSlot(i).isEmpty()) return false;
-		}
-		
-		return true;
+		return delegate.isEmpty();
+	}
+
+	@Override
+	public ItemStack getStackInSlot(int index) {
+		return delegate.getStackInSlot(index);
 	}
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return extractItem(index, count, false);
+		return delegate.decrStackSize(index, count);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		ItemStack result = this.getStackInSlot(index);
-		setStackInSlot(index, ItemStack.EMPTY);
-		return result;
+		return delegate.removeStackFromSlot(index);
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		setStackInSlot(index, stack);
+		delegate.setInventorySlotContents(index, stack);
 	}
 
 	@Override
 	public int getInventoryStackLimit() {
-		return 64;
+		return delegate.getInventoryStackLimit();
+	}
+
+	@Override
+	public void markDirty() {
+		delegate.markDirty();
 	}
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return true; //TODO: Often there are distance checks involved here
+		return delegate.isUsableByPlayer(player);
 	}
 
 	@Override
 	public void openInventory(EntityPlayer player) {
-		//Do Nothing
+		delegate.openInventory(player);
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
-		//Do Nothing
+		delegate.closeInventory(player);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true; //Override this for validation!!!
+		if (validators.size()>index) {
+			return validators.get(index).test(stack);
+		} else {
+			return true;
+		}
 	}
 
 	@Override
 	public int getField(int id) {
-		return 0;
+		return delegate.getField(id);
 	}
 
 	@Override
 	public void setField(int id, int value) {
+		delegate.setField(id, value);
 	}
 
 	@Override
 	public int getFieldCount() {
-		return 0;
+		return delegate.getFieldCount();
 	}
 
 	@Override
 	public void clear() {
-		for(int i=0; i<this.getSlots(); i++) {
-			this.setStackInSlot(i, ItemStack.EMPTY);
-		}
+		delegate.clear();
 	}
+	
+	public static Predicate<ItemStack> ANYTHING = (it)->true;
+	public static Predicate<ItemStack> NOTHING = (it)->false;
+	public static Predicate<ItemStack> FURNACE_FUELS = TileEntityFurnace::isItemFuel; //This is actually the most correct/accurate way to read the furnace registry!
+	
 }

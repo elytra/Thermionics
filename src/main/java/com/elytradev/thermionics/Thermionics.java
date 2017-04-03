@@ -47,6 +47,9 @@ import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.client.gui.GuiTesting;
+import com.elytradev.thermionics.data.ContainerInventoryHolder;
+import com.elytradev.thermionics.data.ContainerTesting;
 import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
@@ -66,15 +69,20 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -91,9 +99,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.IGuiHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -196,8 +209,31 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
-		
-		
+		/*
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler(){
+			@Override
+			public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
+				
+				if (te!=null && (te instanceof ContainerInventoryHolder)) {
+					return new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
+				}
+				
+				return null; //For now!
+			}
+
+			@Override
+			public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
+				Container container = null;
+				if (te!=null && (te instanceof ContainerInventoryHolder)) {
+					container = new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
+				}
+				
+				return new GuiTesting(player.inventory, container);
+			}
+			
+		});*/
 		POTION_EFFORTLESS_SPEED = new PotionExpedience();
 		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
 		

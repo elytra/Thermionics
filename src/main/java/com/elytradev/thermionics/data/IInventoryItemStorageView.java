@@ -23,61 +23,22 @@
  */
 package com.elytradev.thermionics.data;
 
-import java.util.ArrayList;
-
-import javax.annotation.Nonnull;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class ObservableItemStorage extends ItemStackHandler implements IInventory {
-	private ArrayList<Runnable> listeners = new ArrayList<>();
-	private String name = "";
+public class IInventoryItemStorageView implements IInventory {
+	private String name;
+	private final IItemHandler delegate;
 	
-	public ObservableItemStorage(int slots) {
-		super(slots);
+	public IInventoryItemStorageView(IItemHandler delegate, String name) {
+		this.delegate = delegate;
 	}
-	
-	public ObservableItemStorage(int slots, String name) {
-		super(slots);
-		this.name = name;
-	}
-
-	public void markDirty() {
-		for(Runnable r : listeners) {
-			r.run();
-		}
-	}
-	
-	public void listen(@Nonnull Runnable r) {
-		listeners.add(r);
-	}
-	
-	@Override
-	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		ItemStack stack = super.extractItem(slot, amount, simulate);
-		if (!simulate) markDirty();
-		return stack;
-	}
-
-	@Override
-	public ItemStack insertItem(int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack result = super.insertItem(slot, itemStack, simulate);
-		if (!simulate) markDirty();
-		return result;
-	}
-
-	@Override
-	public void setStackInSlot(int slot, ItemStack itemStack) {
-		super.setStackInSlot(slot, itemStack);
-		markDirty();
-	}
-
-	/* IInventory methods */
 	
 	@Override
 	public String getName() {
@@ -86,43 +47,64 @@ public class ObservableItemStorage extends ItemStackHandler implements IInventor
 
 	@Override
 	public boolean hasCustomName() {
-		return false;
+		return (name!=null);
 	}
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return new TextComponentString(name);
+		return (name==null) ? new TextComponentString("inventory") : new TextComponentTranslation(name);
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return this.getSlots();
+		return delegate.getSlots();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		for(int i=0; i<this.getSlots(); i++) {
-			if (!this.getStackInSlot(i).isEmpty()) return false;
+		for(int i=0; i<delegate.getSlots(); i++) {
+			if (!delegate.getStackInSlot(i).isEmpty()) return false;
 		}
 		
 		return true;
 	}
 
 	@Override
+	public ItemStack getStackInSlot(int index) {
+		return delegate.getStackInSlot(index);
+	}
+
+	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return extractItem(index, count, false);
+		return delegate.extractItem(index, count, false);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		ItemStack result = this.getStackInSlot(index);
-		setStackInSlot(index, ItemStack.EMPTY);
-		return result;
+		ItemStack existing = delegate.getStackInSlot(index);
+		if (existing.isEmpty()) return ItemStack.EMPTY;
+		return delegate.extractItem(index, existing.getCount(), false);
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		setStackInSlot(index, stack);
+		//We're going to have to try some funky stuff to get this to work
+		if (delegate instanceof ItemStackHandler) {
+			((ItemStackHandler)delegate).setStackInSlot(index, stack);
+		} else {
+			//Not the standard implementation; probably a shim intended precisely to prevent us from calling methods
+			//like this. Well, we'll do the best we can.
+			ItemStack existing = delegate.getStackInSlot(index);
+			if (!existing.isEmpty()) {
+				delegate.extractItem(index, existing.getCount(), false);
+				if (!delegate.getStackInSlot(index).isEmpty()) {
+					throw new IllegalStateException("Cannot set inventory contents.");
+				}
+			} else {
+				delegate.insertItem(index, stack, false);
+				//If the stack can't be inserted, this is also technically an error condition.
+			}
+		}
 	}
 
 	@Override
@@ -131,23 +113,27 @@ public class ObservableItemStorage extends ItemStackHandler implements IInventor
 	}
 
 	@Override
+	public void markDirty() {
+	}
+
+	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return true; //TODO: Often there are distance checks involved here
+		return true;
 	}
 
 	@Override
 	public void openInventory(EntityPlayer player) {
-		//Do Nothing
+		
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
-		//Do Nothing
+		
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true; //Override this for validation!!!
+		return (delegate.insertItem(index, stack, true).isEmpty());
 	}
 
 	@Override
@@ -166,8 +152,11 @@ public class ObservableItemStorage extends ItemStackHandler implements IInventor
 
 	@Override
 	public void clear() {
-		for(int i=0; i<this.getSlots(); i++) {
-			this.setStackInSlot(i, ItemStack.EMPTY);
+		//omg no?
+		//I don't think I have a choice in implementing...
+		for(int i=0; i<delegate.getSlots(); i++) {
+			setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 	}
+
 }
