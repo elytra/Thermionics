@@ -23,7 +23,9 @@
  */
 package com.elytradev.thermionics.gui;
 
-public class GridWidget {
+import com.elytradev.thermionics.data.ContainerTesting;
+
+public class WWidget {
 	protected int x = 0;
 	protected int y = 0;
 	protected int width = 1;
@@ -43,10 +45,17 @@ public class GridWidget {
 	}
 	
 	public int getWidth() {
-		return 1;
+		return 18;
 	}
 	
 	public int getHeight() {
-		return 1;
+		return 18;
+	}
+	
+	/**
+	 * Creates "heavyweight" component peers
+	 * @param c the top-level Container that will hold the peers
+	 */
+	public void createPeers(ContainerTesting c) {
 	}
 }

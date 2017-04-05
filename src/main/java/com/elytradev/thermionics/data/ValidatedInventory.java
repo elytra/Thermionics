@@ -145,6 +145,14 @@ public class ValidatedInventory implements IInventory {
 		delegate.clear();
 	}
 	
+	public Predicate<ItemStack> getPredicate(int index) {
+		if (validators.size()>index) {
+			return validators.get(index);
+		} else {
+			return ANYTHING;
+		}
+	}
+	
 	public static Predicate<ItemStack> ANYTHING = (it)->true;
 	public static Predicate<ItemStack> NOTHING = (it)->false;
 	public static Predicate<ItemStack> FURNACE_FUELS = TileEntityFurnace::isItemFuel; //This is actually the most correct/accurate way to read the furnace registry!

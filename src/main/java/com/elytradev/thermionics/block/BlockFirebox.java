@@ -46,14 +46,14 @@ public class BlockFirebox extends BlockMachineBase implements ITileEntityProvide
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityFirebox();
 	}
-	/*
+	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		if (world.isRemote) {
+		if (!world.isRemote) {
 			player.openGui(Thermionics.instance(), 0, world, pos.getX(), pos.getY(), pos.getZ());
 		} else {
 			
 		}
 		return true;
-	}*/
+	}
 }

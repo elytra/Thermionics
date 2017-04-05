@@ -25,8 +25,23 @@ package com.elytradev.thermionics.gui;
 
 import java.util.ArrayList;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
-public class GridWidgetItemArea extends GridWidget {
-	ArrayList<Slot> peers = new ArrayList<>();
+public class WItemSlot extends WWidget {
+	private ArrayList<Slot> peers = new ArrayList<>();
+	private IInventory inventory;
+	private int startIndex = 0;
+	private int slotsWide = 1;
+	private int slotsHigh = 1;
+	
+	@Override
+	public int getWidth() {
+		return slotsWide*18;
+	}
+	
+	@Override
+	public int getHeight() {
+		return slotsHigh*18;
+	}
 }

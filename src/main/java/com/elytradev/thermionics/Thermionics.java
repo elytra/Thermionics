@@ -209,7 +209,7 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
-		/*
+		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler(){
 			@Override
 			public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
@@ -219,6 +219,7 @@ public class Thermionics {
 					return new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
 				}
 				
+				System.out.println("NULL SERVER ELEMENT.");
 				return null; //For now!
 			}
 
@@ -228,12 +229,14 @@ public class Thermionics {
 				Container container = null;
 				if (te!=null && (te instanceof ContainerInventoryHolder)) {
 					container = new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
+				} else {
+					System.out.println("NULL CLIENT ELEMENT");
 				}
 				
-				return new GuiTesting(player.inventory, container);
+				return new GuiTesting(player.inventory, container,"CLIENT");
 			}
 			
-		});*/
+		});
 		POTION_EFFORTLESS_SPEED = new PotionExpedience();
 		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
 		
