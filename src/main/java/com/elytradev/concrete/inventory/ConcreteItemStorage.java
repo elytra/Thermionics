@@ -21,30 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.concrete.inventory;
 
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.items.ItemStackHandler;
+import scala.actors.threadpool.Arrays;
 
-public class ObservableItemStorage extends ItemStackHandler implements IInventory {
+/**
+ * Base/internal class for managing item storage. Can be wrapped to create various kinds of filtered or validated
+ * IItemHandlers and IInventories.
+ */
+public class ConcreteItemStorage extends ItemStackHandler {
 	private ArrayList<Runnable> listeners = new ArrayList<>();
+	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
+	private boolean[] extractMask;
 	private String name = "";
 	
-	public ObservableItemStorage(int slots) {
+	public ConcreteItemStorage(int slots) {
 		super(slots);
+		extractMask = new boolean[slots];
+		Arrays.fill(extractMask, true);
 	}
 	
-	public ObservableItemStorage(int slots, String name) {
-		super(slots);
+	public final ConcreteItemStorage withName(String name) {
 		this.name = name;
+		return this;
+	}
+	
+	@SafeVarargs
+	public final ConcreteItemStorage withValidators(Predicate<ItemStack>... predicates) {
+		validators.clear();
+		for(Predicate<ItemStack> predicate : predicates) validators.add(predicate);
+		return this;
+	}
+	
+	public final ConcreteItemStorage setCanExtract(int index, boolean canExtract) {
+		if (index<extractMask.length) extractMask[index] = canExtract;
+		return this;
 	}
 
 	public void markDirty() {
@@ -76,98 +95,27 @@ public class ObservableItemStorage extends ItemStackHandler implements IInventor
 		super.setStackInSlot(slot, itemStack);
 		markDirty();
 	}
-
-	/* IInventory methods */
 	
-	@Override
+	@Nullable
 	public String getName() {
 		return name;
 	}
-
-	@Override
-	public boolean hasCustomName() {
-		return false;
+	
+	public boolean hasValidator(int slot) {
+		return validators.size()>slot;
 	}
-
-	@Override
-	public ITextComponent getDisplayName() {
-		return new TextComponentString(name);
+	
+	/**
+	 * Returns a validator for the indicated slot if one is set, otherwise returns a validator which accepts anything.
+	 */
+	@Nonnull
+	public Predicate<ItemStack> getValidator(int slot) {
+		if (validators.size()<=slot) return Validators.ANYTHING;
+		return validators.get(slot);
 	}
-
-	@Override
-	public int getSizeInventory() {
-		return this.getSlots();
-	}
-
-	@Override
-	public boolean isEmpty() {
-		for(int i=0; i<this.getSlots(); i++) {
-			if (!this.getStackInSlot(i).isEmpty()) return false;
-		}
-		
-		return true;
-	}
-
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		return extractItem(index, count, false);
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		ItemStack result = this.getStackInSlot(index);
-		setStackInSlot(index, ItemStack.EMPTY);
-		return result;
-	}
-
-	@Override
-	public void setInventorySlotContents(int index, ItemStack stack) {
-		setStackInSlot(index, stack);
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		return 64;
-	}
-
-	@Override
-	public boolean isUsableByPlayer(EntityPlayer player) {
-		return true; //TODO: Often there are distance checks involved here
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-		//Do Nothing
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-		//Do Nothing
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		return true; //Override this for validation!!!
-	}
-
-	@Override
-	public int getField(int id) {
-		return 0;
-	}
-
-	@Override
-	public void setField(int id, int value) {
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public void clear() {
-		for(int i=0; i<this.getSlots(); i++) {
-			this.setStackInSlot(i, ItemStack.EMPTY);
-		}
+	
+	public boolean getCanExtract(int slot) {
+		if (extractMask.length<=slot) return false;
+		return extractMask[slot];
 	}
 }

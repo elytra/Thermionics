@@ -89,8 +89,13 @@ public class BlockRoad extends BlockBase {
 	
 	@Override
 	public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
+		getVariants(itemIn, list);
+	}
+	
+	@Override
+	public void getVariants(Item item, NonNullList<ItemStack> variants) {
 		for(int i : VARIANT.getAllowedValues()) {
-			list.add(new ItemStack(itemIn, 1, i));
+			variants.add(new ItemStack(item, 1, i));
 		}
 	}
 }

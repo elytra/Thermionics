@@ -21,23 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
-
-import org.apache.commons.lang3.Validate;
+package com.elytradev.concrete.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-public class MachineItemStorageView implements IItemHandler {
-	public static final int SLOT_MACHINE_INPUT  = 0;
-	public static final int SLOT_MACHINE_OUTPUT = 1;
-	private final IItemHandler delegate;
+public class ValidatedItemHandlerView implements IItemHandler {
+	private ConcreteItemStorage delegate;
 	
-	public MachineItemStorageView(IItemHandler delegate) {
-		Validate.isTrue(delegate.getSlots()>=2, "Cannot create a machine storage view of an inventory with less than 2 slots.");
+	public ValidatedItemHandlerView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
 	}
-	
+
+	@Override
+	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+		if (!delegate.getValidator(slot).test(stack)) return stack;
+		else return delegate.insertItem(slot, stack, simulate);
+	}
+
 	@Override
 	public int getSlots() {
 		return delegate.getSlots();
@@ -49,15 +50,9 @@ public class MachineItemStorageView implements IItemHandler {
 	}
 
 	@Override
-	public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-		if (slot==SLOT_MACHINE_INPUT) return delegate.insertItem(slot, stack, simulate);
-		else return stack;
-	}
-
-	@Override
 	public ItemStack extractItem(int slot, int amount, boolean simulate) {
-		if (slot==SLOT_MACHINE_OUTPUT) return delegate.extractItem(slot, amount, simulate);
-		else return ItemStack.EMPTY;
+		if (!delegate.getCanExtract(slot)) return ItemStack.EMPTY;
+		return delegate.extractItem(slot, amount, simulate);
 	}
 
 	@Override

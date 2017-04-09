@@ -34,12 +34,12 @@ import com.elytradev.probe.api.impl.SIUnit;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.ISignalStorage;
-import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityMachine;
 import com.google.common.collect.ImmutableList;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -91,8 +91,8 @@ public class ProbeDataSupport {
 						.withBar(0, (int)(progress*100), 100, UnitDictionary.PERCENT));
 			}
 			
-			if (machine.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)) {
-				addInventoryData(machine.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null), data);
+			if (machine.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP)) {
+				addInventoryData(machine.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), data);
 			}
 			
 			//data.add(new ProbeData("MEMES: 9001"));

@@ -21,10 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.concrete.inventory;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
-public interface ContainerInventoryHolder {
-	public IInventory getContainerInventory();
+/**
+ * The heavyweight peer used by ConcreteContainer to respect the predicates for validated inventories.
+ */
+public class ValidatedSlot extends Slot {
+
+	public ValidatedSlot(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+		super(inventoryIn, index, xPosition, yPosition);
+	}
+	
+	@Override
+	public boolean isItemValid(ItemStack stack) {
+		if (inventory instanceof ValidatedInventoryView) {
+			return ((ValidatedInventoryView) inventory).getValidator(getSlotIndex()).test(stack);
+		} else {
+			return super.isItemValid(stack);
+		}
+	}
 }

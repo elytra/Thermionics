@@ -21,29 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.data;
+package com.elytradev.concrete.inventory;
 
-import java.util.ArrayList;
 import java.util.function.Predicate;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 
-public class ValidatedInventory implements IInventory {
-	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
-	private final IInventory delegate;
+public class ValidatedInventoryView implements IInventory {
+	private final ConcreteItemStorage delegate;
 
-	public ValidatedInventory(IInventory delegate) {
+	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
-	}
-	
-	@SafeVarargs
-	public ValidatedInventory(IInventory delegate, Predicate<ItemStack>... validators) {
-		this.delegate = delegate;
-		for(Predicate<ItemStack> validator : validators) this.validators.add(validator);
 	}
 	
 	@Override
@@ -53,22 +45,26 @@ public class ValidatedInventory implements IInventory {
 
 	@Override
 	public boolean hasCustomName() {
-		return delegate.hasCustomName();
+		return delegate.getName()!=null;
 	}
 
 	@Override
 	public ITextComponent getDisplayName() {
-		return delegate.getDisplayName();
+		return new TextComponentTranslation(delegate.getName());
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return delegate.getSizeInventory();
+		return delegate.getSlots();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return delegate.isEmpty();
+		for(int i=0; i<delegate.getSlots(); i++) {
+			if (!delegate.getStackInSlot(i).isEmpty()) return false;
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -78,22 +74,26 @@ public class ValidatedInventory implements IInventory {
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		return delegate.decrStackSize(index, count);
+		if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
+		return delegate.extractItem(index, count, false);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		return delegate.removeStackFromSlot(index);
+		if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
+		ItemStack existing = delegate.getStackInSlot(index);
+		if (existing.isEmpty()) return ItemStack.EMPTY;
+		return delegate.extractItem(index, existing.getCount(), false);
 	}
 
 	@Override
 	public void setInventorySlotContents(int index, ItemStack stack) {
-		delegate.setInventorySlotContents(index, stack);
+		delegate.setStackInSlot(index, stack);
 	}
 
 	@Override
 	public int getInventoryStackLimit() {
-		return delegate.getInventoryStackLimit();
+		return 64;
 	}
 
 	@Override
@@ -103,58 +103,44 @@ public class ValidatedInventory implements IInventory {
 
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) {
-		return delegate.isUsableByPlayer(player);
+		return true;
 	}
 
 	@Override
 	public void openInventory(EntityPlayer player) {
-		delegate.openInventory(player);
 	}
 
 	@Override
 	public void closeInventory(EntityPlayer player) {
-		delegate.closeInventory(player);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int index, ItemStack stack) {
-		if (validators.size()>index) {
-			return validators.get(index).test(stack);
-		} else {
-			return true;
-		}
+		return delegate.getValidator(index).test(stack);
 	}
 
 	@Override
 	public int getField(int id) {
-		return delegate.getField(id);
+		return 0;
 	}
 
 	@Override
 	public void setField(int id, int value) {
-		delegate.setField(id, value);
 	}
 
 	@Override
 	public int getFieldCount() {
-		return delegate.getFieldCount();
+		return 0;
 	}
 
 	@Override
 	public void clear() {
-		delegate.clear();
-	}
-	
-	public Predicate<ItemStack> getPredicate(int index) {
-		if (validators.size()>index) {
-			return validators.get(index);
-		} else {
-			return ANYTHING;
+		for(int i=0; i<delegate.getSlots(); i++) {
+			setInventorySlotContents(i, ItemStack.EMPTY);
 		}
 	}
 	
-	public static Predicate<ItemStack> ANYTHING = (it)->true;
-	public static Predicate<ItemStack> NOTHING = (it)->false;
-	public static Predicate<ItemStack> FURNACE_FUELS = TileEntityFurnace::isItemFuel; //This is actually the most correct/accurate way to read the furnace registry!
-	
+	public Predicate<ItemStack> getValidator(int index) {
+		return delegate.getValidator(index);
+	}
 }

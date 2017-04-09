@@ -26,6 +26,8 @@ package com.elytradev.thermionics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.elytradev.concrete.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPower;
 import com.elytradev.thermionics.api.ISignalStorage;
@@ -47,10 +49,10 @@ import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
-import com.elytradev.thermionics.client.gui.GuiTesting;
-import com.elytradev.thermionics.data.ContainerInventoryHolder;
-import com.elytradev.thermionics.data.ContainerTesting;
+import com.elytradev.thermionics.client.gui.ConcreteGui;
 import com.elytradev.thermionics.data.ProbeDataSupport;
+import com.elytradev.thermionics.gui.ContainerFirebox;
+import com.elytradev.thermionics.gui.ContainerOven;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.item.ItemHammer;
@@ -73,6 +75,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
@@ -210,13 +213,24 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
-		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler(){
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler() {
+			private ConcreteContainer getContainer(int id, IInventory player, IInventory tile) {
+				switch(id) {
+				case ContainerFirebox.ID:
+				default:
+					return new ContainerFirebox(player, tile);
+				case ContainerOven.ID:
+					return new ContainerOven(player, tile);
+				}
+			}
+			
 			@Override
-			public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+			public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
 				
-				if (te!=null && (te instanceof ContainerInventoryHolder)) {
-					return new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
+				if (te!=null && (te instanceof IContainerInventoryHolder)) {
+					return getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					//return new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
 				System.out.println("NULL SERVER ELEMENT.");
@@ -224,16 +238,15 @@ public class Thermionics {
 			}
 
 			@Override
-			public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
+			public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
-				Container container = null;
-				if (te!=null && (te instanceof ContainerInventoryHolder)) {
-					container = new ContainerTesting(player.inventory, ((ContainerInventoryHolder)te).getContainerInventory());
-				} else {
-					System.out.println("NULL CLIENT ELEMENT");
+				ConcreteContainer container = null;
+				if (te!=null && (te instanceof IContainerInventoryHolder)) {
+					container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					//container = new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
-				return new GuiTesting(player.inventory, container,"CLIENT");
+				return new ConcreteGui(player.inventory, container);
 			}
 			
 		});
@@ -348,9 +361,9 @@ public class Thermionics {
 		proxy.registerItemModel(item);
 	}
 	
-	public void registerCraftingCircle(Block block) {
+	public void registerCraftingCircle(BlockBase block) {
 		NonNullList<ItemStack> variants = NonNullList.create();
-		block.getSubBlocks(ItemBlock.getItemFromBlock(block), Thermionics.TAB_THERMIONICS, variants);
+		block.getVariants(ItemBlock.getItemFromBlock(block), variants);
 		ItemStack first = variants.remove(0);
 		ItemStack prev = first;
 		for(ItemStack item : variants) {

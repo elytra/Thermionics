@@ -24,6 +24,7 @@
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.gui.ContainerFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 
 import net.minecraft.block.ITileEntityProvider;
@@ -50,7 +51,7 @@ public class BlockFirebox extends BlockMachineBase implements ITileEntityProvide
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			player.openGui(Thermionics.instance(), 0, world, pos.getX(), pos.getY(), pos.getZ());
+			player.openGui(Thermionics.instance(), ContainerFirebox.ID, world, pos.getX(), pos.getY(), pos.getZ());
 		} else {
 			
 		}

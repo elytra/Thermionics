@@ -24,42 +24,49 @@
 package com.elytradev.thermionics.tileentity;
 
 
+import com.elytradev.concrete.inventory.ConcreteItemStorage;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.concrete.inventory.StandardMachineSlots;
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
+import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
+import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.IMachineProgress;
-import com.elytradev.thermionics.data.MachineItemStorageView;
-import com.elytradev.thermionics.data.ObservableItemStorage;
-import com.elytradev.thermionics.data.ValidatedItemStorageView;
 import com.google.common.primitives.Ints;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityOven extends TileEntityMachine implements ITickable, IMachineProgress {
-	private static final int SLOT_WORK = 2;
+public class TileEntityOven extends TileEntityMachine implements ITickable, IMachineProgress, IContainerInventoryHolder {
 	private static final int H_PER_SMELT = 200;
 	private static final int HEAT_EFFICIENCY = 2;
 	
-	private ObservableItemStorage itemStorage;
+	private ConcreteItemStorage itemStorage;
 	private HeatStorage heatStorage;
 	private int progress = 0;
 	
 	public TileEntityOven() {
-		itemStorage = new ObservableItemStorage(3);
 		heatStorage = new HeatStorage(600);
+		itemStorage = new ConcreteItemStorage(3)
+				.withName("tile.thermionics.machine.oven.name")
+				.withValidators(Validators.SMELTABLE, Validators.NOTHING, Validators.NOTHING)
+				.setCanExtract(0, false)
+				.setCanExtract(1, true)
+				.setCanExtract(2, false);
 		
 		itemStorage.listen(this::markDirty);
 		heatStorage.listen(this::markDirty);
 		
 		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				()->new ValidatedItemStorageView(new MachineItemStorageView(itemStorage), TileEntityOven::validateItemInsert),
-				()->itemStorage);
-		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE, ()->HeatStorageView.insertOnlyOf(heatStorage), ()->heatStorage);
+				()->new ValidatedItemHandlerView(itemStorage), ()->itemStorage);
+		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE,
+				()->HeatStorageView.insertOnlyOf(heatStorage), ()->heatStorage);
 	}
 	
 	@Override
@@ -94,7 +101,7 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 			//We're finished. Don't do *anything* until we can kick the item into the output slot.
 			//Note: By now the "work-slot" has always already been replaced by a smelting result.
 			
-			if (itemStorage.getStackInSlot(SLOT_WORK).isEmpty()) {
+			if (itemStorage.getStackInSlot(StandardMachineSlots.WORK).isEmpty()) {
 				//Invalid state! Kick us back into a valid state.
 				progress = 0;
 				this.markDirty();
@@ -103,8 +110,8 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 			
 			//System.out.println("Smelt end step. workslot:"+itemStorage.getStackInSlot(SLOT_WORK)+" outputslot:"+itemStorage.getStackInSlot(MachineItemStorageView.SLOT_MACHINE_OUTPUT));
 			
-			ItemStack result = itemStorage.insertItem(MachineItemStorageView.SLOT_MACHINE_OUTPUT, itemStorage.getStackInSlot(SLOT_WORK), false);
-			itemStorage.setStackInSlot(SLOT_WORK, result);
+			ItemStack result = itemStorage.insertItem(StandardMachineSlots.OUTPUT, itemStorage.getStackInSlot(StandardMachineSlots.WORK), false);
+			itemStorage.setStackInSlot(StandardMachineSlots.WORK, result);
 			//System.out.println("End End step. workslot:"+itemStorage.getStackInSlot(SLOT_WORK)+" outputslot:"+itemStorage.getStackInSlot(MachineItemStorageView.SLOT_MACHINE_OUTPUT));
 			
 			if (result==null || result.isEmpty()) {
@@ -125,7 +132,7 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 		int heatAvailable = heatStorage.getHeatStored();
 		int heatToConsume = Ints.min(heatAvailable, HEAT_EFFICIENCY, heatNeeded);
 		
-		if (itemStorage.getStackInSlot(MachineItemStorageView.SLOT_MACHINE_INPUT).isEmpty()) {
+		if (itemStorage.getStackInSlot(StandardMachineSlots.INPUT).isEmpty()) {
 			if (progress>0) {
 				progress = 0;
 				markDirty();
@@ -155,20 +162,26 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 	}
 	
 	private void doSmelt() {
-		if (itemStorage.getStackInSlot(SLOT_WORK).isEmpty()) {
-			ItemStack input = itemStorage.extractItem(MachineItemStorageView.SLOT_MACHINE_INPUT, 1, false);
+		if (itemStorage.getStackInSlot(StandardMachineSlots.WORK).isEmpty()) {
+			ItemStack input = itemStorage.extractItem(StandardMachineSlots.INPUT, 1, false);
 			if (input.isEmpty()) return;
 			
 			ItemStack result = FurnaceRecipes.instance().getSmeltingResult(input).copy();
-			itemStorage.setStackInSlot(SLOT_WORK, result);
+			itemStorage.setStackInSlot(StandardMachineSlots.WORK, result);
 		}
 	}
+	
+	@Override
+	public IInventory getContainerInventory() {
+		return new ValidatedInventoryView(itemStorage);
+	}
 
+	/*
 	public static boolean validateItemInsert(int slot, ItemStack item) {
 		if (slot==MachineItemStorageView.SLOT_MACHINE_INPUT) {
 			return !FurnaceRecipes.instance().getSmeltingResult(item).isEmpty();
 		} else {
 			return true;
 		}
-	}
+	}*/
 }

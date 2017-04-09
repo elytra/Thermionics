@@ -75,6 +75,7 @@ public class ToolHelper {
             return false;
         } else {
             IBlockState iblockstate = world.getBlockState(pos);
+            if (iblockstate.getBlockHardness(world, pos)<0) return false;
             TileEntity tileentity = world.getTileEntity(pos);
             Block block = iblockstate.getBlock();
 

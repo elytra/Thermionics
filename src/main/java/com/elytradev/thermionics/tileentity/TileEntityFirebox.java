@@ -25,13 +25,13 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
-import com.elytradev.thermionics.data.ContainerInventoryHolder;
 import com.elytradev.thermionics.data.IMachineProgress;
-import com.elytradev.thermionics.data.MachineItemStorageView;
-import com.elytradev.thermionics.data.ObservableItemStorage;
-import com.elytradev.thermionics.data.ValidatedInventory;
-import com.elytradev.thermionics.data.ValidatedItemStorageView;
 import com.elytradev.thermionics.transport.HeatTransport;
+import com.elytradev.concrete.inventory.ConcreteItemStorage;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
+import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
+import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
 
 import net.minecraft.inventory.IInventory;
@@ -41,11 +41,11 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress, ContainerInventoryHolder {
+public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress, IContainerInventoryHolder {
 	public static final int HEAT_EFFICIENCY = 1;
 	
 	private HeatStorage heatStorage;
-	private ObservableItemStorage itemStorage;
+	private ConcreteItemStorage itemStorage;
 	private int furnaceTicks = 0;
 	private int maxFurnaceTicks = 0;
 	private static final int MAX_COLD = 20;
@@ -53,14 +53,20 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 	
 	public TileEntityFirebox() {
 		heatStorage = new HeatStorage(200);
-		itemStorage = new ObservableItemStorage(2,"tile.machine.firebox.name");
+		itemStorage = new ConcreteItemStorage(2)
+				.withName("tile.thermionics.machine.firebox.name")
+				.withValidators(Validators.FURNACE_FUELS, Validators.NOTHING)
+				.setCanExtract(0, false)
+				.setCanExtract(1, true);
+		
 		
 		heatStorage.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
+		
 		capabilities.registerForAllSides(Thermionics.CAPABILITY_HEATSTORAGE,
 				()->HeatStorageView.extractOnlyOf(heatStorage), ()->heatStorage);
 		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-				()->new ValidatedItemStorageView(new MachineItemStorageView(itemStorage), TileEntityFirebox::validateItemInsert),    ()->itemStorage);
+				()->new ValidatedItemHandlerView(itemStorage),  ()->itemStorage);
 	}
 	
 	@Override
@@ -138,7 +144,7 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 	
 	@Override
 	public IInventory getContainerInventory() {
-		return new ValidatedInventory(itemStorage, ValidatedInventory.FURNACE_FUELS, ValidatedInventory.NOTHING, ValidatedInventory.NOTHING);
+		return new ValidatedInventoryView(itemStorage);
 	}
 	
 	@Override
@@ -149,11 +155,12 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		return progress;
 	}
 	
+	/*
 	public static boolean validateItemInsert(int slot, ItemStack item) {
 		if (slot==MachineItemStorageView.SLOT_MACHINE_INPUT) {
 			return TileEntityFurnace.getItemBurnTime(item)>0; //Sadly, GameRegistry.getFuelValue returns 0 for vanilla burnables.
 		} else {
 			return true;
 		}
-	}
+	}*/
 }

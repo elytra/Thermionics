@@ -26,6 +26,9 @@ package com.elytradev.thermionics.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 public abstract class BlockBase extends Block {
 
@@ -35,6 +38,10 @@ public abstract class BlockBase extends Block {
 
 	public BlockBase(Material material, MapColor mapColor) {
 		super(material, mapColor);
+	}
+
+	public void getVariants(Item item, NonNullList<ItemStack> variants) {
+		variants.add(new ItemStack(item));
 	}
 
 }
