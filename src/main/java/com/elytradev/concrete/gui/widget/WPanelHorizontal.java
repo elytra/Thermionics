@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.gui;
+package com.elytradev.concrete.gui.widget;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
 

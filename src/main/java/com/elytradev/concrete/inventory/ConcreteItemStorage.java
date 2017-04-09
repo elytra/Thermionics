@@ -34,8 +34,47 @@ import net.minecraftforge.items.ItemStackHandler;
 import scala.actors.threadpool.Arrays;
 
 /**
- * Base/internal class for managing item storage. Can be wrapped to create various kinds of filtered or validated
- * IItemHandlers and IInventories.
+ * Base/internal class for managing item storage.
+ * 
+ * <h2>Validation</h2>
+ * 
+ * The ConcreteItemStorage itself <em>does not</em> perform any kind of validation on access, because it's an
+ * administrative object that needs to support unfiltered serialization and deserialization. Instead, it provides
+ * the same set of validators to all "view" wrappers, so that consistency is maintained between automated access and
+ * player/GUI access. When dealing with automation, use a {@link ValidatedItemHandlerView}, and in order to create an
+ * IInventory that a ConcreteContainer can use, use a {@link ValidatedInventoryView}. Set your access limitations on
+ * this object with {@link #withValidators(Predicate...)} and stack extraction controls with
+ * {@link #setCanExtract(int, boolean)}, and these two view objects will always know what kinds of items are allowed
+ * where.
+ *  
+ * <h2>Serialization and Deserialization</h2>
+ * 
+ * <p>If you're using this object to manage the inventory in a TileEntity, it takes three small tweaks to get no-fuss
+ * serialization. In your constructor, add
+ * 
+ * <code><pre>itemStorage.listen(this::markDirty);</pre></code>
+ * 
+ * <p>This will mark your tile dirty any time the inventory changes, so that Minecraft won't skip serialization. Then in
+ * writeToNBT:
+ * 
+ * <code><pre>tagOut.setTag("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(itemStorage, null));</pre></code>
+ * 
+ * <p>and in readFromNBT:
+ * 
+ * <code><pre>CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(itemStorage, null, tag.getTag("inventory"));</pre></code>
+ * 
+ * <p>Where <code>itemStorage</code> is your ConcreteItemStorage object. At that point the Forge Capability system will
+ * do all the work for you on this, and you can focus on the interesting part of making your tile do what it's supposed to.
+ * 
+ * <h2>Exposing as a capability</h2>
+ * 
+ * <p>This was mentioned above in the Validation section, but although this object supplies the IItemHandler interface,
+ * generally you want to create a ValidatedItemHandlerView wrapper instead. These wrappers are okay to cache or memoize,
+ * and merely provide a succinct delegation based on the access rules this object provides.
+ * 
+ * <p>Simplifying hasCapability and getCapability are outside the scope of this object... but remember that "null" is a
+ * valid side, and often represents the side a probe observer accesses, so plan your views accordingly.
+ * 
  */
 public class ConcreteItemStorage extends ItemStackHandler {
 	private ArrayList<Runnable> listeners = new ArrayList<>();

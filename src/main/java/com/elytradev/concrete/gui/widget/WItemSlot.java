@@ -21,42 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.gui;
+package com.elytradev.concrete.gui.widget;
 
 import java.util.ArrayList;
 
-import com.elytradev.concrete.gui.ConcreteContainer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 
-/**
- * Comparable to swing's JPanel, except that this is the base class for containers too - there's no way to make a
- * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
- */
-public class WPanel extends WWidget {
-	protected ArrayList<WWidget> children = new ArrayList<>();
-	protected boolean valid;
+public class WItemSlot extends WWidget {
+	private ArrayList<Slot> peers = new ArrayList<>();
+	private IInventory inventory;
+	private int startIndex = 0;
+	private int slotsWide = 1;
+	private int slotsHigh = 1;
 	
 	@Override
-	public void createPeers(ConcreteContainer c) {
-		for(WWidget child : children) {
-			child.createPeers(c);
-		}
-	}
-	
-	public void remove(WWidget w) {
-		children.remove(w);
+	public int getWidth() {
+		return slotsWide*18;
 	}
 	
 	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	/**
-	 * Uses this Panel's layout rules to reposition and resize components to fit nicely in the panel.
-	 */
-	public void layout() {
-		for(WWidget child : children) {
-			if (child instanceof WPanel) ((WPanel)child).layout();
-		}
+	public int getHeight() {
+		return slotsHigh*18;
 	}
 }

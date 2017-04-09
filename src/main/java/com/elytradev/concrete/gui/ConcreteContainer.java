@@ -26,8 +26,8 @@ package com.elytradev.concrete.gui;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.elytradev.concrete.gui.widget.WPanel;
 import com.elytradev.concrete.inventory.ValidatedSlot;
-import com.elytradev.thermionics.gui.WPanel;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -41,7 +41,6 @@ import net.minecraft.item.ItemStack;
  * "Container" is Minecraft's way of managing shared state for a block whose GUI is currently open.
  */
 public class ConcreteContainer extends Container {
-	
 	private IInventory playerInventory;
 	private IInventory container;
 	private WPanel rootPanel;
@@ -50,6 +49,18 @@ public class ConcreteContainer extends Container {
 		this.playerInventory = player;
 		this.container = container;
 		
+	}
+	
+	/**
+	 * Checks to see if the rootPanel needs validating, and if so, handles the validation. Modders generally don't need
+	 * to call this method unless they're overriding ConcreteGui's drawGuiContainerBackgroundLayer method (which is
+	 * unwise!)
+	 */
+	public void validate() {
+		if (!rootPanel.isValid()) {
+			this.inventorySlots.clear();
+			this.rootPanel.validate(this);
+		}
 	}
 	
 	@Override
@@ -215,7 +226,7 @@ public class ConcreteContainer extends Container {
 		this.inventoryItemStacks.clear();
 		
 		this.rootPanel = panel;
-		this.rootPanel.createPeers(this);
+		//this.rootPanel.createPeers(this);
 	}
 	
 	public WPanel getRootPanel() {

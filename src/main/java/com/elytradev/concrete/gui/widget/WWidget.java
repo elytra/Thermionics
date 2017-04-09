@@ -21,14 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.gui;
+package com.elytradev.concrete.gui.widget;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
 
 public class WWidget {
+	private boolean valid = false;
 	protected WPanel parent;
-	protected int x = 0;
-	protected int y = 0;
+	private int x = 0;
+	private int y = 0;
 	private int width = 1;
 	private int height = 1;
 	
@@ -83,5 +84,28 @@ public class WWidget {
 	 * @param c the top-level Container that will hold the peers
 	 */
 	public void createPeers(ConcreteContainer c) {
+	}
+
+	public void paintBackground() {
+	}
+	
+	public boolean isValid() {
+		return valid;
+	}
+	
+	/**
+	 * Creates component peers, lays out children, and initializes animation data for this Widget and all its children.
+	 * The host container must clear any heavyweight peers from its records before this method is called.
+	 */
+	public void validate(ConcreteContainer host) {
+		valid = true;
+	}
+	
+	/**
+	 * Marks this Widget as having dirty state; component peers may need to be recreated, children adapted to a new size,
+	 * and animation data reset.
+	 */
+	public void invalidate() {
+		valid = false;
 	}
 }
