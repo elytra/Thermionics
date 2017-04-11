@@ -76,7 +76,7 @@ import scala.actors.threadpool.Arrays;
  * valid side, and often represents the side a probe observer accesses, so plan your views accordingly.
  * 
  */
-public class ConcreteItemStorage extends ItemStackHandler {
+public class ConcreteItemStorage extends ItemStackHandler implements IObservableItemHandler {
 	private ArrayList<Runnable> listeners = new ArrayList<>();
 	private ArrayList<Predicate<ItemStack>> validators = new ArrayList<>();
 	private boolean[] extractMask;
@@ -111,6 +111,7 @@ public class ConcreteItemStorage extends ItemStackHandler {
 		}
 	}
 	
+	@Override
 	public void listen(@Nonnull Runnable r) {
 		listeners.add(r);
 	}
