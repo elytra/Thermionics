@@ -23,10 +23,15 @@
  */
 package com.elytradev.thermionics.gui;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.gui.widget.WBar;
 import com.elytradev.concrete.gui.widget.WGridPanel;
+import com.elytradev.concrete.gui.widget.WImage;
 import com.elytradev.concrete.gui.widget.WItemSlot;
+import com.elytradev.thermionics.gui.widget.WPlasma;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
@@ -39,6 +44,10 @@ public class ContainerOven extends ConcreteContainer {
 		
 		WGridPanel panel = new WGridPanel();
 		super.setRootPanel(panel);
+		
+		if (LocalDateTime.now().getMonth()==Month.APRIL && LocalDateTime.now().getDayOfMonth()==1) {
+			panel.add(new WPlasma(), 0, 0, 9, 3);
+		}
 		
 		panel.add(WItemSlot.of(container, 0), 2, 1);
 		panel.add(new WBar(
@@ -55,6 +64,7 @@ public class ContainerOven extends ConcreteContainer {
 				), 1, 2, 7, 1);
 		
 		panel.add(WItemSlot.of(player, 9, 9, 4), 0, 3);
+		panel.add(new WImage(new ResourceLocation("thermionics","textures/gui/scrollwork.png")), 2, 7, 5, 1);
 		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
 		
 		//initPlayerInventory(0, 18*4);
