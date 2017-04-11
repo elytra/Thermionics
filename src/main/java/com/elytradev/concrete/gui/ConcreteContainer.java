@@ -36,6 +36,8 @@ import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * "Container" is Minecraft's way of managing shared state for a block whose GUI is currently open.
@@ -44,6 +46,7 @@ public class ConcreteContainer extends Container {
 	private IInventory playerInventory;
 	private IInventory container;
 	private WPanel rootPanel;
+	private int[] syncFields = new int[0];
 	
 	public ConcreteContainer(@Nonnull IInventory player, @Nullable IInventory container) {
 		this.playerInventory = player;
@@ -57,8 +60,9 @@ public class ConcreteContainer extends Container {
 	 * unwise!)
 	 */
 	public void validate() {
-		if (!rootPanel.isValid()) {
+		if (rootPanel!=null && !rootPanel.isValid()) {
 			this.inventorySlots.clear();
+			this.inventoryItemStacks.clear();
 			this.rootPanel.validate(this);
 		}
 	}
@@ -69,6 +73,10 @@ public class ConcreteContainer extends Container {
 		return true;
 	}
 
+	public void addSlotPeer(Slot slot) {
+		this.addSlotToContainer(slot);
+	}
+	
 	
 	public void initContainerSlot(int slot, int x, int y) {
 		this.addSlotToContainer(new ValidatedSlot(container, slot, x*18, y*18));
@@ -96,56 +104,47 @@ public class ConcreteContainer extends Container {
 	@Override
 	public void detectAndSendChanges() {
 		super.detectAndSendChanges();
-		/*
+		
 		if (container!=null && container.getFieldCount()>0) {
-			for(IContainerListener listener : listeners) {
-				listener.sendAllWindowProperties(this, container);
+			//Any change in the number of fields reported by the server represents a total desync.
+			int numFields = container.getFieldCount();
+			if (syncFields.length < numFields) {
+				syncFields = new int[numFields];
 			}
-		}*/
+			
+			for (IContainerListener listener : this.listeners) {
+	            for(int field = 0; field<numFields; field++) {
+	            	int newValue = container.getField(field);
+	            	if (syncFields[field]!=newValue) {
+	            		listener.sendProgressBarUpdate(this, field, newValue);
+	            		syncFields[field] = newValue;
+	            	}
+	            }
+			}
+		}
 	}
 	
+	@SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data) {
+        if(container!=null) container.setField(id, data);
+    }
 	
 	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
-		//System.out.println("transferStackInSlot:"+index);
-		
 		ItemStack srcStack = ItemStack.EMPTY;
 		Slot src = this.inventorySlots.get(index);
 		if (src != null && src.getHasStack()) {
 			srcStack = src.getStack();
 			
 			if (src.inventory==playerInventory) {
-				//System.out.println("Transferring "+srcStack+" from playerInventory to container");
-				//Try to push the stack from the player-inventory to the container-inventory. If that's not possible,
-				//try to move it between the non-hotbar-inventory and the hotbar-inventory
-				
+				//Try to push the stack from the player-inventory to the container-inventory.
 				ItemStack remaining = transferToInventory(srcStack, container);
-				//System.out.println("Remaining: "+remaining);
-				//this.detectAndSendChanges();
 				src.putStack(remaining);
 				return ItemStack.EMPTY;
-				//return remaining;
-				
-				
 			} else {
-				//Try to push the stack from the container-inventory to the player-inventory. Prefer non-hotbar if possible
-				
-				//this.mergeItemStack(srcStack, 9, 27+9, false);
-				//Non-hotbar inventory
-				//System.out.println("Transferring "+srcStack+" from container to playerInventory");
+				//Try to push the stack from the container-inventory to the player-inventory
 				ItemStack remaining = transferToInventory(srcStack, playerInventory);
-				//System.out.println("Remaining: "+remaining);
-				//this.detectAndSendChanges();
 				src.putStack(remaining);
 				return ItemStack.EMPTY;
-				//return remaining;
-				//
-				
-				/*
-				for(int i=9; i<27+9; i++) {
-					if (playerInventory.isItemValidForSlot(index, srcStack)) {
-						//playerInventory.
-					}
-				}*/
 			}
 		} else {
 			//Shift-clicking on an invalid or empty slot does nothing.
@@ -153,61 +152,6 @@ public class ConcreteContainer extends Container {
 		
 		src.putStack(srcStack);
 		return ItemStack.EMPTY;
-		//return srcStack;
-		
-		
-		
-		
-		//return super.transferStackInSlot(playerIn, index);
-		
-		/*
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = (Slot)this.inventorySlots.get(index);
-
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if (index == 2) {
-                if (!this.mergeItemStack(itemstack1, 3, 39, true)) {
-                    return ItemStack.EMPTY;
-                }
-
-                slot.onSlotChange(itemstack1, itemstack);
-            } else if (index != 1 && index != 0) {
-                if (!FurnaceRecipes.instance().getSmeltingResult(itemstack1).isEmpty()) {
-                    if (!this.mergeItemStack(itemstack1, 0, 1, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (TileEntityFurnace.isItemFuel(itemstack1)) {
-                    if (!this.mergeItemStack(itemstack1, 1, 2, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index >= 3 && index < 30) {
-                    if (!this.mergeItemStack(itemstack1, 30, 39, false)) {
-                        return ItemStack.EMPTY;
-                    }
-                } else if (index >= 30 && index < 39 && !this.mergeItemStack(itemstack1, 3, 30, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (!this.mergeItemStack(itemstack1, 3, 39, false)) {
-                return ItemStack.EMPTY;
-            }
-
-            if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
-            } else {
-                slot.onSlotChanged();
-            }
-
-            if (itemstack1.getCount() == itemstack.getCount()) {
-                return ItemStack.EMPTY;
-            }
-
-            slot.onTake(playerIn, itemstack1);
-        }
-
-        return itemstack;*/
     }
 	
 	@Override
@@ -217,7 +161,7 @@ public class ConcreteContainer extends Container {
 	}
 	
 	/**
-	 * Sets the programmer-friendly UI panel description 
+	 * Sets the root WPanel element
 	 * @param panel
 	 */
 	public void setRootPanel(WPanel panel) {
@@ -226,7 +170,6 @@ public class ConcreteContainer extends Container {
 		this.inventoryItemStacks.clear();
 		
 		this.rootPanel = panel;
-		//this.rootPanel.createPeers(this);
 	}
 	
 	public WPanel getRootPanel() {
@@ -235,7 +178,6 @@ public class ConcreteContainer extends Container {
 	
 	public ItemStack transferToInventory(ItemStack stack, IInventory inventory) {
 		ItemStack result = stack.copy();
-		
 		
 		//Prefer dropping on top of existing stacks
 		for(Slot s : this.inventorySlots) {

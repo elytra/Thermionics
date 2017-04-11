@@ -229,7 +229,9 @@ public class Thermionics {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
 				
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
-					return getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					ConcreteContainer container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					container.validate();
+					return container;
 					//return new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
@@ -246,7 +248,7 @@ public class Thermionics {
 					//container = new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
-				return new ConcreteGui(player.inventory, container);
+				return new ConcreteGui(container);
 			}
 			
 		});

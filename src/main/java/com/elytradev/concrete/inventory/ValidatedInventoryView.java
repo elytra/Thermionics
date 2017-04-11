@@ -23,7 +23,9 @@
  */
 package com.elytradev.concrete.inventory;
 
+import java.util.HashMap;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -33,6 +35,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
+	private int[] fields = new int[0];
+	private HashMap<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
 
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
@@ -66,6 +70,12 @@ public class ValidatedInventoryView implements IInventory {
 		
 		return true;
 	}
+	
+	public ValidatedInventoryView withField(int index, Supplier<Integer> delegate) {
+		
+		fieldDelegates.put(index, delegate);
+		return this;
+	}
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
@@ -74,13 +84,13 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public ItemStack decrStackSize(int index, int count) {
-		if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
+		//if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
 		return delegate.extractItem(index, count, false);
 	}
 
 	@Override
 	public ItemStack removeStackFromSlot(int index) {
-		if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
+		//if (!delegate.getCanExtract(index)) return ItemStack.EMPTY;
 		ItemStack existing = delegate.getStackInSlot(index);
 		if (existing.isEmpty()) return ItemStack.EMPTY;
 		return delegate.extractItem(index, existing.getCount(), false);
@@ -121,16 +131,27 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public int getField(int id) {
+		Supplier<Integer> delegate = fieldDelegates.get(id);
+		if (delegate!=null) return delegate.get();
+		if (fields.length>id) return fields[id];
 		return 0;
 	}
 
 	@Override
 	public void setField(int id, int value) {
+		//System.out.println("SetField id:"+id+" val:"+value);
+		if (fields.length<=id) {
+			int[] newFields = new int[id+1];
+			if (fields.length>0) System.arraycopy(fields, 0, newFields, 0, fields.length);
+			fields = newFields;
+		}
+		fields[id] = value;
 	}
 
 	@Override
 	public int getFieldCount() {
-		return 0;
+		//TODO: This is prone to problems; assumes that fieldDelegates are contiguous
+		return Math.max(fields.length, fieldDelegates.size());
 	}
 
 	@Override

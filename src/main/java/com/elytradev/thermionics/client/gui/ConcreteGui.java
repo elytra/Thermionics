@@ -31,23 +31,16 @@ import com.elytradev.concrete.gui.GuiDrawing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 
 public class ConcreteGui extends GuiContainer {
 	public static final int PADDING = 8;
 	private ConcreteContainer container;
 	
-	//private IInventory playerInv;
-	
-	public ConcreteGui(InventoryPlayer playerInv, ConcreteContainer container) {
+	public ConcreteGui(ConcreteContainer container) {
 		super(container);
 		this.container = container;
 		this.xSize = 18*9;
-		this.ySize = 18*8 + 6;
-		//this.playerInv = playerInv;
+		this.ySize = 18*9;
 	}
 	
 	/*
@@ -71,7 +64,7 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	public void initGui() {
-		//System.out.println("initGui");
+		container.validate();
 		super.initGui();
 	}
 	
@@ -100,8 +93,7 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void keyTyped(char typedChar, int keyCode) throws IOException {
-		//System.out.println("keyTyped:"+Integer.toHexString(keyCode)+" ("+typedChar+")");
-		if (typedChar=='e') {
+		if (keyCode==this.mc.gameSettings.keyBindInventory.getKeyCode()) {
 			this.mc.player.closeScreen();
 			return;
 		}
@@ -153,35 +145,6 @@ public class ConcreteGui extends GuiContainer {
 		
 	}
 	
-	/* (default impl calls setWorldAndResolution so we're good here.)
-	public void onResize(Minecraft mcIn, int w, int h) {
-		super.onResize(mcIn, w, h);
-	}*/
-	
-	/*
-	 * The following methods seem to be internal delegation tools; they poll the LWJGL Mouse and Keyboard objects, fire
-	 * Forge events, and generally invisibly handle things for you that you Want Invisibly Handled. Chances are we won't
-	 * be messing with these *at all* since they're some of the very few things in guis that work the way they should.
-	 */
-	/*
-	@Override
-	public void handleInput() throws IOException {
-		System.out.println("handleInput");
-		super.handleInput();
-	}
-	
-	@Override
-	public void handleMouseInput() throws IOException {
-		System.out.println("handleMouseInput");
-		super.handleMouseInput();
-	}
-	
-	@Override
-	public void handleKeyboardInput() throws IOException {
-		System.out.println("handleKeyboardInput");
-		super.handleKeyboardInput();
-	}*/
-	
 	/*
 	 * SPECIAL FUNCTIONS: Where possible, we want to draw everything based on *actual GUI state and composition* rather
 	 * than relying on pre-baked textures that the programmer then needs to carefully match up their GUI to.
@@ -189,32 +152,13 @@ public class ConcreteGui extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-
-		//drawDefaultBackground();
-		
 		GuiDrawing.drawGuiPanel(guiLeft-PADDING, guiTop-PADDING, xSize+((PADDING-1)*2), ySize+((PADDING-1)*2));
-		//fontRenderer.drawString("Firebox", left+PADDING, top+PADDING, 0xFF404040);
 		
-		if (inventorySlots!=null) {
-			//RenderHelper.enableGUIStandardItemLighting();
-			//GlStateManager.enableRescaleNormal();
-			//OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-			
-			for(Slot slot : inventorySlots.inventorySlots) {
-				GuiDrawing.drawItemSlot(guiLeft+slot.xPos-1, guiTop+slot.yPos-1);
-				
-				//itemRender.renderItemAndEffectIntoGUI(this.mc.player, slot.getStack(), left+slot.xPos+1, top+slot.yPos+1);
-				//slot.xPos
-			}
-			
-			//GlStateManager.disableRescaleNormal();
-			//RenderHelper.disableStandardItemLighting();
+		if (inventorySlots!=null && this.container.getRootPanel()!=null) {
+			this.container.getRootPanel().paintBackground(guiLeft, guiTop);
 		}
 		
+		//TODO: Change this to a label that lives in the rootPanel instead
 		fontRenderer.drawString(container.getLocalizedName(), guiLeft, guiTop, 0xFF404040);
-		//drawItemSlot(left+PADDING, top+PADDING+18);
-		//drawItemSlot(left+PADDING+18, top+PADDING+18);
-		//drawItemSlot(left+PADDING, top+PADDING+18+18);
-		
 	}
 }

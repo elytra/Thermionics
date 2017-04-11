@@ -25,6 +25,10 @@ package com.elytradev.concrete.gui.widget;
 
 import java.util.ArrayList;
 
+import com.elytradev.concrete.gui.ConcreteContainer;
+import com.elytradev.concrete.gui.GuiDrawing;
+import com.elytradev.concrete.inventory.ValidatedSlot;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
@@ -34,6 +38,34 @@ public class WItemSlot extends WWidget {
 	private int startIndex = 0;
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
+	private boolean big = false;
+	
+	public static WItemSlot of(IInventory inventory, int index) {
+		WItemSlot w = new WItemSlot();
+		w.inventory = inventory;
+		w.startIndex = index;
+		
+		return w;
+	}
+	
+	public static WItemSlot of(IInventory inventory, int startIndex, int slotsWide, int slotsHigh) {
+		WItemSlot w = new WItemSlot();
+		w.inventory = inventory;
+		w.startIndex = startIndex;
+		w.slotsWide = slotsWide;
+		w.slotsHigh = slotsHigh;
+		
+		return w;
+	}
+	
+	public static WItemSlot outputOf(IInventory inventory, int index) {
+		WItemSlot w = new WItemSlot();
+		w.inventory = inventory;
+		w.startIndex = index;
+		w.big = true;
+		
+		return w;
+	}
 	
 	@Override
 	public int getWidth() {
@@ -43,5 +75,32 @@ public class WItemSlot extends WWidget {
 	@Override
 	public int getHeight() {
 		return slotsHigh*18;
+	}
+	
+	@Override
+	public void createPeers(ConcreteContainer c) {
+		peers.clear();
+		int index = startIndex;
+		for(int x=0; x<slotsWide; x++) {
+			for(int y=0; y<slotsHigh; y++) {
+				ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+				peers.add(slot);
+				c.addSlotPeer(slot);
+				index++;
+			}
+		}
+	}
+	
+	@Override
+	public void paintBackground(int x, int y) {
+		for(int xi=0; xi<slotsWide; xi++) {
+			for(int yi=0; yi<slotsHigh; yi++) {
+				if (big) {
+					GuiDrawing.drawBeveledPanel((xi*18) + x - 4, (yi*18) + y - 4, 24, 24);
+				} else {
+					GuiDrawing.drawBeveledPanel((xi*18) + x - 1, (yi*18) + y - 1, 18, 18);
+				}
+			}
+		}
 	}
 }

@@ -30,8 +30,8 @@ public class WWidget {
 	protected WPanel parent;
 	private int x = 0;
 	private int y = 0;
-	private int width = 1;
-	private int height = 1;
+	private int width = 18;
+	private int height = 18;
 	
 	public void setLocation(int x, int y) {
 		this.x = x;
@@ -52,11 +52,11 @@ public class WWidget {
 	}
 	
 	public int getWidth() {
-		return 18;
+		return width;
 	}
 	
 	public int getHeight() {
-		return 18;
+		return height;
 	}
 	
 	public boolean canResize() {
@@ -86,7 +86,7 @@ public class WWidget {
 	public void createPeers(ConcreteContainer c) {
 	}
 
-	public void paintBackground() {
+	public void paintBackground(int x, int y) {
 	}
 	
 	public boolean isValid() {

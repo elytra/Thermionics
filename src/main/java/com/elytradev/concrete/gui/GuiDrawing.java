@@ -25,13 +25,46 @@ package com.elytradev.concrete.gui;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.ResourceLocation;
 
 public class GuiDrawing {
-
+	
+	public static void rect(ResourceLocation texture, int left, int top, int width, int height, int color) {
+		rect(texture, left, top, width, height, 0, 0, 1, 1, color);
+	}
+	
+	public static void rect(ResourceLocation texture, int left, int top, int width, int height, float u1, float v1, float u2, float v2, int color) {
+		Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+		
+		//float scale = 0.00390625F;
+		
+		if (width<=0) width=1;
+	    if (height<=0) height=1;
+	    
+	    float r = (float)(color >> 16 & 255) / 255.0F;
+	    float g = (float)(color >> 8 & 255) / 255.0F;
+	    float b = (float)(color & 255) / 255.0F;
+	    Tessellator tessellator = Tessellator.getInstance();
+	    VertexBuffer vertexbuffer = tessellator.getBuffer();
+	    GlStateManager.enableBlend();
+	    //GlStateManager.disableTexture2D();
+	    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+	    GlStateManager.color(r, g, b, 1.0f);
+	    vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX); //I thought GL_QUADS was deprecated but okay, sure.
+	    vertexbuffer.pos(left,       top+height, 0.0D).tex(u1, v2).endVertex();
+	    vertexbuffer.pos(left+width, top+height, 0.0D).tex(u2, v2).endVertex();
+	    vertexbuffer.pos(left+width, top,        0.0D).tex(u2, v1).endVertex();
+	    vertexbuffer.pos(left,       top,        0.0D).tex(u1, v1).endVertex();
+	    tessellator.draw();
+	    //GlStateManager.enableTexture2D();
+	    GlStateManager.disableBlend();
+	}
+	
 	/**
 	 * Draws an untextured rectangle of the specified RGB color. Alpha is always 1.0f.
 	 */
@@ -88,19 +121,39 @@ public class GuiDrawing {
 	    rect(x+width-2, y+height-2, 1,       1, outline); //Bottomright round pixel
 	}
 
-	public static void drawItemSlot(int x, int y) {
-		rect(x,    y,    18, 18, 0x8b8b8b); //Center panel
-		rect(x,    y,    17, 1,  0x373737); //Top shadow
-		rect(x,    y+1,  1,  16, 0x373737); //Left shadow
-		rect(x+17, y+1,  1,  17, 0xFFFFFF); //Right hilight
-		rect(x+1,  y+17, 17, 1,  0xFFFFFF); //Bottom hilight
+	/**
+	 * Draws a default-sized recessed itemslot panel
+	 */
+	public static void drawBeveledPanel(int x, int y) {
+		drawBeveledPanel(x,y,18,18,0x373737,0x8b8b8b,0xFFFFFF);
 	}
 	
-	public static void drawBigItemSlot(int x, int y) {
-		rect(x-4,    y-4,    18+8, 18+8, 0x8b8b8b); //Center panel
-		rect(x-4,    y-4,    17+8, 1-4,  0x373737); //Top shadow
-		rect(x-4,    y+1-4,  1-4,  16+8, 0x373737); //Left shadow
-		rect(x+17+4, y+1-4,  1-4,  17+8, 0xFFFFFF); //Right hilight
-		rect(x+1-4,  y+17+4, 17+8, 1-4,  0xFFFFFF); //Bottom hilight
+	/**
+	 * Draws a default-color recessed itemslot panel of variable size
+	 */
+	public static void drawBeveledPanel(int x, int y, int width, int height) {
+		drawBeveledPanel(x,y,width,height,0x373737,0x8b8b8b,0xFFFFFF);
+	}
+	
+	/**
+	 * Draws a generalized-case beveled panel. Can be inset or outset depending on arguments.
+	 * @param x				x coordinate of the topleft corner
+	 * @param y				y coordinate of the topleft corner
+	 * @param width			width of the panel
+	 * @param height		height of the panel
+	 * @param topleft		color of the top/left bevel
+	 * @param panel			color of the panel area
+	 * @param bottomright	color of the bottom/right bevel
+	 */
+	public static void drawBeveledPanel(int x, int y, int width, int height, int topleft, int panel, int bottomright) {
+		rect(x,         y,         width,   height,   0x8b8b8b); //Center panel
+		rect(x,         y,         width-1, 1,        0x373737); //Top shadow
+		rect(x,         y+1,       1,       height-2, 0x373737); //Left shadow
+		rect(x+width-1, y+1,       1,       height-1, 0xFFFFFF); //Right hilight
+		rect(x+1,       y+height-1,width-1, 1,        0xFFFFFF); //Bottom hilight
+	}
+	
+	public static void drawString(String s, int x, int y, int color) {
+		Minecraft.getMinecraft().fontRenderer.drawString(s, x, y, color);
 	}
 }

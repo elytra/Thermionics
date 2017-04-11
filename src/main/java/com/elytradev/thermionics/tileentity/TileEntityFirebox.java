@@ -144,7 +144,15 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 	
 	@Override
 	public IInventory getContainerInventory() {
-		return new ValidatedInventoryView(itemStorage);
+		ValidatedInventoryView result = new ValidatedInventoryView(itemStorage);
+		
+		if (!this.world.isRemote) return result
+				.withField(0, ()->this.furnaceTicks)
+				.withField(1, ()->this.maxFurnaceTicks)
+				.withField(2, heatStorage::getHeatStored)
+				.withField(3, heatStorage::getMaxHeatStored);
+		
+		return result;
 	}
 	
 	@Override

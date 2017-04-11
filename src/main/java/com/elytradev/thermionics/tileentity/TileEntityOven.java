@@ -173,7 +173,15 @@ public class TileEntityOven extends TileEntityMachine implements ITickable, IMac
 	
 	@Override
 	public IInventory getContainerInventory() {
-		return new ValidatedInventoryView(itemStorage);
+		ValidatedInventoryView result = new ValidatedInventoryView(itemStorage);
+		
+		if (!this.world.isRemote) return result
+				.withField(0, ()->(int)(this.getMachineProgress()*100))
+				.withField(1, ()->100)
+				.withField(2, heatStorage::getHeatStored)
+				.withField(3, heatStorage::getMaxHeatStored);
+		
+		return result;
 	}
 
 	/*

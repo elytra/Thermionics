@@ -63,9 +63,16 @@ public class WPanel extends WWidget {
 	}
 	
 	@Override
-	public void paintBackground() {
+	public void validate(ConcreteContainer c) {
+		layout();
+		createPeers(c);
+		valid = true;
+	}
+	
+	@Override
+	public void paintBackground(int x, int y) {
 		for(WWidget child : children) {
-			child.paintBackground();
+			child.paintBackground(x+child.getX(), y+child.getY());
 		}
 	}
 }

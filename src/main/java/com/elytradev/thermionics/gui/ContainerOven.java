@@ -24,8 +24,12 @@
 package com.elytradev.thermionics.gui;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
+import com.elytradev.concrete.gui.widget.WBar;
+import com.elytradev.concrete.gui.widget.WGridPanel;
+import com.elytradev.concrete.gui.widget.WItemSlot;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.ResourceLocation;
 
 public class ContainerOven extends ConcreteContainer {
 	public static final int ID = 1;
@@ -33,10 +37,30 @@ public class ContainerOven extends ConcreteContainer {
 	public ContainerOven(IInventory player, IInventory container) {
 		super(player, container);
 		
-		initPlayerInventory(0, 18*4);
+		WGridPanel panel = new WGridPanel();
+		super.setRootPanel(panel);
 		
-		initContainerSlot(0, 2,1);
-		initContainerSlot(1, 6,1);
+		panel.add(WItemSlot.of(container, 0), 2, 1);
+		panel.add(new WBar(
+				new ResourceLocation("thermionics","textures/gui/progress.arrow.bg.png"),
+				new ResourceLocation("thermionics","textures/gui/progress.arrow.bar.png"),
+				container, 0, 1, WBar.Direction.RIGHT
+				), 4, 1);
+		panel.add(WItemSlot.outputOf(container, 1), 6, 1);
+		
+		panel.add(new WBar(
+				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),
+				new ResourceLocation("thermionics","textures/gui/progress.heat.bar.png"),
+				container, 2, 3, WBar.Direction.RIGHT
+				), 1, 2, 7, 1);
+		
+		panel.add(WItemSlot.of(player, 9, 9, 4), 0, 3);
+		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
+		
+		//initPlayerInventory(0, 18*4);
+		
+		//initContainerSlot(0, 2,1);
+		//initContainerSlot(1, 6,1);
 	}
 
 }
