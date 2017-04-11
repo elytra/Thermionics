@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.client.gui;
+package com.elytradev.concrete.client.gui;
 
 import java.io.IOException;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
-import com.elytradev.concrete.gui.GuiDrawing;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

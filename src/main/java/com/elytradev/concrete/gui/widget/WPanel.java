@@ -27,6 +27,9 @@ import java.util.ArrayList;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 /**
  * Comparable to swing's JPanel, except that this is the base class for containers too - there's no way to make a
  * WContainer such that it isn't confused with Container, and we don't lose anything from the lack of abstraction.
@@ -69,6 +72,7 @@ public class WPanel extends WWidget {
 		valid = true;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
 		for(WWidget child : children) {

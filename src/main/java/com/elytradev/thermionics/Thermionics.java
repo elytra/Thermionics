@@ -26,6 +26,7 @@ package com.elytradev.thermionics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.elytradev.concrete.client.gui.ConcreteGui;
 import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.thermionics.api.IHeatStorage;
@@ -49,7 +50,6 @@ import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
-import com.elytradev.thermionics.client.gui.ConcreteGui;
 import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.gui.ContainerFirebox;
 import com.elytradev.thermionics.gui.ContainerOven;

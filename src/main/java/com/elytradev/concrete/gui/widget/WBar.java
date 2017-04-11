@@ -1,9 +1,11 @@
 package com.elytradev.concrete.gui.widget;
 
-import com.elytradev.concrete.gui.GuiDrawing;
+import com.elytradev.concrete.client.gui.GuiDrawing;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WBar extends WWidget {
 	private ResourceLocation bg;
@@ -32,6 +34,7 @@ public class WBar extends WWidget {
 		return true;
 	}
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
 		GuiDrawing.rect(bg, x, y, getWidth(), getHeight(), 0xFFFFFFFF);

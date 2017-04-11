@@ -25,6 +25,9 @@ package com.elytradev.concrete.gui.widget;
 
 import com.elytradev.concrete.gui.ConcreteContainer;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 public class WWidget {
 	private boolean valid = false;
 	protected WPanel parent;
@@ -86,6 +89,7 @@ public class WWidget {
 	public void createPeers(ConcreteContainer c) {
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void paintBackground(int x, int y) {
 	}
 	

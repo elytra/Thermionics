@@ -25,12 +25,14 @@ package com.elytradev.concrete.gui.widget;
 
 import java.util.ArrayList;
 
+import com.elytradev.concrete.client.gui.GuiDrawing;
 import com.elytradev.concrete.gui.ConcreteContainer;
-import com.elytradev.concrete.gui.GuiDrawing;
 import com.elytradev.concrete.inventory.ValidatedSlot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WItemSlot extends WWidget {
 	private ArrayList<Slot> peers = new ArrayList<>();
@@ -91,6 +93,7 @@ public class WItemSlot extends WWidget {
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void paintBackground(int x, int y) {
 		for(int xi=0; xi<slotsWide; xi++) {
