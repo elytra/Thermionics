@@ -56,7 +56,7 @@ minecraft {
 
   runDir = "minecraft"
 
-  replaceIn 'src/main/java/io/github/elytra/thermionics/Thermionics.java'
+  replaceIn 'src/main/java/com/elytradev/thermionics/Thermionics.java'
   replace '@VERSION@', project.version
 }
 
@@ -87,4 +87,5 @@ license {
 	exclude "**/*.ogg";
 	exclude "**/*.lang";
 	exclude "/src/main/resources/**";
+	exclude "/doc/**";
 }

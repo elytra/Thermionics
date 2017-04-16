@@ -4,7 +4,7 @@
     "modid": "thermionics",
     "name": "Thermionics|Core",
     "description": "Creative Industrial Automation",
-    "version": "1.0.7",
+    "version": "${version}",
     "mcversion": "1.11.2",
     "url": "",
     "updateUrl": "",
