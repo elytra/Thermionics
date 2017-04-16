@@ -297,7 +297,7 @@ public class Thermionics {
 				's', "ingotSilver"));
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.GEARBOX),
-				"IiI", "i i", "IsI", 'I', "blockIron", 'i', "ingotIron", 's', "ingotSilver"));
+				"IbI", "b b", "IbI", 'I', "blockIron", 'b', "ingotBronze"));
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.HAMMER_MILL),
 				"IiI", "ifi", "IsI", 'I', "blockIron", 'i', "ingotIron", 's', "ingotSilver", 'f', new ItemStack(Items.FLINT)));
