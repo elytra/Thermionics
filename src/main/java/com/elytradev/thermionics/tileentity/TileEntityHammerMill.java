@@ -104,12 +104,13 @@ public class TileEntityHammerMill extends TileEntityMachine implements ITickable
 		if (curRecipe!=lastRecipe) {
 			revolutionsProcessed = 0;
 			lastRecipe = curRecipe;
+			this.markDirty();
 		}
 		float newRequirement = 0;
 		if (lastRecipe!=null) {
-			revolutionsNeeded = curRecipe.getRequiredRevolutions();
+			revolutionsNeeded = lastRecipe.getRequiredRevolutions();
 			//rotaryPower.setRequiredTorque(curRecipe.getRequiredTorque());
-			newRequirement = curRecipe.getRequiredTorque();
+			newRequirement = lastRecipe.getRequiredTorque();
 		}
 		if (existingRequirement<newRequirement) {
 			//Unfortunately, we need to dump any rotary power delivered prior to this moment
@@ -147,6 +148,7 @@ public class TileEntityHammerMill extends TileEntityMachine implements ITickable
 		
 		if (lastRecipe!=null) {
 			//Get some processing done!
+			markActive(true);
 			revolutionsProcessed += newRevolutions;
 			if (revolutionsProcessed>revolutionsNeeded) {
 				if (itemStorage.getStackInSlot(StandardMachineSlots.WORK).isEmpty()) {
@@ -160,6 +162,7 @@ public class TileEntityHammerMill extends TileEntityMachine implements ITickable
 					
 				}
 			}
+			this.markDirty();
 		}
 	}
 
