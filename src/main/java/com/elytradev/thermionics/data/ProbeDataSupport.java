@@ -33,6 +33,7 @@ import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IHeatStorage;
+import com.elytradev.thermionics.api.IRotaryPowerSupply;
 import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.tileentity.TileEntityMachine;
 import com.google.common.collect.ImmutableList;
@@ -54,6 +55,7 @@ public class ProbeDataSupport {
 	public static boolean PROBE_PRESENT = false;
 	public static IUnit UNIT_SIGNAL;
 	public static IUnit UNIT_ENTHALPY;
+	public static IUnit UNIT_TORQUE;
 	@CapabilityInject(IProbeDataProvider.class)
 	public static final Capability<IProbeDataProvider> PROBE_CAPABILITY = null;
 	
@@ -64,6 +66,8 @@ public class ProbeDataSupport {
 			UnitDictionary.getInstance().register(UNIT_SIGNAL);
 			UNIT_ENTHALPY = new SIUnit("Enthalpy", "H", 0xFF7700);
 			UnitDictionary.getInstance().register(UNIT_ENTHALPY);
+			UNIT_TORQUE = new SIUnit("Torque", "T", 0xFFFF00);
+			UnitDictionary.getInstance().register(UNIT_TORQUE);
 		}
 	}
 	
@@ -82,6 +86,10 @@ public class ProbeDataSupport {
 			
 			if (machine.hasCapability(CapabilityEnergy.ENERGY, null)) {
 				addRFData(machine.getCapability(CapabilityEnergy.ENERGY, null), data);
+			}
+			
+			if (machine.hasCapability(Thermionics.CAPABILITY_ROTARYPOWER_SUPPLY, null)) {
+				addRotarySupplierData(machine.getCapability(Thermionics.CAPABILITY_ROTARYPOWER_SUPPLY, null), data);
 			}
 			
 			if (machine instanceof IMachineProgress) {
@@ -136,6 +144,12 @@ public class ProbeDataSupport {
 		}
 		list.add(
 				new ProbeData().withInventory(builder.build())
+				);
+	}
+	
+	public static void addRotarySupplierData(IRotaryPowerSupply storage, List<IProbeData> list) {
+		list.add(new ProbeData(new TextComponentTranslation("thermionics.data.torque"))
+				.withBar(0, storage.getTorqueSetting(), storage.getMaxBufferedPower(), UNIT_TORQUE)
 				);
 	}
 	

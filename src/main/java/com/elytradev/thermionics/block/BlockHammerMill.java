@@ -21,30 +21,39 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.block;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.gui.ContainerHammerMill;
+import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
-	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+public class BlockHammerMill extends BlockMachineBase implements ITileEntityProvider {
+
+	public BlockHammerMill() {
+		super("hammermill");
 	}
-	
-	
+
 	@Override
-	public boolean canResize() {
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityHammerMill();
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (!world.isRemote) {
+			player.openGui(Thermionics.instance(), ContainerHammerMill.ID, world, pos.getX(), pos.getY(), pos.getZ());
+		} else {
+			
+		}
 		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
 	}
 }

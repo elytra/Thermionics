@@ -8,14 +8,12 @@
 		"y":0,
 		"uvlock":true,
 		"textures":{
-			"front":"thermionics:blocks/machine/convectionmotor",
-			"west":"thermionics:blocks/machine/plug.rotary",
-			"east":"thermionics:blocks/machine/plug.rotary",
+			"front":"thermionics:blocks/machine/hammermill",
 			"side":"thermionics:blocks/machine/side",
-			"up":"thermionics:blocks/machine/top",
+			"top":"thermionics:blocks/machine/top",
 			"down":"thermionics:blocks/machine/bottom",
-			"south":"thermionics:blocks/machine/plug.heat",
-			"particle":"thermionics:blocks/machine/top"
+			"south":"thermionics:blocks/machine/plug.rotary",
+			"particle":"thermionics:blocks/machine/plug.rotary"
 		}
 	},
 	
@@ -28,7 +26,7 @@
 		},
 		"active" : {
 			"true": {
-				"textures":{ "front":"thermionics:blocks/machine/convectionmotor.active" }
+				"textures":{ "front":"thermionics:blocks/machine/hammermill.active" }
 			},
 			"false": {}
 		}

@@ -21,30 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.api;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import java.util.ArrayList;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import javax.annotation.Nullable;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
+import net.minecraft.item.ItemStack;
+
+public class HammerMillRecipes {
+	private static ArrayList<IRotaryRecipe> recipes = new ArrayList<>();
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+	public static void registerRecipe(IRotaryRecipe recipe) {
+		recipes.add(recipe);
 	}
 	
-	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
+	@Nullable
+	public static IRotaryRecipe forInput(ItemStack input) {
+		for(IRotaryRecipe recipe : recipes) {
+			if (recipe.matches(input)) {
+				//System.out.println(recipe);
+				return recipe;
+			}
+		}
+		return null;
 	}
 }

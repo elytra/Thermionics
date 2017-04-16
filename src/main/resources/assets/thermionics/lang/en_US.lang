@@ -32,6 +32,7 @@ tile.thermionics.machine.firebox.name=Firebox
 tile.thermionics.machine.convectionmotor.name=Convection Motor
 tile.thermionics.machine.gearbox.name=Gearbox
 tile.thermionics.machine.oven.name=Oven
+tile.thermionics.machine.hammermill.name=Hammer Mill
 
 #Fluids
 tile.thermionics.drum.name=Iron Drum

@@ -21,30 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.gui;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import com.elytradev.concrete.gui.ConcreteContainer;
+import com.elytradev.concrete.gui.widget.WBar;
+import com.elytradev.concrete.gui.widget.WGridPanel;
+import com.elytradev.concrete.gui.widget.WImage;
+import com.elytradev.concrete.gui.widget.WItemSlot;
+import com.elytradev.thermionics.gui.widget.WPBar;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
+public class ContainerMotor extends ConcreteContainer {
+	public static final int ID = 2;
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+	public ContainerMotor(IInventory player, IInventory container) {
+		super(player, container);
+		
+		WGridPanel panel = new WGridPanel();
+		super.setRootPanel(panel);
+		
+		panel.add(new WPBar(container, 2, 3, 4), 1, 1);
+		
+		panel.add(new WBar(
+				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),
+				new ResourceLocation("thermionics","textures/gui/progress.heat.bar.png"),
+				container, 0, 1, WBar.Direction.RIGHT
+				), 1, 2, 7, 1);
+		
+		panel.add(WItemSlot.ofPlayerStorage(player), 0, 4);
+		panel.add(new WImage(new ResourceLocation("thermionics","textures/gui/scrollwork.png")), 2, 7, 5, 1);
+		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
 	}
+
 	
 	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-	}
 }

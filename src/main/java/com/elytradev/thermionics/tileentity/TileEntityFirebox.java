@@ -42,7 +42,7 @@ import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityFirebox extends TileEntityMachine implements ITickable, IMachineProgress, IContainerInventoryHolder {
-	public static final int HEAT_EFFICIENCY = 1;
+	public static final int HEAT_EFFICIENCY = 2;
 	
 	private HeatStorage heatStorage;
 	private ConcreteItemStorage itemStorage;
@@ -103,17 +103,14 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 		
 		if (timeCold<MAX_COLD) timeCold++;
 		
-		//System.out.println("Furnace ticks @"+pos+": "+furnaceTicks);
-		
 		if (furnaceTicks>0) {
 			timeCold = 0;
 			int ticksToConsume = Math.min(HEAT_EFFICIENCY, furnaceTicks); //Consume up to HEAT_EFFICIENCY ticks of furnace time
 			if (ticksToConsume<=0) return; //should never happen, but it pays to be prepared
 			int consumed = heatStorage.receiveHeat(ticksToConsume, false);
 			furnaceTicks -= consumed;
-			//System.out.println("Consumed "+consumed+" furnace ticks, receiving "+consumed+"H ("+furnaceTicks+" remaining)");
 			
-			
+			this.markActive(true);
 			this.markDirty();
 		} else {
 			ItemStack fuelItem = itemStorage.extractItem(0, 1, true);
@@ -132,14 +129,17 @@ public class TileEntityFirebox extends TileEntityMachine implements ITickable, I
 							this.itemStorage.setStackInSlot(1, result);
 						}
 					}
+					this.markActive(true);
 					this.markDirty(); //To be doubly or triply certain that furnaceTicks is updated.
 				}
+			} else {
+				super.markActive(timeCold<MAX_COLD);
 			}
 		}
 		
 		HeatTransport.diffuse(world, pos, heatStorage);
 		
-		super.markActive(timeCold<MAX_COLD);
+		
 	}
 	
 	@Override

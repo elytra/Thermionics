@@ -23,19 +23,28 @@
  */
 package com.elytradev.thermionics;
 
+import java.time.LocalDateTime;
+import java.time.Month;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.elytradev.concrete.client.gui.ConcreteGui;
 import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.IHeatStorage;
-import com.elytradev.thermionics.api.IRotaryPower;
+import com.elytradev.thermionics.api.IRotaryPowerConsumer;
+import com.elytradev.thermionics.api.IRotaryPowerSupply;
 import com.elytradev.thermionics.api.ISignalStorage;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
+import com.elytradev.thermionics.api.impl.DefaultRotaryConsumerSerializer;
 import com.elytradev.thermionics.api.impl.DefaultRotaryPowerSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
-import com.elytradev.thermionics.api.impl.RotaryPower;
+import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
+import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
+import com.elytradev.thermionics.api.impl.RotaryPowerSupply;
+import com.elytradev.thermionics.api.impl.RotaryRecipe;
 import com.elytradev.thermionics.block.BlockAxle;
 import com.elytradev.thermionics.block.BlockBase;
 import com.elytradev.thermionics.block.BlockBattery;
@@ -45,13 +54,17 @@ import com.elytradev.thermionics.block.BlockConvectionMotor;
 import com.elytradev.thermionics.block.BlockDrum;
 import com.elytradev.thermionics.block.BlockFirebox;
 import com.elytradev.thermionics.block.BlockGearbox;
+import com.elytradev.thermionics.block.BlockHammerMill;
 import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.data.EnumDyeSource;
 import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.gui.ContainerFirebox;
+import com.elytradev.thermionics.gui.ContainerHammerMill;
+import com.elytradev.thermionics.gui.ContainerMotor;
 import com.elytradev.thermionics.gui.ContainerOven;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
@@ -63,10 +76,12 @@ import com.elytradev.thermionics.tileentity.TileEntityCableRF;
 import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
+import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFlower.EnumFlowerType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -74,8 +89,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
@@ -93,7 +108,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -107,9 +121,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -124,8 +135,10 @@ public class Thermionics {
 	public static Proxy proxy;
 	@CapabilityInject(IHeatStorage.class)
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
-	@CapabilityInject(IRotaryPower.class)
-	public static Capability<IRotaryPower> CAPABILITY_ROTARYPOWER;
+	@CapabilityInject(IRotaryPowerSupply.class)
+	public static Capability<IRotaryPowerSupply> CAPABILITY_ROTARYPOWER_SUPPLY;
+	@CapabilityInject(IRotaryPowerConsumer.class)
+	public static Capability<IRotaryPowerConsumer> CAPABILITY_ROTARYPOWER_CONSUMER;
 	@CapabilityInject(ISignalStorage.class)
 	public static Capability<ISignalStorage> CAPABILITY_SIGNALSTORAGE;
 	
@@ -145,7 +158,8 @@ public class Thermionics {
 		LOG = LogManager.getLogger(Thermionics.MODID);
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
-		CapabilityManager.INSTANCE.register(IRotaryPower.class, new DefaultRotaryPowerSerializer(), RotaryPower::new);
+		CapabilityManager.INSTANCE.register(IRotaryPowerSupply.class, new DefaultRotaryPowerSerializer(), RotaryPowerSupply::new);
+		CapabilityManager.INSTANCE.register(IRotaryPowerConsumer.class, new DefaultRotaryConsumerSerializer(), RotaryPowerConsumer::new);
 		
 		ProbeDataSupport.init();
 		
@@ -201,6 +215,7 @@ public class Thermionics {
 		registerBlock(woodAxle);
 		registerBlock(new BlockAxle(Material.IRON, "iron"));
 		registerBlock(new BlockGearbox());
+		registerBlock(new BlockHammerMill());
 		//registerBlock(new BlockMotorBase("redstone"));
 
 		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
@@ -211,6 +226,7 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityOven.class,            "thermionics:machine.oven");
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
+		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler() {
@@ -221,6 +237,10 @@ public class Thermionics {
 					return new ContainerFirebox(player, tile);
 				case ContainerOven.ID:
 					return new ContainerOven(player, tile);
+				case ContainerMotor.ID:
+					return new ContainerMotor(player, tile);
+				case ContainerHammerMill.ID:
+					return new ContainerHammerMill(player, tile);
 				}
 			}
 			
@@ -232,7 +252,6 @@ public class Thermionics {
 					ConcreteContainer container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 					container.validate();
 					return container;
-					//return new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
 				System.out.println("NULL SERVER ELEMENT.");
@@ -245,7 +264,6 @@ public class Thermionics {
 				ConcreteContainer container = null;
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
 					container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
-					//container = new ConcreteContainer(player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
 				return new ConcreteGui(container);
@@ -327,7 +345,22 @@ public class Thermionics {
 		//Create a second list for compressed road and make the crafting cycle again
 		registerCraftingCircle(ThermionicsBlocks.ROAD_COMPRESSED);
 		
+		registerMillRecipes("Iron");
+		registerMillRecipes("Copper");
+		registerMillRecipes("Lead");
+		registerMillRecipes("Nickel");
+		registerMillRecipes("Gold");
+		registerMillRecipes("Silver");
+		registerMillRecipes("Tin");
+		registerMillRecipes("Zinc");
 		
+		registerMillRecipe("oreCoal", new ItemStack(Items.COAL,2), 8f, 20f);
+		
+		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
+			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
+		}
+		//for(EnumDyeColor col : EnumDyeColor.values()) {
+		//}
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
@@ -375,6 +408,20 @@ public class Thermionics {
 		GameRegistry.addShapelessRecipe(first.copy(), variants.get(variants.size()-1).copy());
 	}
 	
+	public void registerMillRecipes(String key) {
+		if (OreDictionary.doesOreNameExist("dust"+key)) {
+			NonNullList<ItemStack> dusts = OreDictionary.getOres("dust"+key);
+			ItemStack oneDust = dusts.get(0).copy();
+			ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
+			HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
+			HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
+		}
+	}
+	
+	public void registerMillRecipe(String key, ItemStack result, float torque, float rotations) {
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe(key, result, torque, rotations));
+	}
+	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void updateFOV(FOVUpdateEvent event) {
@@ -394,5 +441,10 @@ public class Thermionics {
 				//event.setFOV(1.0f);
 			}
 		}
+	}
+	
+	public static boolean isAprilFools() {
+		LocalDateTime now = LocalDateTime.now();
+		return now.getDayOfMonth()==1 && now.getMonth()==Month.APRIL;
 	}
 }

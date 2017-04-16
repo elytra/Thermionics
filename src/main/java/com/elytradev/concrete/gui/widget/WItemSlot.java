@@ -41,6 +41,7 @@ public class WItemSlot extends WWidget {
 	private int slotsWide = 1;
 	private int slotsHigh = 1;
 	private boolean big = false;
+	private boolean ltr = true;
 	
 	public static WItemSlot of(IInventory inventory, int index) {
 		WItemSlot w = new WItemSlot();
@@ -69,6 +70,17 @@ public class WItemSlot extends WWidget {
 		return w;
 	}
 	
+	public static WItemSlot ofPlayerStorage(IInventory inventory) {
+		WItemSlot w = new WItemSlot();
+		w.inventory = inventory;
+		w.startIndex = 9;
+		w.slotsWide = 9;
+		w.slotsHigh = 3;
+		w.ltr = false;
+		
+		return w;
+	}
+	
 	@Override
 	public int getWidth() {
 		return slotsWide*18;
@@ -83,12 +95,24 @@ public class WItemSlot extends WWidget {
 	public void createPeers(ConcreteContainer c) {
 		peers.clear();
 		int index = startIndex;
-		for(int x=0; x<slotsWide; x++) {
+		
+		if (ltr) {
+			for(int x=0; x<slotsWide; x++) {
+				for(int y=0; y<slotsHigh; y++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+					peers.add(slot);
+					c.addSlotPeer(slot);
+					index++;
+				}
+			}
+		} else {
 			for(int y=0; y<slotsHigh; y++) {
-				ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
-				peers.add(slot);
-				c.addSlotPeer(slot);
-				index++;
+				for(int x=0; x<slotsWide; x++) {
+					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+					peers.add(slot);
+					c.addSlotPeer(slot);
+					index++;
+				}
 			}
 		}
 	}

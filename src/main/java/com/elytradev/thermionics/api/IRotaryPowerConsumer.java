@@ -21,30 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.api;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
-
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class WImage extends WWidget {
-	ResourceLocation texture;
+/**
+ * Describes a device that has some kind of axle that can rotate, and does something important when that axle is rotated.
+ */
+public interface IRotaryPowerConsumer {
+	/**
+	 * Gets the torque load this machine places on the network. 
+	 */
+	public float getRequiredTorque();
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
-	}
-	
-	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-	}
+	/**
+	 * Supply rotation to this energy. The caller guarantees that the supplied power is at {@link #getRequiredTorque} or
+	 * greater torque.
+	 */
+	public void supplyRevolutions(float revolutions);
 }

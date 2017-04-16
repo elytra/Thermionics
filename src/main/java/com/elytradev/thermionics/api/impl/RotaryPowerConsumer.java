@@ -21,30 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.api.impl;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import java.util.ArrayList;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.elytradev.thermionics.api.IRotaryPowerConsumer;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
+public class RotaryPowerConsumer implements IRotaryPowerConsumer {
+	private ArrayList<Runnable> listeners = new ArrayList<>();
+	private float torqueRequired = 0;
+	private float bufferedRevolutions = 0;
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
-	}
-	
+	public RotaryPowerConsumer() {}
 	
 	@Override
-	public boolean canResize() {
-		return true;
+	public float getRequiredTorque() {
+		return torqueRequired;
+	}
+
+	@Override
+	public void supplyRevolutions(float revolutions) {
+		bufferedRevolutions += revolutions;
 	}
 	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
+	public void setRequiredTorque(float torque) {
+		torqueRequired = torque;
+	}
+	
+	public void clearRevolutions() {
+		bufferedRevolutions = 0;
+	}
+	
+	public float getBufferedRevolutions() {
+		return bufferedRevolutions;
+	}
+	
+	public void setBufferedRevolutions(float revolutions) {
+		bufferedRevolutions = revolutions;
+	}
+
+	
+	public void listen(Runnable r) {
+		listeners.add(r);
 	}
 }

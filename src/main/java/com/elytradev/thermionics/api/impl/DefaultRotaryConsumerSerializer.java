@@ -23,30 +23,33 @@
  */
 package com.elytradev.thermionics.api.impl;
 
-import com.elytradev.thermionics.api.IRotaryPowerSupply;
+import com.elytradev.thermionics.api.IRotaryPowerConsumer;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class DefaultRotaryPowerSerializer implements Capability.IStorage<IRotaryPowerSupply> {
+public class DefaultRotaryConsumerSerializer implements Capability.IStorage<IRotaryPowerConsumer> {
 
 	@Override
-	public NBTBase writeNBT(Capability<IRotaryPowerSupply> capability, IRotaryPowerSupply instance, EnumFacing side) {
+	public NBTBase writeNBT(Capability<IRotaryPowerConsumer> capability, IRotaryPowerConsumer instance, EnumFacing side) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("buffer", instance.getBufferedPower());
-		tag.setInteger("torque", instance.getTorqueSetting());
+		tag.setFloat("torque", instance.getRequiredTorque());
+		if (instance instanceof RotaryPowerConsumer) {
+			tag.setFloat("buffer", ((RotaryPowerConsumer)instance).getBufferedRevolutions());
+		}
+		
 		return tag;
 	}
 
 	@Override
-	public void readNBT(Capability<IRotaryPowerSupply> capability, IRotaryPowerSupply instance, EnumFacing side, NBTBase nbt) {
-		if ((nbt instanceof NBTTagCompound) && (instance instanceof RotaryPowerSupply)) {
+	public void readNBT(Capability<IRotaryPowerConsumer> capability, IRotaryPowerConsumer instance, EnumFacing side, NBTBase nbt) {
+		if (nbt instanceof NBTTagCompound && instance instanceof RotaryPowerConsumer) {
 			NBTTagCompound tag = (NBTTagCompound)nbt;
-			RotaryPowerSupply storage = (RotaryPowerSupply)instance;
-			storage.insertPower(tag.getInteger("buffer"));
-			storage.setTorqueSetting(tag.getInteger("torque"));
+			RotaryPowerConsumer consumer = (RotaryPowerConsumer)instance;
+			if (tag.hasKey("torque")) consumer.setRequiredTorque(tag.getFloat("torque"));
+			if (tag.hasKey("buffer")) consumer.setBufferedRevolutions(tag.getFloat("buffer"));
 		}
 	}
 

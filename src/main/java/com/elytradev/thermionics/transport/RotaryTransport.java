@@ -23,12 +23,87 @@
  */
 package com.elytradev.thermionics.transport;
 
+import java.util.Set;
+
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.api.IRotaryPowerConsumer;
+import com.elytradev.thermionics.api.IRotaryPowerSupply;
+import com.elytradev.thermionics.block.BlockAxle;
+import com.elytradev.thermionics.block.BlockGearbox;
+
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.energy.IEnergyStorage;
 
 public class RotaryTransport {
-	public static void diffuse(World world, BlockPos pos, IEnergyStorage host) {
+	public static void diffuse(World world, BlockPos pos, IRotaryPowerSupply host) {
 		
+	}
+	
+	public static void searchForConsumers(World world, BlockPos pos, EnumFacing dir, Set<BlockPos> searchedNodes, Set<BlockPos> consumers) {
+		searchedNodes.add(pos); //Make sure we're on the list of searched nodes.
+		BlockPos cur = pos;
+		for(int i=0; i<16; i++) {
+			cur = cur.offset(dir);
+			if (!isAxle(world,cur)) {
+				if (isConsumer(world,cur,dir)) {
+					if (!searchedNodes.contains(cur)) {
+						consumers.add(cur);
+						searchedNodes.add(cur);
+					}
+					
+					break;
+				} else {
+					if (isGearbox(world,cur)) {
+						//Recursive search
+						if (!searchedNodes.contains(cur)) {
+							searchedNodes.add(cur);
+							for(EnumFacing f : EnumFacing.values()) {
+								if (f != dir.getOpposite()) searchForConsumers(world, cur, f, searchedNodes, consumers);
+							}
+						}
+					}
+					
+					break;
+				}
+			}
+		}
+	}
+	
+	public static float getTorqueLoad(World world, Set<BlockPos> consumers) {
+		float result = 0f;
+		for(BlockPos pos : consumers) {
+			TileEntity te = world.getTileEntity(pos);
+			if (te!=null && te.hasCapability(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, null)) {
+				IRotaryPowerConsumer cap = te.getCapability(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, null);
+				result += cap.getRequiredTorque();
+			}
+		}
+		return result;
+	}
+	
+	public static void deliverRevolutions(World world, BlockPos pos, float revolutions) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te!=null && te.hasCapability(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, null)) {
+			IRotaryPowerConsumer cap = te.getCapability(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, null);
+			cap.supplyRevolutions(revolutions);
+		}
+	}
+	
+	public static boolean isAxle(World world, BlockPos pos) {
+		IBlockState state = world.getBlockState(pos);
+		return (state.getBlock() instanceof BlockAxle);
+	}
+	
+	public static boolean isConsumer(World world, BlockPos pos, EnumFacing facing) {
+		TileEntity te = world.getTileEntity(pos);
+		if (te==null) return false;
+		return te.hasCapability(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, facing);
+	}
+	
+	public static boolean isGearbox(World world, BlockPos pos) {
+		return world.getBlockState(pos).getBlock() instanceof BlockGearbox;
 	}
 }

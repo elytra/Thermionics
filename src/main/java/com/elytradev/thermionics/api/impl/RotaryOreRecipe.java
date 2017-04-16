@@ -21,30 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.api.impl;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import com.elytradev.thermionics.api.IRotaryRecipe;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.oredict.OreDictionary;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
+public class RotaryOreRecipe implements IRotaryRecipe {
+	private final String input;
+	private final ItemStack output;
+	private float torque;
+	private float revolutions;
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+	public RotaryOreRecipe(String input, ItemStack output, float torque, float revolutions) {
+		this.input = input;
+		this.output = output;
+		this.torque = torque;
+		this.revolutions = revolutions;
 	}
 	
-	
 	@Override
-	public boolean canResize() {
-		return true;
+	public float getRequiredTorque() {
+		return torque;
 	}
-	
-	@SideOnly(Side.CLIENT)
+
 	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
+	public float getRequiredRevolutions() {
+		return revolutions;
+	}
+
+	@Override
+	public boolean matches(ItemStack input) {
+		if (!OreDictionary.doesOreNameExist(this.input)) return false;
+		NonNullList<ItemStack> ores = OreDictionary.getOres(this.input);
+		return OreDictionary.containsMatch(false, ores, input);
+	}
+
+	@Override
+	public ItemStack getOutput(ItemStack input) {
+		return output;
+	}
+
+	@Override
+	public String toString() {
+		return "{'input':"+input+", output:"+output+", torque:"+torque+" revolutions:"+revolutions+"}";
 	}
 }

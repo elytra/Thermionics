@@ -63,7 +63,7 @@ public class ContainerFirebox extends ConcreteContainer {
 				container, 2, 3, WBar.Direction.RIGHT
 				), 1, 2, 7, 1);
 		
-		panel.add(WItemSlot.of(player, 9, 9, 4), 0, 3);
+		panel.add(WItemSlot.ofPlayerStorage(player), 0, 4);
 		panel.add(new WImage(new ResourceLocation("thermionics","textures/gui/scrollwork.png")), 2, 7, 5, 1);
 		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
 	}

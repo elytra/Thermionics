@@ -37,7 +37,7 @@ public class ValidatedInventoryView implements IInventory {
 	private final ConcreteItemStorage delegate;
 	private int[] fields = new int[0];
 	private HashMap<Integer, Supplier<Integer>> fieldDelegates = new HashMap<>();
-
+	
 	public ValidatedInventoryView(ConcreteItemStorage delegate) {
 		this.delegate = delegate;
 	}
@@ -79,6 +79,7 @@ public class ValidatedInventoryView implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int index) {
+		if (index>=delegate.getSlots()) return ItemStack.EMPTY;
 		return delegate.getStackInSlot(index);
 	}
 

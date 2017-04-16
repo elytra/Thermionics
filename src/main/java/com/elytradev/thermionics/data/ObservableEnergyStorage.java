@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.energy.EnergyStorage;
 
 /**

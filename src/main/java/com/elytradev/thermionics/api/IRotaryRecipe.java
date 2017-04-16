@@ -21,30 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
+package com.elytradev.thermionics.api;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+import net.minecraft.item.ItemStack;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-public class WImage extends WWidget {
-	ResourceLocation texture;
+/**
+ * A recipe for any rotary machine that takes one solid input and produces one solid output.
+ */
+public interface IRotaryRecipe {
+	/**
+	 * Gets the amount of wrench force that must be applied for any work to be done towards this recipe
+	 */
+	public float getRequiredTorque();
 	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
-	}
+	/**
+	 * Gets the number of revolutions (full, 360-degree turns of an axle) required to complete this recipe
+	 */
+	public float getRequiredRevolutions();
 	
+	/**
+	 * Returns true if the provided input will trigger this recipe
+	 */
+	public boolean matches(ItemStack input);
 	
-	@Override
-	public boolean canResize() {
-		return true;
-	}
-	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
-	}
+	/**
+	 * Gets the result of this recipe. DO NOT HAND OUT THE RESULT OF THIS RECIPE! Make a copy!
+	 */
+	public ItemStack getOutput(ItemStack input);
 }
