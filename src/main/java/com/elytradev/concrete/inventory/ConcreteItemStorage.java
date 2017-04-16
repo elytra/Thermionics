@@ -24,6 +24,7 @@
 package com.elytradev.concrete.inventory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
-import scala.actors.threadpool.Arrays;
 
 /**
  * Base/internal class for managing item storage.
