@@ -289,6 +289,16 @@ public class Thermionics {
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.OVEN,1),
 				"xxx", "x x", "xcx", 'x', "ingotIron", 'c', "ingotCopper"));
 		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.MOTOR_CONVECTION),
+				"IcI", "ctc", "IsI",
+				'I', "blockIron",
+				'c', "ingotCopper",
+				't', new ItemStack(Blocks.REDSTONE_TORCH),
+				's', "ingotSilver"));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.GEARBOX),
+				"IiI", "i i", "IsI", 'I', "blockIron", 'i', "ingotIron", 's', "ingotSilver"));
+		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.BATTERY_LEAD,1),
 				" c ", "pLp", " r ", 'L', "blockLead", 'c', "ingotCopper", 'r', new ItemStack(Items.REDSTONE), 'p', new ItemStack(Items.PAPER)));
 		

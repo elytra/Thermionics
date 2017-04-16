@@ -46,6 +46,15 @@ public class ThermionicsBlocks {
 	@ObjectHolder("machine.oven")
 	public static final BlockOven OVEN = null;
 	
+	@ObjectHolder("machine.convectionmotor")
+	public static final BlockConvectionMotor MOTOR_CONVECTION = null;
+	
+	@ObjectHolder("machine.hammermill")
+	public static final BlockHammerMill HAMMER_MILL = null;
+	
+	@ObjectHolder("machine.gearbox")
+	public static final BlockGearbox GEARBOX = null;
+	
 	@ObjectHolder("axle.wood")
 	public static final BlockAxle AXLE_WOOD = null;
 	

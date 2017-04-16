@@ -174,10 +174,14 @@ public class TileEntityHammerMill extends TileEntityMachine implements ITickable
 
 	@Override
 	public IInventory getContainerInventory() {
-		return new ValidatedInventoryView(itemStorage)
+		ValidatedInventoryView result = new ValidatedInventoryView(itemStorage);
+		
+		if (!this.world.isRemote) return result
 				.withField(0, ()->(int)revolutionsProcessed)
 				.withField(1, ()->(int)revolutionsNeeded)
 				.withField(2, ()->rpm);
+		
+		return result;
 	}
 
 }
