@@ -424,10 +424,12 @@ public class Thermionics {
 	public void registerMillRecipes(String key) {
 		if (OreDictionary.doesOreNameExist("dust"+key)) {
 			NonNullList<ItemStack> dusts = OreDictionary.getOres("dust"+key);
-			ItemStack oneDust = dusts.get(0).copy();
-			ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
-			HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
-			HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
+			if (!dusts.isEmpty()) {
+				ItemStack oneDust = dusts.get(0).copy();
+				ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
+				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
+				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
+			}
 		}
 	}
 	
