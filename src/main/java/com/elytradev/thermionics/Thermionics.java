@@ -68,6 +68,7 @@ import com.elytradev.thermionics.gui.ContainerMotor;
 import com.elytradev.thermionics.gui.ContainerOven;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.item.ItemChunkUnloader;
 import com.elytradev.thermionics.item.ItemHammer;
 import com.elytradev.thermionics.item.ThermionicsItems;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
@@ -81,7 +82,6 @@ import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlower.EnumFlowerType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
@@ -90,11 +90,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
@@ -162,20 +162,9 @@ public class Thermionics {
 		CapabilityManager.INSTANCE.register(IRotaryPowerConsumer.class, new DefaultRotaryConsumerSerializer(), RotaryPowerConsumer::new);
 		
 		ProbeDataSupport.init();
-		
-		//Since we can't rely on the oredict for toolmaterials...
-		//PS, since these are enum constants, fully-capitalized is the correct Oracle convention.
-		/*                                                     name    level  uses   eff   dmg  enchant */
-		/*                                                     "iron"      2,  250,   6f,   2f,     14 */
-		//ToolMaterial toolCopper = EnumHelper.addToolMaterial("COPPER",     2,  200,   7f,   1f,     20);
-		//ToolMaterial toolLead   = EnumHelper.addToolMaterial("LEAD",       2,  250,   5f,   2f,     14);
-		
+
 		//Hammertime!
-		
-		
-		
-		
-		
+
 		registerItem(new ItemHammer(ToolMaterial.IRON, "iron"));
 		registerItem(new ItemHammer(ToolMaterial.GOLD, "gold"));
 		registerItem(new ItemHammer(ToolMaterial.DIAMOND, "diamond"));
@@ -186,6 +175,8 @@ public class Thermionics {
 		registerItem(new ItemHammer("copper", "ingotCopper", 2,     200, 7f, 1f, 20));
 		registerItem(new ItemHammer("lead",   "ingotLead",   2,    1550, 4f, 2f, 8)); //Some specialcasing here, lead is durable but stone harvest speed and hard to enchant
 		registerItem(new ItemHammer("invar",  "ingotInvar",  2,     300, 6f, 2f, 14));
+		
+		registerItem(new ItemChunkUnloader());
 		
 		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
@@ -372,8 +363,15 @@ public class Thermionics {
 		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
 		}
-		//for(EnumDyeColor col : EnumDyeColor.values()) {
-		//}
+		
+		NBTTagCompound oresTag = new NBTTagCompound();
+		oresTag.setBoolean("oreCopper", true);
+		oresTag.setBoolean("ingotCopper", true);
+		oresTag.setBoolean("dustCopper", true);
+		oresTag.setBoolean("gearCopper", true);
+		oresTag.setBoolean("plateCopper", true);
+		FMLInterModComms.sendMessage("smores", "recipeVote", oresTag);
+		
 		
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 	}
@@ -452,8 +450,6 @@ public class Thermionics {
 			EntityLivingBase living = (EntityLivingBase)event.getEntity();
 			if (living.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
 				event.setFOV( Minecraft.getMinecraft().gameSettings.fovSetting );
-				
-				//event.setFOV(1.0f);
 			}
 		}
 	}

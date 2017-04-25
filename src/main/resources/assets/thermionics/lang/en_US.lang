@@ -7,6 +7,8 @@ item.thermionics.hammer.diamond.name=Diamond Hammer
 item.thermionics.hammer.copper.name=Copper Hammer
 item.thermionics.hammer.lead.name=Lead Hammer
 item.thermionics.hammer.invar.name=Invar Hammer
+item.thermionics.chunkunloader.name=Chunk Unloader
+item.thermionics.chunkunloader.tip=Rightclick a block to attune to its chunk. Rightclick air to unload it if possible.
 
 #Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold
@@ -33,6 +35,7 @@ tile.thermionics.machine.convectionmotor.name=Convection Motor
 tile.thermionics.machine.gearbox.name=Gearbox
 tile.thermionics.machine.oven.name=Oven
 tile.thermionics.machine.hammermill.name=Hammer Mill
+tile.thermionics.machine.serger.name=Serger
 
 #Fluids
 tile.thermionics.drum.name=Iron Drum
@@ -44,6 +47,10 @@ thermionics.data.heatstorage=Stored Heat
 thermionics.data.progress=Progress
 thermionics.data.torque=Torque
 thermionics.data.rpm=RPM
+
+thermionics.data.chunkunloader.unattuned=Not attuned
+thermionics.data.chunkunloader.unloaded=Chunk unloaded
+thermionics.data.chunkunloader.loaded=Chunk loaded
 
 #Potions
 effect.moveSpeed.effortless=Expedience

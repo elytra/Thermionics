@@ -25,6 +25,7 @@ package com.elytradev.thermionics;
 
 import com.elytradev.thermionics.client.tesr.RenderTileDrum;
 import com.elytradev.thermionics.data.IPreferredRenderState;
+import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 
@@ -61,6 +62,11 @@ public class ClientProxy extends Proxy {
 			}
 		} else if (item instanceof ItemTool) {
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, "inventory"));
+		} else if (item instanceof IMetaItemModel) {
+			String[] models = ((IMetaItemModel) item).getModelLocations();
+			for(int i=0; i<models.length; i++) {
+				ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(new ResourceLocation(Thermionics.MODID, models[i]), "inventory"));
+			}
 		} else {
 			if (variantList.size()==1) {
 				ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, "inventory"));
