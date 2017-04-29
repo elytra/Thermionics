@@ -21,13 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.tileentity;
+package com.elytradev.libasplod;
 
-import com.elytradev.thermionics.api.IRotaryRecipe;
+import net.minecraft.util.math.BlockPos;
 
-public class TileEntitySerger extends TileEntityMachine {
-	private float revolutionsNeeded = 0f;
-	private float revolutionsProcessed = 0f;
-	private int rpm = 0;
-	private IRotaryRecipe lastRecipe = null;
+public class MutableVector {
+	public int x = 0;
+	public int y = 0;
+	public int z = 0;
+	
+	public MutableVector withPosition(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
+	
+	public MutableVector withPosition(BlockPos pos) {
+		this.x = pos.getX();
+		this.y = pos.getY();
+		this.z = pos.getZ();
+		return this;
+	}
+	
+	public MutableVector withPosition(MutableVector base, int x, int y, int z) {
+		this.x = base.x + x;
+		this.y = base.y + y;
+		this.z = base.z + z;
+		
+		return this;
+	}
+	
+	public MutableVector add(int x, int y, int z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
+		return this;
+	}
+	public MutableVector add(MutableVector other) {
+		return this.add(other.x, other.y, other.z);
+	}
+	
 }

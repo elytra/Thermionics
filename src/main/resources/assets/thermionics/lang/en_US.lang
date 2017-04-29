@@ -37,6 +37,8 @@ tile.thermionics.machine.oven.name=Oven
 tile.thermionics.machine.hammermill.name=Hammer Mill
 tile.thermionics.machine.serger.name=Serger
 
+tile.thermionics.creativetnt.name="Creative" TNT
+
 #Fluids
 tile.thermionics.drum.name=Iron Drum
 
@@ -54,3 +56,8 @@ thermionics.data.chunkunloader.loaded=Chunk loaded
 
 #Potions
 effect.moveSpeed.effortless=Expedience
+
+#Relocalizations
+item.horsearmormetal.name=Iron Barding
+item.horsearmorgold.name=Gold Barding
+item.horsearmordiamond.name=Diamond Barding

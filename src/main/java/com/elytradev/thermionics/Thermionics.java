@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 import com.elytradev.concrete.client.gui.ConcreteGui;
 import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.libasplod.BigExplosionHandler;
 import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerConsumer;
@@ -59,6 +60,7 @@ import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
+import com.elytradev.thermionics.block.BlockTNTCreative;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.EnumDyeSource;
 import com.elytradev.thermionics.data.ProbeDataSupport;
@@ -207,6 +209,7 @@ public class Thermionics {
 		registerBlock(new BlockAxle(Material.IRON, "iron"));
 		registerBlock(new BlockGearbox());
 		registerBlock(new BlockHammerMill());
+		registerBlock(new BlockTNTCreative());
 		//registerBlock(new BlockMotorBase("redstone"));
 
 		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
@@ -265,6 +268,7 @@ public class Thermionics {
 		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
 		
 		MinecraftForge.EVENT_BUS.register(this);
+		BigExplosionHandler.instance().init();
 	}
 	
 	@EventHandler
