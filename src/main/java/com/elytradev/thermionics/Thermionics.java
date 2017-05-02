@@ -60,6 +60,7 @@ import com.elytradev.thermionics.block.BlockHeatPipe;
 import com.elytradev.thermionics.block.BlockOven;
 import com.elytradev.thermionics.block.BlockRoad;
 import com.elytradev.thermionics.block.BlockScaffold;
+import com.elytradev.thermionics.block.BlockSerger;
 import com.elytradev.thermionics.block.BlockTNTCreative;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.EnumDyeSource;
@@ -81,6 +82,7 @@ import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
+import com.elytradev.thermionics.tileentity.TileEntitySerger;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
@@ -187,7 +189,6 @@ public class Thermionics {
 		
 		//RF
 		registerBlock(new BlockCableRF("rf"));
-		
 		BlockBattery leadBattery = new BlockBattery("lead");
 		registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));
 		BlockBatteryCreative creativeBattery = new BlockBatteryCreative();
@@ -209,9 +210,12 @@ public class Thermionics {
 		registerBlock(new BlockAxle(Material.IRON, "iron"));
 		registerBlock(new BlockGearbox());
 		registerBlock(new BlockHammerMill());
-		registerBlock(new BlockTNTCreative());
+		registerBlock(new BlockSerger());
 		//registerBlock(new BlockMotorBase("redstone"));
 
+		//Explosive
+		registerBlock(new BlockTNTCreative());
+		
 		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
 		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
 		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
@@ -221,6 +225,7 @@ public class Thermionics {
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
+		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler() {
@@ -333,15 +338,6 @@ public class Thermionics {
 				));
 		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
-		
-		/*
-		NonNullList<ItemStack> variants = NonNullList.create();
-		ThermionicsBlocks.ROAD.getSubBlocks(ItemBlock.getItemFromBlock(ThermionicsBlocks.ROAD), Thermionics.TAB_THERMIONICS, variants);
-		ItemStack prev = variants.remove(0);
-		for(ItemStack item : variants) {
-			GameRegistry.addShapelessRecipe(item.copy(), prev.copy());
-			prev = item;
-		}*/
 		registerCraftingCircle(ThermionicsBlocks.ROAD);
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(
@@ -353,14 +349,28 @@ public class Thermionics {
 		//Create a second list for compressed road and make the crafting cycle again
 		registerCraftingCircle(ThermionicsBlocks.ROAD_COMPRESSED);
 		
+		if (OreDictionary.doesOreNameExist("dustIron")) {
+			System.out.println("IRON DUST IDENTIFIED.");
+		} else {
+			System.out.println("CANNOT IDENTIFY IRON DUST!");
+		}
+		
+		//Ore->2xDust, Ingot->1xDust
 		registerMillRecipes("Iron");
+		registerMillRecipes("Gold");
 		registerMillRecipes("Copper");
+		registerMillRecipes("Tin");
+		registerMillRecipes("Silver");
 		registerMillRecipes("Lead");
 		registerMillRecipes("Nickel");
-		registerMillRecipes("Gold");
-		registerMillRecipes("Silver");
-		registerMillRecipes("Tin");
 		registerMillRecipes("Zinc");
+		registerMillRecipes("Platinum");
+		registerMillRecipes("Mithril");
+		registerMillRecipes("Electrum");
+		registerMillRecipes("Brass");
+		registerMillRecipes("Bronze");
+		registerMillRecipes("Invar");
+		registerMillRecipes("Steel");
 		
 		registerMillRecipe("oreCoal", new ItemStack(Items.COAL,2), 8f, 20f);
 		
@@ -424,12 +434,15 @@ public class Thermionics {
 	}
 	
 	public void registerMillRecipes(String key) {
-		if (OreDictionary.doesOreNameExist("dust"+key)) {
+		if (OreDictionary.doesOreNameExist("dust"+key) && !OreDictionary.getOres("dust"+key).isEmpty()) {
+			System.out.println("Found dust for "+key+". Registering mill recipes.");
 			NonNullList<ItemStack> dusts = OreDictionary.getOres("dust"+key);
 			if (!dusts.isEmpty()) {
 				ItemStack oneDust = dusts.get(0).copy();
 				ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
-				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
+				//if (OreDictionary.doesOreNameExist("ore"+key) && !OreDictionary.getOres("ore"+key).isEmpty()) {
+					HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
+				//}
 				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
 			}
 		}

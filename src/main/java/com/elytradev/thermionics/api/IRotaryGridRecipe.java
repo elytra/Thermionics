@@ -40,6 +40,16 @@ import net.minecraftforge.items.IItemHandler;
 public interface IRotaryGridRecipe {
 	
 	/**
+	 * Gets the amount of wrench force that must be applied for any work to be done towards this recipe
+	 */
+	public float getRequiredTorque();
+	
+	/**
+	 * Gets the number of revolutions (full, 360-degree turns of an axle) required to complete this recipe
+	 */
+	public float getRequiredRevolutions();
+	
+	/**
 	 * Returns true if the items in the grid will trigger crafting under this recipe. Read-only.
 	 */
 	public boolean matches(IInventory inv);

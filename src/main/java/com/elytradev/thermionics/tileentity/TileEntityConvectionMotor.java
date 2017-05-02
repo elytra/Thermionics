@@ -40,10 +40,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityConvectionMotor extends TileEntityMachine implements ITickable, IContainerInventoryHolder {
+	private static final float DELIVERY_RATE = 0.5f;
+	
 	private ConcreteItemStorage containerStorage = new ConcreteItemStorage(0).withName("tile.thermionics.machine.convectionmotor.name");
 	private HeatStorage heatStorage = new HeatStorage(1000);
 	private RotaryPowerSupply rotaryPower = new RotaryPowerSupply();
@@ -96,6 +96,7 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 		// # Check for redstone shutoff
 		if (world.isBlockIndirectlyGettingPowered(pos)!=0) {
 			this.markActive(false);
+			this.rotaryPower.autoSetTorqueSetting(0f);
 			return;
 		}
 		
@@ -120,7 +121,11 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 		 */
 		
 		//drawing 15P means we want 20H
-		int extracted = heatStorage.extractHeat(20, false);
+		int extracted = heatStorage.extractHeat((int)(20*DELIVERY_RATE), false);
+		if (extracted==0) {
+			this.markActive(false);
+			return;
+		}
 		rotaryPower.insertPower((int)(extracted*3f/4f));
 		
 		// # Discover the torque load
@@ -134,7 +139,7 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 		//torqueLoad = 0;
 		
 		// # Step power towards torque load
-		rotaryPower.autoSetTorqueSetting((int)Math.ceil(torqueLoad));
+		rotaryPower.autoSetTorqueSetting(torqueLoad);
 		if (rotaryPower.getTorqueSetting()<torqueLoad) {
 			//We're locked. Kill the power and stop.
 			rotaryPower.extractPower(Integer.MAX_VALUE);
@@ -163,8 +168,8 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 		if (!this.world.isRemote) return result
 				.withField(0, heatStorage::getHeatStored)
 				.withField(1, heatStorage::getMaxHeatStored)
-				.withField(2, rotaryPower::getTorqueSetting)
-				.withField(3, rotaryPower::getMaxBufferedPower)
+				.withField(2, ()->(int)rotaryPower.getTorqueSetting())
+				.withField(3, ()->(int)rotaryPower.getMaxBufferedPower())
 				.withField(4, ()->(int)torqueLoad);
 		//Todo: Figure out how we can find the torque load
 		

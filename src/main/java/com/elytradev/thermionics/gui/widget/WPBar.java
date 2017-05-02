@@ -63,7 +63,7 @@ public class WPBar extends WWidget {
 		
 		int maxDelta = Math.abs(maxPower - load);
 		int curDelta = Math.abs(transmission - load);
-		float percent = curDelta/(float)maxDelta;
+		float percent = 1f - (curDelta/(float)maxDelta);
 		int arrows = (int)(14 * percent);
 		//arrows = 8;
 		

@@ -47,26 +47,26 @@ public interface IRotaryPowerSupply {
 	 * certain kinds of motors can be placed in-series, and will accept buffer power from a side opposite their output
 	 * face.
 	 */
-	public void insertPower(int amount);
+	public void insertPower(float amount);
 	
 	/**
 	 * Extract power from this supplier. Generally this is done only by the supplier itself, when it supplies
 	 * revolutions to consumers.
 	 */
-	public int extractPower(int amount);
+	public float extractPower(float amount);
 	
 	/**
 	 * Gets the amount of power currently buffered.
 	 */
-	public int getBufferedPower();
+	public float getBufferedPower();
 	
 	/**
 	 * Gets the maximum power that can be buffered.
 	 */
-	public int getMaxBufferedPower();
+	public float getMaxBufferedPower();
 	
 	/**
 	 * Gets the current transmission setting of this supplier
 	 */
-	public int getTorqueSetting();
+	public float getTorqueSetting();
 }

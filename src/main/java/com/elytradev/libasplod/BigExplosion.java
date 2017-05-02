@@ -55,7 +55,7 @@ public strictfp class BigExplosion {
 	 * impacts at the given block. So we fudge things and say that in the process of breaking, elastic deformations
 	 * diminish the power of the gas/metal jet by a tiny fraction of the material's static density.
 	 */
-	public static final float RESISTANCE_SCALE = 0.025f;
+	public static final float RESISTANCE_SCALE = 0.00025f;
 	public static final float TAU = (float)(Math.PI*2d);
 	public static final float PI = (float)Math.PI;
 	public static final float QUARTER = PI/2f;
@@ -170,10 +170,10 @@ public strictfp class BigExplosion {
 		
 		
 		//We've got our column
-		for(int i=radius; i>=-radius; i--) {
-		//for(int i=0; i<(radius*2+1); i++) {
-		//	int targetY = epicenter.y + ManhattanMath.wiggle(i);
-			int targetY = epicenter.y + i;
+		//for(int i=radius; i>=-radius; i--) {
+		for(int i=0; i<(radius*2+1); i++) {
+			int targetY = epicenter.y + ManhattanMath.wiggle(i);
+			//int targetY = epicenter.y + i;
 			if (targetY<0 || targetY>255) continue;
 			cursor.y = targetY;
 			
@@ -194,29 +194,6 @@ public strictfp class BigExplosion {
 		}
 		
 		//System.out.println(explainCylinderMap());
-		
-		/*if (curRadius>1 && ManhattanMath.isWithinHull(curRadius-1, stepInRadius)) {
-			IBlockState air = Blocks.AIR.getDefaultState();
-			
-			ManhattanMath.getHullLocation(curRadius-1, stepInRadius, epicenter, cursor);
-			BlockPos top = w.getTopSolidOrLiquidBlock(new BlockPos(cursor.x,cursor.y,cursor.z));
-			//try {
-				
-				while(top.getY()>0) {
-					IBlockState state = w.getBlockState(top);
-					if (isFluid(state.getBlock())) {
-						w.setBlockState(top, air, 0);
-						//w.setBlockToAir(top);
-					} else {
-						break;
-					}
-					top = top.down();
-				}
-			//} catch (Throwable t) {
-				//Force noisy error but keep on trucking - suppress the stacktrace because it'd definitely crash the server printing them out at the rate they'd be generated.
-			//	System.out.println("Block "+w.getBlockState(top).getBlock().getRegistryName()+" errored during neighborChange!");
-			//}
-		}*/
 		
 		stepInRadius++;
 		if (!ManhattanMath.isWithinHull(curRadius, stepInRadius)) {
@@ -305,8 +282,13 @@ public strictfp class BigExplosion {
 			block.dropBlockAsItem(world, pos, state, 0);
 		}
 		//block.onBlockExploded(world, pos, dummyExplosion); //Also calls onBlockDestroyedByExplosion
-		world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2 | 16); //Observers are blinded by explosions or something
 		
+		if (pos.getY()>4) {
+			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2 | 16); //Observers are blinded by explosions or something
+		} else {
+			world.setBlockState(pos, Blocks.AIR.getDefaultState(), 2 | 16); //Don't know if the chest bug still exists, but if it does we'll be safe with this line.
+			world.setBlockState(pos, Blocks.OBSIDIAN.getDefaultState(), 2 | 16); //If we're that strong, glass the crater floor.
+		}
 		return power - (int)(resistance*RESISTANCE_SCALE);
 	}
 	
@@ -345,6 +327,7 @@ public strictfp class BigExplosion {
 				float remaining = explodeBlock(world, here, curPower);
 				if (remaining<=0) return 0;
 				//if (curPower<=0) return 0;
+				curPower = remaining;
 				
 			}
 			

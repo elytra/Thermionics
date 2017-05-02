@@ -42,7 +42,7 @@ public class ContainerMotor extends ConcreteContainer {
 		WGridPanel panel = new WGridPanel();
 		super.setRootPanel(panel);
 		
-		panel.add(new WPBar(container, 2, 3, 4), 1, 1);
+		panel.add(new WPBar(container, 3, 2, 4), 1, 1);
 		
 		panel.add(new WBar(
 				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),

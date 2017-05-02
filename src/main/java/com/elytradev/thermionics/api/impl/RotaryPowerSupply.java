@@ -28,42 +28,43 @@ import java.util.ArrayList;
 import com.elytradev.thermionics.api.IRotaryPowerSupply;
 
 public class RotaryPowerSupply implements IRotaryPowerSupply {
+	public static final float TRANSMISSION_SPEED = 0.1f;
 	private ArrayList<Runnable> listeners = new ArrayList<>();
 	private int cap = 20;
-	private int buffer = 0;
-	private int torque = 20;
+	private float buffer = 0;
+	private float torque = 20;
 	
 	public RotaryPowerSupply() {
 		this.cap = 20;
 	}
 
 	@Override
-	public void insertPower(int amount) {
+	public void insertPower(float amount) {
 		buffer += amount;
 		if (buffer>cap) buffer=cap;
 		markDirty();
 	}
 
 	@Override
-	public int extractPower(int amount) {
-		int toExtract = Math.min(amount, buffer);
+	public float extractPower(float amount) {
+		float toExtract = Math.min(amount, buffer);
 		buffer -= toExtract;
 		markDirty();
 		return toExtract;
 	}
 
 	@Override
-	public int getBufferedPower() {
+	public float getBufferedPower() {
 		return buffer;
 	}
 
 	@Override
-	public int getMaxBufferedPower() {
+	public float getMaxBufferedPower() {
 		return cap;
 	}
 
 	@Override
-	public int getTorqueSetting() {
+	public float getTorqueSetting() {
 		return torque;
 	}
 	
@@ -82,7 +83,7 @@ public class RotaryPowerSupply implements IRotaryPowerSupply {
 	/**
 	 * Sets the transmission stepping
 	 */
-	public void setTorqueSetting(int setting) {
+	public void setTorqueSetting(float setting) {
 		torque = setting;
 		markDirty();
 	}
@@ -90,7 +91,8 @@ public class RotaryPowerSupply implements IRotaryPowerSupply {
 	/**
 	 * 
 	 */
-	public void autoSetTorqueSetting(int load) {
+	public void autoSetTorqueSetting(float load) {
+		System.out.println("Adjusting towards load "+load);
 		if (load>torque) {
 			//This could lock the machine at 0RPM forever if load >= cap. This is intended!
 			if (torque!=cap) {
@@ -99,7 +101,9 @@ public class RotaryPowerSupply implements IRotaryPowerSupply {
 			return;
 		} else {
 			if (torque>load) {
-				setTorqueSetting(torque-1);
+				setTorqueSetting(torque-TRANSMISSION_SPEED);
+				if (torque<0) torque = 0;
+				if (torque<load) torque = load; //Prevent overshoot slamming us back up to cap
 			} else {
 				//We're running at optimal speed! ^_^
 			}

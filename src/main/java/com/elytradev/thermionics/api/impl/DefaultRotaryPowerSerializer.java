@@ -35,8 +35,8 @@ public class DefaultRotaryPowerSerializer implements Capability.IStorage<IRotary
 	@Override
 	public NBTBase writeNBT(Capability<IRotaryPowerSupply> capability, IRotaryPowerSupply instance, EnumFacing side) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("buffer", instance.getBufferedPower());
-		tag.setInteger("torque", instance.getTorqueSetting());
+		tag.setFloat("buffer", instance.getBufferedPower());
+		tag.setFloat("torque", instance.getTorqueSetting());
 		return tag;
 	}
 
@@ -45,8 +45,8 @@ public class DefaultRotaryPowerSerializer implements Capability.IStorage<IRotary
 		if ((nbt instanceof NBTTagCompound) && (instance instanceof RotaryPowerSupply)) {
 			NBTTagCompound tag = (NBTTagCompound)nbt;
 			RotaryPowerSupply storage = (RotaryPowerSupply)instance;
-			storage.insertPower(tag.getInteger("buffer"));
-			storage.setTorqueSetting(tag.getInteger("torque"));
+			storage.insertPower(tag.getFloat("buffer"));
+			storage.setTorqueSetting(tag.getFloat("torque"));
 		}
 	}
 
