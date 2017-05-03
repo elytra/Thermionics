@@ -66,11 +66,6 @@ public class ContainerOven extends ConcreteContainer {
 		panel.add(WItemSlot.ofPlayerStorage(player), 0, 4);
 		panel.add(new WImage(new ResourceLocation("thermionics","textures/gui/scrollwork.png")), 2, 7, 5, 1);
 		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
-		
-		//initPlayerInventory(0, 18*4);
-		
-		//initContainerSlot(0, 2,1);
-		//initContainerSlot(1, 6,1);
 	}
 
 }

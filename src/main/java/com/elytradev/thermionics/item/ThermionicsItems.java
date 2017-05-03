@@ -40,4 +40,10 @@ public class ThermionicsItems {
 	public static final ItemHammer HAMMER_LEAD = null;
 	@ObjectHolder("hammer.invar")
 	public static final ItemHammer HAMMER_INVAR = null;
+	
+	@ObjectHolder("allomanticpowder")
+	public static final ItemSubtyped<EnumAllomanticPowder> ALLOMANTIC_POWDER = null;
+	
+	@ObjectHolder("bauble.cloak")
+	public static final ItemMistcloak MISTCLOAK = null;
 }

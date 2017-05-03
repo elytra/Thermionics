@@ -23,10 +23,49 @@
  */
 package com.elytradev.thermionics.block;
 
-public class BlockSerger extends BlockMachineBase {
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.gui.EnumGui;
+import com.elytradev.thermionics.tileentity.TileEntitySerger;
+
+import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+public class BlockSerger extends BlockMachineBase implements ITileEntityProvider {
 
 	public BlockSerger() {
 		super("serger");
 	}
 
+	//overrides light opacity if true >:|
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false; 
+	}
+	
+	//controls hidden surface removal
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+	
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntitySerger();
+	}
+	
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (!world.isRemote) {
+			player.openGui(Thermionics.instance(), EnumGui.SERGER.id(), world, pos.getX(), pos.getY(), pos.getZ());
+		} else {
+			
+		}
+		return true;
+	}
 }

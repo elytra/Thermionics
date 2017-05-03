@@ -88,6 +88,7 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 	
 	@Override
 	public void update() {
+		if (world.isRemote) return;
 		//Clear out any existing power.
 		//TODO: Kill this once we're sure we clear out our power after a tick, to support injection from chained machines
 		rotaryPower.extractPower(Integer.MAX_VALUE);

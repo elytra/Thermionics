@@ -1,5 +1,11 @@
 itemGroup.thermionics=Thermionics
 
+#Ingredients
+item.thermionics.allomanticpowder.copper.name=Allomantic Copper
+item.thermionics.allomanticpowder.tin.name=Allomantic Tin
+item.thermionics.allomanticpowder.iron.name=Allomantic Iron
+item.thermionics.allomanticpowder.steel.name=Allomantic Steel
+
 #Tools
 item.thermionics.hammer.iron.name=Iron Hammer
 item.thermionics.hammer.gold.name=Gold Hammer
@@ -9,6 +15,10 @@ item.thermionics.hammer.lead.name=Lead Hammer
 item.thermionics.hammer.invar.name=Invar Hammer
 item.thermionics.chunkunloader.name=Chunk Unloader
 item.thermionics.chunkunloader.tip=Rightclick a block to attune to its chunk. Rightclick air to unload it if possible.
+
+#Baubles
+item.thermionics.bauble.tasselcloak.name=Tasselcloak
+item.thermionics.bauble.mistcloak.name=Mistcloak
 
 #Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold

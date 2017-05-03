@@ -36,10 +36,9 @@ import com.elytradev.thermionics.api.IRotaryGridRecipe;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryGridRecipe implements IRotaryGridRecipe {
-	private ItemStack[] ingredients = new ItemStack[9];
+	private Object[] ingredients = new Object[9];
 	private ItemStack result;
 	private float torque = 8;
 	private float revolutions = 300;
@@ -68,7 +67,7 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 				}
 				lastKey = null;
 			} else if (o instanceof Character) {
-				Validate.isTrue(lastKey==null, "Orphaned character key '%1$c' in recipe!", Optional.ofNullable(lastKey).orElse(null));
+				Validate.isTrue(lastKey==null, "Orphaned character key '%1$c' in recipe!", Optional.ofNullable(lastKey));
 				lastKey = (Character)o;
 			} else if (o instanceof ItemStack) {
 				Validate.notNull(lastKey, "ItemStack '%1$s' in recipe must be prefixed with a Character key!", o);
@@ -81,13 +80,21 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 			for(int x=0; x<Math.min(3, arrangement.get(y).length()); x++) {
 				char ch = arrangement.get(y).charAt(x);
 				@Nullable Object ingredient = ingredientList.get(ch);
-				ingredients[y*3+x] = ingredient;
+				//System.out.println("Storing "+ingredient+" for character '"+ch+"' at location "+x+","+y);
+				this.ingredients[y*3+x] = ingredient;
 			}
 		}
 		
 		this.result = result;
 		this.torque = torque;
 		this.revolutions = revolutions;
+		
+		this.explanation = "{result:\""+result+"\" recipe:\"";
+		for(int i=0; i<arrangement.size(); i++) {
+			explanation+=arrangement.get(i);
+			if (i!=arrangement.size()-1) explanation += " | ";
+		}
+		this.explanation+="\"}";
 	}
 	
 	//public static RotaryGridRecipe parse(String recipe) {
@@ -117,7 +124,11 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 	public boolean matches(IInventory inv) {
 		if (inv.getSizeInventory()<9) return false;
 		for(int i=0; i<9; i++) {
-			if (!OreDictionary.itemMatches(ingredients[i], inv.getStackInSlot(i), false)) return false;
+			if (ingredients[i]==null) {
+				if (!inv.getStackInSlot(i).isEmpty()) return false;
+			} else {
+				if (!OreItems.matches(ingredients[i], inv.getStackInSlot(i))) return false;
+			}
 		}
 		return true;
 	}
@@ -131,12 +142,12 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 	public boolean matches(IItemHandler inv) {
 		if (inv.getSlots()<9) return false;
 		for(int i=0; i<9; i++) {
-			if (ingredients[i]==null || ingredients[i].isEmpty()) {
-				if (!inv.getStackInSlot(i).isEmpty()) return false;
-			} else {
-				if (!OreDictionary.itemMatches(ingredients[i], inv.getStackInSlot(i), false)) return false;
-				if (ingredients[i].getCount()>inv.getStackInSlot(i).getCount()) return false;
-			}
+			if (!OreItems.matches(ingredients[i], inv.getStackInSlot(i))) return false;
+			//if (ingredients[i]==null) {
+			//	if (!inv.getStackInSlot(i).isEmpty()) return false;
+			//} else {
+			//	if (!OreItems.matches(ingredients[i], inv.getStackInSlot(i))) return false;
+			//}
 		}
 		return true;
 	}
@@ -149,13 +160,25 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 	@Override
 	public ItemStack performCraft(IItemHandler inv) {
 		
-		for(int i=0; i<inv.getSlots(); i++) {
-			if (ingredients[i]!=null && !ingredients[i].isEmpty()) {
-				inv.extractItem(i, ingredients[i].getCount(), false);
+		for(int i=0; i<9; i++) {
+			if (ingredients[i]!=null) {
+				if (ingredients[i] instanceof ItemStack) {
+					inv.extractItem(i, ((ItemStack)ingredients[i]).getCount(), false);
+				} else {
+					inv.extractItem(i, 1, false);
+				}
 			}
 		}
 		
-		return result;
+		return result.copy();
 	}
-
+	
+	private String explanation = null;
+	public String toString() {
+		if (explanation==null) {
+			explanation = "{result:"+result.toString()+"}";
+		}
+		
+		return explanation;
+	}
 }

@@ -26,7 +26,6 @@ package com.elytradev.thermionics.api.impl;
 import com.elytradev.thermionics.api.IRotaryRecipe;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryRecipe implements IRotaryRecipe {
 	private final float torque;
@@ -66,13 +65,7 @@ public class RotaryRecipe implements IRotaryRecipe {
 
 	@Override
 	public boolean matches(ItemStack input) {
-		if (this.input.getItemDamage()==OreDictionary.WILDCARD_VALUE) {
-			return ItemStack.areItemsEqualIgnoreDurability(this.input, input) &&
-					ItemStack.areItemStackTagsEqual(this.input, input);
-		} else {
-			return ItemStack.areItemsEqual(this.input, input) &&
-					ItemStack.areItemStackTagsEqual(this.input, input);
-		}
+		return OreItems.matches(this.input, input);
 	}
 	
 	

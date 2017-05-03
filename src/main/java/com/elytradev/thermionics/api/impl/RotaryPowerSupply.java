@@ -92,7 +92,7 @@ public class RotaryPowerSupply implements IRotaryPowerSupply {
 	 * 
 	 */
 	public void autoSetTorqueSetting(float load) {
-		System.out.println("Adjusting towards load "+load);
+		//System.out.println("Adjusting towards load "+load);
 		if (load>torque) {
 			//This could lock the machine at 0RPM forever if load >= cap. This is intended!
 			if (torque!=cap) {

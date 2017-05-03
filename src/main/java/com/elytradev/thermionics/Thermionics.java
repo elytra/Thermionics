@@ -38,10 +38,12 @@ import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerConsumer;
 import com.elytradev.thermionics.api.IRotaryPowerSupply;
 import com.elytradev.thermionics.api.ISignalStorage;
+import com.elytradev.thermionics.api.SergerRecipes;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
 import com.elytradev.thermionics.api.impl.DefaultRotaryConsumerSerializer;
 import com.elytradev.thermionics.api.impl.DefaultRotaryPowerSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
+import com.elytradev.thermionics.api.impl.RotaryGridRecipe;
 import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
 import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.api.impl.RotaryPowerSupply;
@@ -69,10 +71,15 @@ import com.elytradev.thermionics.gui.ContainerFirebox;
 import com.elytradev.thermionics.gui.ContainerHammerMill;
 import com.elytradev.thermionics.gui.ContainerMotor;
 import com.elytradev.thermionics.gui.ContainerOven;
+import com.elytradev.thermionics.gui.ContainerSerger;
+import com.elytradev.thermionics.gui.EnumGui;
+import com.elytradev.thermionics.item.EnumAllomanticPowder;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.item.ItemChunkUnloader;
 import com.elytradev.thermionics.item.ItemHammer;
+import com.elytradev.thermionics.item.ItemMistcloak;
+import com.elytradev.thermionics.item.ItemSubtyped;
 import com.elytradev.thermionics.item.ThermionicsItems;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
@@ -182,6 +189,9 @@ public class Thermionics {
 		
 		registerItem(new ItemChunkUnloader());
 		
+		registerItem(new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true));
+		registerItem(new ItemMistcloak());
+		
 		//Locomotion
 		registerBlock(new BlockScaffold("basic"));
 		registerBlock(new BlockRoad(0));
@@ -229,26 +239,33 @@ public class Thermionics {
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler() {
+			/*
 			private ConcreteContainer getContainer(int id, IInventory player, IInventory tile) {
-				switch(id) {
-				case ContainerFirebox.ID:
+				EnumGui gui = EnumGui.forId(id);
+				switch(gui) {
+				case FIREBOX:
 				default:
 					return new ContainerFirebox(player, tile);
-				case ContainerOven.ID:
+				case OVEN:
 					return new ContainerOven(player, tile);
-				case ContainerMotor.ID:
+				case CONVECTION_MOTOR:
 					return new ContainerMotor(player, tile);
-				case ContainerHammerMill.ID:
+				case HAMMER_MILL:
 					return new ContainerHammerMill(player, tile);
+				case SERGER:
+					return new ContainerSerger(player, tile);
 				}
-			}
+			}*/
 			
 			@Override
 			public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
 				
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
-					ConcreteContainer container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					ConcreteContainer container = EnumGui.forId(id).createContainer(
+							player.inventory,
+							((IContainerInventoryHolder)te).getContainerInventory());
+					//ConcreteContainer container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 					container.validate();
 					return container;
 				}
@@ -262,7 +279,10 @@ public class Thermionics {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
 				ConcreteContainer container = null;
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
-					container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+					container = EnumGui.forId(id).createContainer(
+							player.inventory,
+							((IContainerInventoryHolder)te).getContainerInventory());
+					//container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
 				}
 				
 				return new ConcreteGui(container);
@@ -297,7 +317,10 @@ public class Thermionics {
 				's', "ingotSilver"));
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.GEARBOX),
-				"IbI", "b b", "IbI", 'I', "blockIron", 'b', "ingotBronze"));
+				"igi", "g g", "igi", 'g', "gearBrass", 'i', "ingotIron"));
+		
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SERGER),
+				"iii", " ig", "bbi", 'i', "ingotIron", 'b', "ingotBrass", 'g', "gearBrass"));
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.HAMMER_MILL),
 				"IiI", "ifi", "IsI", 'I', "blockIron", 'i', "ingotIron", 's', "ingotSilver", 'f', new ItemStack(Items.FLINT)));
@@ -336,6 +359,11 @@ public class Thermionics {
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_INVAR,1),
 				"I", "s", "s", 'I', "blockInvar", 's', "stickWood"
 				));
+		
+		GameRegistry.addShapelessRecipe(
+				new ItemStack(ThermionicsItems.MISTCLOAK, 1, 1), //Full mistcloak with allomantic invisibility
+				new ItemStack(ThermionicsItems.MISTCLOAK, 1, 0), //Tasselcloak with no special powers
+				new ItemStack(ThermionicsItems.ALLOMANTIC_POWDER, 1, EnumAllomanticPowder.COPPER.ordinal())); //Allomantic copper
 		
 		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
 		registerCraftingCircle(ThermionicsBlocks.ROAD);
@@ -377,6 +405,44 @@ public class Thermionics {
 		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
 		}
+		
+		SergerRecipes.registerRecipe(new RotaryGridRecipe(
+				new ItemStack(Items.SADDLE),
+				10f, //Working with leather tends to have a steeper torque
+				30f,
+				"   ",
+				"LLL",
+				"I I",
+				'L', "leather",
+				'I', "ingotIron"
+				));
+		SergerRecipes.registerRecipe(new RotaryGridRecipe(
+				new ItemStack(Items.DIAMOND_HORSE_ARMOR),
+				15f,
+				30f,
+				"  d",
+				"ddd",
+				"ddd",
+				'd', "gemDiamond"
+				));
+		SergerRecipes.registerRecipe(new RotaryGridRecipe(
+				new ItemStack(Items.GOLDEN_HORSE_ARMOR),
+				6f,
+				30f,
+				"  g",
+				"ggg",
+				"ggg",
+				'g', "ingotGold"
+				));
+		SergerRecipes.registerRecipe(new RotaryGridRecipe(
+				new ItemStack(Items.IRON_HORSE_ARMOR),
+				8f,
+				30f,
+				"  i",
+				"iii",
+				"iii",
+				'i', "ingotIron"
+				));
 		
 		NBTTagCompound oresTag = new NBTTagCompound();
 		oresTag.setBoolean("oreCopper", true);

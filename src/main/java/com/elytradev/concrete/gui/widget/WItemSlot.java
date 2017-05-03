@@ -96,16 +96,16 @@ public class WItemSlot extends WWidget {
 		peers.clear();
 		int index = startIndex;
 		
-		if (ltr) {
-			for(int x=0; x<slotsWide; x++) {
-				for(int y=0; y<slotsHigh; y++) {
-					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
-					peers.add(slot);
-					c.addSlotPeer(slot);
-					index++;
-				}
-			}
-		} else {
+		//if (ltr) {
+		//	for(int x=0; x<slotsWide; x++) {
+		//		for(int y=0; y<slotsHigh; y++) {
+		//			ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
+		//			peers.add(slot);
+		//			c.addSlotPeer(slot);
+		//			index++;
+		//		}
+		//	}
+		//} else {
 			for(int y=0; y<slotsHigh; y++) {
 				for(int x=0; x<slotsWide; x++) {
 					ValidatedSlot slot = new ValidatedSlot(inventory, index, this.getX()+(x*18), this.getY()+(y*18));
@@ -114,7 +114,7 @@ public class WItemSlot extends WWidget {
 					index++;
 				}
 			}
-		}
+		//}
 	}
 	
 	@SideOnly(Side.CLIENT)

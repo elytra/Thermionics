@@ -138,6 +138,17 @@ public class ProbeDataSupport {
 	}
 	
 	public static void addInventoryData(IItemHandler storage, List<IProbeData> list) {
+		
+		if (storage.getSlots()==10) {
+			//Special case: This is a serger-like grid recipe machine!
+			ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
+			for(int i=0; i<9; i++) builder.add(storage.getStackInSlot(i));
+			list.add(new ProbeData().withInventory(builder.build()));
+			
+			list.add(new ProbeData().withInventory(ImmutableList.of(storage.getStackInSlot(9))));
+			
+			return;
+		}
 		ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
 		for(int i=0; i<storage.getSlots(); i++) {
 			builder.add(storage.getStackInSlot(i));

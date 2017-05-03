@@ -26,8 +26,6 @@ package com.elytradev.thermionics.api.impl;
 import com.elytradev.thermionics.api.IRotaryRecipe;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryOreRecipe implements IRotaryRecipe {
 	private final String input;
@@ -54,9 +52,7 @@ public class RotaryOreRecipe implements IRotaryRecipe {
 
 	@Override
 	public boolean matches(ItemStack input) {
-		if (!OreDictionary.doesOreNameExist(this.input)) return false;
-		NonNullList<ItemStack> ores = OreDictionary.getOres(this.input);
-		return OreDictionary.containsMatch(false, ores, input);
+		return OreItems.matches(this.input, input);
 	}
 
 	@Override

@@ -55,6 +55,9 @@ public class ThermionicsBlocks {
 	@ObjectHolder("machine.gearbox")
 	public static final BlockGearbox GEARBOX = null;
 	
+	@ObjectHolder("machine.serger")
+	public static final BlockSerger SERGER = null;
+	
 	@ObjectHolder("axle.wood")
 	public static final BlockAxle AXLE_WOOD = null;
 	

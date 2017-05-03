@@ -24,21 +24,30 @@
 package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
+import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
 import com.elytradev.concrete.inventory.Validators;
+import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IRotaryGridRecipe;
 import com.elytradev.thermionics.api.SergerRecipes;
 import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
+import com.elytradev.thermionics.data.IMachineProgress;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntitySerger extends TileEntityMachine implements ITickable {
+public class TileEntitySerger extends TileEntityMachine implements ITickable, IContainerInventoryHolder, IMachineProgress {
 	private float revolutionsNeeded = 0f;
 	private float revolutionsProcessed = 0f;
-	private int rpm = 0;
+	//private int rpm = 0;
 	private IRotaryGridRecipe lastRecipe = null;
 	
 	private RotaryPowerConsumer power = new RotaryPowerConsumer();
 	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(10)
+			.withName("tile.thermionics.machine.serger.name")
 			.withValidators(
 					//Crafting Grid
 					Validators.ANYTHING, Validators.ANYTHING, Validators.ANYTHING,
@@ -46,16 +55,52 @@ public class TileEntitySerger extends TileEntityMachine implements ITickable {
 					Validators.ANYTHING, Validators.ANYTHING, Validators.ANYTHING,
 					//Output Slot
 					Validators.NOTHING
-					);
+					)
+			.setCanExtract(0, false).setCanExtract(1, false).setCanExtract(2, false)
+			.setCanExtract(3, false).setCanExtract(4, false).setCanExtract(5, false)
+			.setCanExtract(6, false).setCanExtract(7, false).setCanExtract(8, false)
+			.setCanExtract(9, true);
 	
 	public TileEntitySerger() {
 		power.listen(this::markDirty);
 		itemStorage.listen(this::markDirty);
+		
+		capabilities.registerForAllSides(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, ()->new ValidatedItemHandlerView(itemStorage));
+		capabilities.registerForAllSides(Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER, ()->power);
 	}
 	
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound tagIn) {
+		NBTTagCompound tagOut = super.writeToNBT(tagIn);
+		
+		tagOut.setTag("rotaryconsumer", Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER.writeNBT(power, null));
+		tagOut.setTag("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(itemStorage, null));
+		
+		tagOut.setFloat("revolutionsprocessed", revolutionsProcessed);
+		tagOut.setFloat("revolutionsneeded", revolutionsNeeded);
+		
+		return tagOut;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound tag) {
+		super.readFromNBT(tag);
+		
+		if (tag.hasKey("rotaryconsumer")) {
+			Thermionics.CAPABILITY_ROTARYPOWER_CONSUMER.readNBT(power, null, tag.getTag("rotaryconsumer"));
+		}
+		if (tag.hasKey("inventory")) {
+			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(itemStorage, null, tag.getTag("inventory"));
+		}
+		
+		if (tag.hasKey("revolutionsprocessed")) revolutionsProcessed = tag.getInteger("revolutinsprocessed");
+		if (tag.hasKey("revolutionsneeded")) revolutionsNeeded = tag.getInteger("revolutionsneeded");
+	}
 	
 	@Override
 	public void update() {
+		if (world.isRemote) return;
+		
 		if (lastRecipe==null || !lastRecipe.matches(itemStorage)) {
 			//Dump progress and pick a new recipe if possible
 			power.clearRevolutions();
@@ -65,14 +110,51 @@ public class TileEntitySerger extends TileEntityMachine implements ITickable {
 			if (lastRecipe!=null) {
 				revolutionsNeeded = lastRecipe.getRequiredRevolutions();
 				power.setRequiredTorque(lastRecipe.getRequiredTorque());
+				
+				//System.out.println("recipe switched to "+lastRecipe);
+				
 			}
+			this.markDirty();
 		} else {
 			//Continue processing current recipe if there's power
 			float toConsume = power.getBufferedRevolutions();
 			if (toConsume>2.5) toConsume = 2.5f;
 			power.clearRevolutions();
 			revolutionsProcessed += toConsume;
+			//System.out.println("Working on recipe "+lastRecipe);
+			if (revolutionsProcessed>=revolutionsNeeded) {
+				revolutionsProcessed = revolutionsNeeded;
+				power.setRequiredTorque(0);
+				if (itemStorage.getStackInSlot(9).isEmpty()) {
+					itemStorage.setStackInSlot(9, lastRecipe.performCraft(itemStorage).copy()); //Copy is unnecessary, but defensive as hell.
+					revolutionsProcessed = 0;
+					lastRecipe = null;
+				}
+			} else {
+				power.setRequiredTorque(lastRecipe.getRequiredTorque());
+			}
+			this.markDirty();
 		}
+		
+	}
+
+
+	@Override
+	public IInventory getContainerInventory() {
+		ValidatedInventoryView result = new ValidatedInventoryView(itemStorage);
+		
+		if (!this.world.isRemote) return result
+				.withField(0, ()->(int)(this.getMachineProgress()*100))
+				.withField(1, ()->100);
+		
+		return result;
+	}
+
+
+	@Override
+	public float getMachineProgress() {
+		//System.out.println("Progress: "+revolutionsProcessed+" / "+revolutionsNeeded+" -> "+ (revolutionsProcessed/revolutionsNeeded));
+		return revolutionsProcessed / revolutionsNeeded;
 		
 	}
 }
