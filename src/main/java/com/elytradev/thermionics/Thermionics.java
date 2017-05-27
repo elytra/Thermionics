@@ -74,6 +74,7 @@ import com.elytradev.thermionics.gui.ContainerOven;
 import com.elytradev.thermionics.gui.ContainerSerger;
 import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.item.EnumAllomanticPowder;
+import com.elytradev.thermionics.item.EnumIngredient;
 import com.elytradev.thermionics.item.ItemBlockBattery;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.item.ItemChunkUnloader;
@@ -189,7 +190,8 @@ public class Thermionics {
 		
 		registerItem(new ItemChunkUnloader());
 		
-		registerItem(new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true));
+		registerItem(new ItemSubtyped<EnumIngredient>("ingredient", EnumIngredient.values(), false)); //Non-allomantic ingredients
+		registerItem(new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true)); //Allomantic powders, mostly
 		registerItem(new ItemMistcloak());
 		
 		//Locomotion

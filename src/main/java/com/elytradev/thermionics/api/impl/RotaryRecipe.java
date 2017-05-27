@@ -23,6 +23,9 @@
  */
 package com.elytradev.thermionics.api.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.elytradev.thermionics.api.IRotaryRecipe;
 
 import net.minecraft.item.ItemStack;
@@ -74,4 +77,7 @@ public class RotaryRecipe implements IRotaryRecipe {
 		return output;
 	}
 
+	public ItemStack getInput() {
+		return input;
+	}
 }

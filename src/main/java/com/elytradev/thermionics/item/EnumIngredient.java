@@ -21,28 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.api;
+package com.elytradev.thermionics.item;
 
-import java.util.ArrayList;
+import net.minecraft.util.IStringSerializable;
 
-import javax.annotation.Nullable;
+public enum EnumIngredient implements IStringSerializable {
+	RIBBON("ribbon");
 
-import net.minecraftforge.items.IItemHandler;
-
-public class SergerRecipes {
-	private static ArrayList<IRotaryGridRecipe> recipes = new ArrayList<>();
+	private final String name;
 	
-	public static void registerRecipe(IRotaryGridRecipe recipe) {
-		recipes.add(recipe);
-	}
+	EnumIngredient(String name) { this.name = name; }
 	
-	@Nullable
-	public static IRotaryGridRecipe forInput(IItemHandler input) {
-		for(IRotaryGridRecipe recipe : recipes) {
-			if (recipe.matches(input)) {
-				return recipe;
-			}
-		}
-		return null;
+	@Override
+	public String getName() {
+		return this.name;
 	}
 }

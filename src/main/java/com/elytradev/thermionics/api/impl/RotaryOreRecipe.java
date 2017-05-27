@@ -64,4 +64,8 @@ public class RotaryOreRecipe implements IRotaryRecipe {
 	public String toString() {
 		return "{'input':"+input+", output:"+output+", torque:"+torque+" revolutions:"+revolutions+"}";
 	}
+	
+	public String getInput() {
+		return input;
+	}
 }
