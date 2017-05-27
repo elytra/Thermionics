@@ -30,6 +30,16 @@ repositories {
 		url = 'https://repo.elytradev.com'
 	}
 	
+	maven {
+		// location of the maven that hosts JEI files
+		url = "http://dvs1.progwml6.com/files/maven"
+	}
+
+	maven {
+		name "unknown rx14.co.uk server";
+		url "http://mvn.rx14.co.uk/local";
+	}
+	
 	//maven {
 	//	name "Cyclops Repo"
 	//	url "https://dl.bintray.com/cyclopsmc/dev/"
@@ -39,10 +49,15 @@ repositories {
 dependencies {
 	deobfCompile "com.elytradev:probedataproviderapi:MC1.11.2_ver1.1.1";
 	//deobfCompile "org.cyclops.commoncapabilities:CommonCapabilities:1.11.2-1.3.1-95";
+
+	compile(group: 'com.azanor.baubles', name: 'Baubles', version: '1.11-1.4.4.62');
+	//compile files(
+	//	'Baubles-1.11-1.4.4-deobf.jar'
+	//);
 	
-	compile files(
-        'Baubles-1.11-1.4.4-deobf.jar'
-        );
+	deobfCompile "mezz.jei:jei_1.11.2:4.3.4.272:api";
+	runtime "mezz.jei:jei_1.11.2:4.3.4.272";
+	
 }
 
 
@@ -55,8 +70,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-  version = "1.11.2-13.20.0.2252";
-  //mappings = "snapshot_20170205";
+  version = "1.11.2-13.20.0.2282";
   mappings = "snapshot_20170427";
 
   runDir = "minecraft"
