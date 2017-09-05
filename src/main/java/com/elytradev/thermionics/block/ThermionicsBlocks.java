@@ -81,7 +81,7 @@ public class ThermionicsBlocks {
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Block> event) {
-		Thermionics.LOG.info("Registering blocks");
+		//Thermionics.LOG.info("Registering blocks");
 		IForgeRegistry<Block> r = event.getRegistry();
 		
 		//Cabling

@@ -59,7 +59,7 @@ public class ThermionicsItems {
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Item> event) {
-		Thermionics.LOG.info("Registering items");
+		//Thermionics.LOG.info("Registering items");
 		
 		IForgeRegistry<Item> r = event.getRegistry();
 		

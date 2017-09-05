@@ -56,11 +56,11 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ThermionicsRecipes {
-	public static final Logger LOG = LogManager.getLogger(ThermionicsRecipes.class);
+	//public static final Logger LOG = LogManager.getLogger(ThermionicsRecipes.class);
 	
 	@SubscribeEvent
 	public static void onRegisterRecipes(RegistryEvent.Register<IRecipe> event) {
-		LOG.info("Registering recipes");
+		//LOG.info("Registering recipes");
 		IForgeRegistry<IRecipe> r = event.getRegistry();
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.CABLE_RF,8),
@@ -232,9 +232,9 @@ public class ThermionicsRecipes {
 	 * Auto-registry-name is only good for recipes which have only one version!
 	 */
 	public static <T extends IRecipe> T recipe(IForgeRegistry<IRecipe> registry, T t) {
-		LOG.info("Recipe:"+t.toString());
-		LOG.info("OutputItemStack:"+t.getRecipeOutput());
-		LOG.info("OutputItem:"+t.getRecipeOutput().getItem().getRegistryName());
+		//LOG.info("Recipe:"+t.toString());
+		//LOG.info("OutputItemStack:"+t.getRecipeOutput());
+		//LOG.info("OutputItem:"+t.getRecipeOutput().getItem().getRegistryName());
 		
 		t.setRegistryName(new ResourceLocation(t.getRecipeOutput().getItem().getRegistryName()+"_"+t.getRecipeOutput().getItemDamage()));
 		registry.register(t);
