@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import com.elytradev.thermionics.Thermionics;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,10 +98,10 @@ public class ItemChunkUnloader extends Item implements IMetaItemModel {
 			stack.setTagCompound(tag);
 		}
 		
-		tag.setInteger("world", world.getWorldType().getWorldTypeID());
+		tag.setInteger("world", world.getWorldType().getId());
 		Chunk chunk = world.getChunkFromBlockCoords(pos);
-		tag.setInteger("x", chunk.xPosition);
-		tag.setInteger("z", chunk.zPosition);
+		tag.setInteger("x", chunk.x);
+		tag.setInteger("z", chunk.z);
 		tag.setBoolean("ignoreClick", true);
 		player.setHeldItem(hand, stack);
 		
@@ -111,15 +112,15 @@ public class ItemChunkUnloader extends Item implements IMetaItemModel {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tip, boolean advanced) {
-		tip.add(I18n.translateToLocal("item.thermionics.chunkunloader.tip"));
+	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+		tooltip.add(I18n.translateToLocal("item.thermionics.chunkunloader.tip"));
 		int loadedState = stack.getItemDamage();
 		switch(loadedState) {
 		default: //Default to unattuned
 			
-		case 0: tip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.unattuned")); break;
-		case 1: tip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.unloaded")); break;
-		case 2: tip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.loaded")); break;
+		case 0: tooltip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.unattuned")); break;
+		case 1: tooltip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.unloaded")); break;
+		case 2: tooltip.add(I18n.translateToLocalFormatted("thermionics.data.chunkunloader.loaded")); break;
 		}
 	}
 	
@@ -152,8 +153,10 @@ public class ItemChunkUnloader extends Item implements IMetaItemModel {
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
-		list.add(new ItemStack(item));
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if (tab.equals(this.getCreativeTab())) {
+			list.add(new ItemStack(this));
+		}
 	}
 	
 	public Optional<Boolean> isChunkLoaded(ItemStack stack) {

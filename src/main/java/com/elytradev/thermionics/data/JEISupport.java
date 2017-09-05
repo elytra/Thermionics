@@ -48,7 +48,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.oredict.OreDictionary;
 
 @JEIPlugin
-public class JEISupport implements IModPlugin{
+public class JEISupport implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistry subtypeRegistry) {
@@ -116,6 +116,11 @@ public class JEISupport implements IModPlugin{
 		@Override
 		public void setRecipe(IRecipeLayout recipeLayout, RotaryRecipeWrapper recipeWrapper, IIngredients ingredients) {
 			
+		}
+
+		@Override
+		public String getModName() {
+			return "thermionics";
 		}
 		
 	}

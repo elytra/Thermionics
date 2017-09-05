@@ -25,6 +25,8 @@ package com.elytradev.thermionics;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,83 +35,30 @@ import com.elytradev.concrete.client.gui.ConcreteGui;
 import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.libasplod.BigExplosionHandler;
-import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerConsumer;
 import com.elytradev.thermionics.api.IRotaryPowerSupply;
 import com.elytradev.thermionics.api.ISignalStorage;
-import com.elytradev.thermionics.api.SergerRecipes;
 import com.elytradev.thermionics.api.impl.DefaultHeatStorageSerializer;
 import com.elytradev.thermionics.api.impl.DefaultRotaryConsumerSerializer;
 import com.elytradev.thermionics.api.impl.DefaultRotaryPowerSerializer;
 import com.elytradev.thermionics.api.impl.HeatStorage;
-import com.elytradev.thermionics.api.impl.RotaryGridRecipe;
-import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
 import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.api.impl.RotaryPowerSupply;
-import com.elytradev.thermionics.api.impl.RotaryRecipe;
-import com.elytradev.thermionics.block.BlockAxle;
-import com.elytradev.thermionics.block.BlockBase;
-import com.elytradev.thermionics.block.BlockBattery;
-import com.elytradev.thermionics.block.BlockBatteryCreative;
-import com.elytradev.thermionics.block.BlockCableRF;
-import com.elytradev.thermionics.block.BlockConvectionMotor;
-import com.elytradev.thermionics.block.BlockDrum;
-import com.elytradev.thermionics.block.BlockFirebox;
-import com.elytradev.thermionics.block.BlockGearbox;
-import com.elytradev.thermionics.block.BlockHammerMill;
-import com.elytradev.thermionics.block.BlockHeatPipe;
-import com.elytradev.thermionics.block.BlockOven;
-import com.elytradev.thermionics.block.BlockRoad;
-import com.elytradev.thermionics.block.BlockScaffold;
-import com.elytradev.thermionics.block.BlockSerger;
-import com.elytradev.thermionics.block.BlockTNTCreative;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
-import com.elytradev.thermionics.data.EnumDyeSource;
 import com.elytradev.thermionics.data.ProbeDataSupport;
-import com.elytradev.thermionics.gui.ContainerFirebox;
-import com.elytradev.thermionics.gui.ContainerHammerMill;
-import com.elytradev.thermionics.gui.ContainerMotor;
-import com.elytradev.thermionics.gui.ContainerOven;
-import com.elytradev.thermionics.gui.ContainerSerger;
 import com.elytradev.thermionics.gui.EnumGui;
-import com.elytradev.thermionics.item.EnumAllomanticPowder;
-import com.elytradev.thermionics.item.EnumIngredient;
-import com.elytradev.thermionics.item.ItemBlockBattery;
-import com.elytradev.thermionics.item.ItemBlockEquivalentState;
-import com.elytradev.thermionics.item.ItemChunkUnloader;
-import com.elytradev.thermionics.item.ItemHammer;
-import com.elytradev.thermionics.item.ItemMistcloak;
-import com.elytradev.thermionics.item.ItemSubtyped;
 import com.elytradev.thermionics.item.ThermionicsItems;
-import com.elytradev.thermionics.tileentity.TileEntityBattery;
-import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
-import com.elytradev.thermionics.tileentity.TileEntityCableRF;
-import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
-import com.elytradev.thermionics.tileentity.TileEntityDrum;
-import com.elytradev.thermionics.tileentity.TileEntityFirebox;
-import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
-import com.elytradev.thermionics.tileentity.TileEntityOven;
-import com.elytradev.thermionics.tileentity.TileEntitySerger;
-import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
-import net.minecraft.item.Item.ToolMaterial;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -120,6 +69,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -130,17 +80,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(modid=Thermionics.MODID, version="@VERSION@", name="Thermionics|Core")
 public class Thermionics {
 	public static final String MODID = "thermionics";
 	public static Logger LOG;
 	public static Configuration CONFIG;
+	public static boolean CONFIG_ENFORCE_COMPATIBILITY = true;
 	@Instance(MODID)
 	private static Thermionics instance;
 	@SidedProxy(clientSide="com.elytradev.thermionics.ClientProxy", serverSide="com.elytradev.thermionics.Proxy")
@@ -163,102 +112,38 @@ public class Thermionics {
 		}
 	};
 	
+	public List<Block> needItemRegistration = new ArrayList<>();
+	public List<Item> needModelRegistration = new ArrayList<>();
+
+	
+	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
-		CONFIG = new Configuration(e.getSuggestedConfigurationFile());
 		
-		LOG = LogManager.getLogger(Thermionics.MODID);
+		CONFIG = new Configuration(e.getSuggestedConfigurationFile());
+		CONFIG.get("regisration", "register-compatibility-blocks", CONFIG_ENFORCE_COMPATIBILITY);
+		
+		LOG = e.getModLog();
+		//LOG = LogManager.getLogger(Thermionics.MODID);
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
 		CapabilityManager.INSTANCE.register(IRotaryPowerSupply.class, new DefaultRotaryPowerSerializer(), RotaryPowerSupply::new);
 		CapabilityManager.INSTANCE.register(IRotaryPowerConsumer.class, new DefaultRotaryConsumerSerializer(), RotaryPowerConsumer::new);
 		
 		ProbeDataSupport.init();
-
-		//Hammertime!
-
-		registerItem(new ItemHammer(ToolMaterial.IRON, "iron"));
-		registerItem(new ItemHammer(ToolMaterial.GOLD, "gold"));
-		registerItem(new ItemHammer(ToolMaterial.DIAMOND, "diamond"));
+		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.register(proxy);
 		
-		//Since we can't *safely*, *cleanly* rendezvous with other mods about Item.ToolMaterial properties, make our own
-		                           /*name      repairOre     level  uses eff dmg ench */
-		                           /*iron      ingotIron     2      250  6f  2f  14   */
-		registerItem(new ItemHammer("copper", "ingotCopper", 2,     200, 7f, 1f, 20));
-		registerItem(new ItemHammer("lead",   "ingotLead",   2,    1550, 4f, 2f, 8)); //Some specialcasing here, lead is durable but stone harvest speed and hard to enchant
-		registerItem(new ItemHammer("invar",  "ingotInvar",  2,     300, 6f, 2f, 14));
+		/* (See https://mcforge.readthedocs.io/en/latest/events/intro/ for docs on static event handlers)
+		 * Because the registry events are forced on us, we might as well delegate to the former ObjectHolder classes
+		 * so they can flow in a more Enum-y way.
+		 */
+		MinecraftForge.EVENT_BUS.register(ThermionicsBlocks.class);
+		MinecraftForge.EVENT_BUS.register(ThermionicsItems.class);
+		MinecraftForge.EVENT_BUS.register(ThermionicsRecipes.class);
 		
-		registerItem(new ItemChunkUnloader());
-		
-		registerItem(new ItemSubtyped<EnumIngredient>("ingredient", EnumIngredient.values(), false)); //Non-allomantic ingredients
-		registerItem(new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true)); //Allomantic powders, mostly
-		registerItem(new ItemMistcloak());
-		
-		//Locomotion
-		registerBlock(new BlockScaffold("basic"));
-		registerBlock(new BlockRoad(0));
-		registerBlock(new BlockRoad(1));
-		
-		//RF
-		registerBlock(new BlockCableRF("rf"));
-		BlockBattery leadBattery = new BlockBattery("lead");
-		registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));
-		BlockBatteryCreative creativeBattery = new BlockBatteryCreative();
-		registerBlockAndItem(creativeBattery, new ItemBlockBattery(creativeBattery));
-		
-		//Fluid Handlers
-		registerBlock(new BlockDrum());
-		
-		//Heat
-		registerBlock(new BlockFirebox());
-		registerBlock(new BlockHeatPipe());
-		registerBlock(new BlockOven());
-		registerBlock(new BlockConvectionMotor());
-		
-		//Rotary
-		BlockAxle woodAxle = new BlockAxle(Material.WOOD, "wood");
-		woodAxle.setHardness(1.0f).setHarvestLevel("axe", 0);
-		registerBlock(woodAxle);
-		registerBlock(new BlockAxle(Material.IRON, "iron"));
-		registerBlock(new BlockGearbox());
-		registerBlock(new BlockHammerMill());
-		registerBlock(new BlockSerger());
-		//registerBlock(new BlockMotorBase("redstone"));
-
-		//Explosive
-		registerBlock(new BlockTNTCreative());
-		
-		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
-		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
-		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
-		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
-		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
-		GameRegistry.registerTileEntity(TileEntityOven.class,            "thermionics:machine.oven");
-		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
-		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
-		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
-		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
-		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.redstone");
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new IGuiHandler() {
-			/*
-			private ConcreteContainer getContainer(int id, IInventory player, IInventory tile) {
-				EnumGui gui = EnumGui.forId(id);
-				switch(gui) {
-				case FIREBOX:
-				default:
-					return new ContainerFirebox(player, tile);
-				case OVEN:
-					return new ContainerOven(player, tile);
-				case CONVECTION_MOTOR:
-					return new ContainerMotor(player, tile);
-				case HAMMER_MILL:
-					return new ContainerHammerMill(player, tile);
-				case SERGER:
-					return new ContainerSerger(player, tile);
-				}
-			}*/
-			
 			@Override
 			public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 				TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
@@ -291,233 +176,45 @@ public class Thermionics {
 			}
 			
 		});
-		POTION_EFFORTLESS_SPEED = new PotionExpedience();
-		Potion.REGISTRY.register(0, new ResourceLocation("thermionics","effortless_speed"), POTION_EFFORTLESS_SPEED);
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		BigExplosionHandler.instance().init();
 	}
 	
+	@SubscribeEvent
+	public void onRegisterPotions(RegistryEvent.Register<Potion> event) {
+		IForgeRegistry<Potion> r = event.getRegistry();
+		
+		POTION_EFFORTLESS_SPEED = potion(r, new PotionExpedience());
+	}
+	
+	public static <T extends Potion> T potion(IForgeRegistry<Potion> registry, T t) {
+		registry.register(t);
+		return t;
+	}
+	
 	@EventHandler
 	public void onInit(FMLInitializationEvent e) {
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.CABLE_RF,8),
-				"wlw", 'w', new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE), 'l', "ingotLead"));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SCAFFOLD_BASIC,4),
-				"x x", " x ", "x x", 'x', "ingotIron"));
+		//TODO: When smores has ore voting stabilized, update and re-enable this
+		//NBTTagCompound oresTag = new NBTTagCompound();
+		//oresTag.setBoolean("oreCopper", true);
+		//oresTag.setBoolean("ingotCopper", true);
+		//oresTag.setBoolean("dustCopper", true);
+		//oresTag.setBoolean("gearCopper", true);
+		//oresTag.setBoolean("plateCopper", true);
+		//FMLInterModComms.sendMessage("smores", "recipeVote", oresTag);
 		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.FIREBOX,1),
-				"xxx", "x x", "xxx", 'x', "ingotIron"));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.OVEN,1),
-				"xxx", "x x", "xcx", 'x', "ingotIron", 'c', "ingotCopper"));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.MOTOR_CONVECTION),
-				"IcI", "ctc", "IsI",
-				'I', "blockIron",
-				'c', "ingotCopper",
-				't', new ItemStack(Blocks.REDSTONE_TORCH),
-				's', "ingotSilver"));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.GEARBOX),
-				"igi", "g g", "igi", 'g', "gearBrass", 'i', "ingotIron"));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.SERGER),
-				"iii", " ig", "bbi", 'i', "ingotIron", 'b', "ingotBrass", 'g', "gearBrass"));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.HAMMER_MILL),
-				"IiI", "ifi", "IsI", 'I', "blockIron", 'i', "ingotIron", 's', "ingotSilver", 'f', new ItemStack(Items.FLINT)));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.BATTERY_LEAD,1),
-				" c ", "pLp", " r ", 'L', "blockLead", 'c', "ingotCopper", 'r', new ItemStack(Items.REDSTONE), 'p', new ItemStack(Items.PAPER)));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.AXLE_WOOD,4),
-				"w", "w", "w", 'w', new ItemStack(Blocks.PLANKS)
-				));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.AXLE_IRON,4),
-				"i", "i", "i", 'i', "ingotIron"
-				));
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsBlocks.CABLE_HEAT,4),
-				"c", "c", "c", 'c', "ingotCopper"
-				));
-		
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_IRON,1),
-				"I", "s", "s", 'I', "blockIron", 's', "stickWood"
-				));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_GOLD,1),
-				"I", "s", "s", 'I', "blockGold", 's', "stickWood"
-				));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_DIAMOND,1),
-				"I", "s", "s", 'I', "blockDiamond", 's', "stickWood"
-				));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_COPPER,1),
-				"I", "s", "s", 'I', "blockCopper", 's', "stickWood"
-				));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_LEAD,1),
-				"I", "s", "s", 'I', "blockLead", 's', "stickWood"
-				));
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ThermionicsItems.HAMMER_INVAR,1),
-				"I", "s", "s", 'I', "blockInvar", 's', "stickWood"
-				));
-		
-		GameRegistry.addShapelessRecipe(
-				new ItemStack(ThermionicsItems.MISTCLOAK, 1, 1), //Full mistcloak with allomantic invisibility
-				new ItemStack(ThermionicsItems.MISTCLOAK, 1, 0), //Tasselcloak with no special powers
-				new ItemStack(ThermionicsItems.ALLOMANTIC_POWDER, 1, EnumAllomanticPowder.COPPER.ordinal())); //Allomantic copper
-		
-		GameRegistry.addSmelting(Blocks.GRAVEL, new ItemStack(ThermionicsBlocks.ROAD), 0);
-		registerCraftingCircle(ThermionicsBlocks.ROAD);
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(
-				new ItemStack(ThermionicsBlocks.ROAD_COMPRESSED),
-				"xxx", "xgx", "xxx",
-				'x', new ItemStack(ThermionicsBlocks.ROAD, 1, OreDictionary.WILDCARD_VALUE),
-				'g', "ingotGold"));
-		
-		//Create a second list for compressed road and make the crafting cycle again
-		registerCraftingCircle(ThermionicsBlocks.ROAD_COMPRESSED);
-		
-		if (OreDictionary.doesOreNameExist("dustIron")) {
-			System.out.println("IRON DUST IDENTIFIED.");
-		} else {
-			System.out.println("CANNOT IDENTIFY IRON DUST!");
-		}
-		
-		//Ore->2xDust, Ingot->1xDust
-		registerMillRecipes("Iron");
-		registerMillRecipes("Gold");
-		registerMillRecipes("Copper");
-		registerMillRecipes("Tin");
-		registerMillRecipes("Silver");
-		registerMillRecipes("Lead");
-		registerMillRecipes("Nickel");
-		registerMillRecipes("Zinc");
-		registerMillRecipes("Platinum");
-		registerMillRecipes("Mithril");
-		registerMillRecipes("Electrum");
-		registerMillRecipes("Brass");
-		registerMillRecipes("Bronze");
-		registerMillRecipes("Invar");
-		registerMillRecipes("Steel");
-		
-		registerMillRecipe("oreCoal", new ItemStack(Items.COAL,2), 8f, 20f);
-		
-		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
-			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
-		}
-		
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.SADDLE),
-				10f, //Working with leather tends to have a steeper torque
-				30f,
-				"   ",
-				"LLL",
-				"I I",
-				'L', "leather",
-				'I', "ingotIron"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.DIAMOND_HORSE_ARMOR),
-				15f,
-				30f,
-				"  d",
-				"ddd",
-				"ddd",
-				'd', "gemDiamond"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.GOLDEN_HORSE_ARMOR),
-				6f,
-				30f,
-				"  g",
-				"ggg",
-				"ggg",
-				'g', "ingotGold"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.IRON_HORSE_ARMOR),
-				8f,
-				30f,
-				"  i",
-				"iii",
-				"iii",
-				'i', "ingotIron"
-				));
-		
-		NBTTagCompound oresTag = new NBTTagCompound();
-		oresTag.setBoolean("oreCopper", true);
-		oresTag.setBoolean("ingotCopper", true);
-		oresTag.setBoolean("dustCopper", true);
-		oresTag.setBoolean("gearCopper", true);
-		oresTag.setBoolean("plateCopper", true);
-		FMLInterModComms.sendMessage("smores", "recipeVote", oresTag);
-		
-		
+		//Thermionics machines are *unusually* safe for charset to carry around
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.OVEN.getRegistryName());
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.BATTERY_LEAD.getRegistryName()); //Avoid creative battery carry!
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.HAMMER_MILL.getRegistryName());
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.MOTOR_CONVECTION.getRegistryName());
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.SERGER.getRegistryName());
 	}
 	
 	public static Thermionics instance() {
 		return instance;
-	}
-	
-	public void registerBlock(BlockBase block) {
-		GameRegistry.register(block);
-		ItemBlockEquivalentState itemBlock = new ItemBlockEquivalentState(block);
-		GameRegistry.register(itemBlock);
-		proxy.registerItemModel(itemBlock);
-	}
-	
-	public void registerBlock(Block block) {
-		ItemBlock item = new ItemBlock(block);
-		item.setRegistryName(block.getRegistryName());
-		
-		GameRegistry.register(block);
-		GameRegistry.register(item);
-		proxy.registerItemModel(item);
-	}
-	
-	public void registerBlockAndItem(BlockBase block, Item item) {
-		GameRegistry.register(block);
-		GameRegistry.register(item);
-		proxy.registerItemModel(item);
-	}
-	
-	public void registerItem(Item item) {
-		GameRegistry.register(item);
-		proxy.registerItemModel(item);
-	}
-	
-	public void registerCraftingCircle(BlockBase block) {
-		NonNullList<ItemStack> variants = NonNullList.create();
-		block.getVariants(ItemBlock.getItemFromBlock(block), variants);
-		ItemStack first = variants.remove(0);
-		ItemStack prev = first;
-		for(ItemStack item : variants) {
-			GameRegistry.addShapelessRecipe(item.copy(), prev.copy());
-			prev = item;
-		}
-		GameRegistry.addShapelessRecipe(first.copy(), variants.get(variants.size()-1).copy());
-	}
-	
-	public void registerMillRecipes(String key) {
-		if (OreDictionary.doesOreNameExist("dust"+key) && !OreDictionary.getOres("dust"+key).isEmpty()) {
-			System.out.println("Found dust for "+key+". Registering mill recipes.");
-			NonNullList<ItemStack> dusts = OreDictionary.getOres("dust"+key);
-			if (!dusts.isEmpty()) {
-				ItemStack oneDust = dusts.get(0).copy();
-				ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
-				//if (OreDictionary.doesOreNameExist("ore"+key) && !OreDictionary.getOres("ore"+key).isEmpty()) {
-					HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
-				//}
-				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
-			}
-		}
-	}
-	
-	public void registerMillRecipe(String key, ItemStack result, float torque, float rotations) {
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe(key, result, torque, rotations));
 	}
 	
 	@SubscribeEvent

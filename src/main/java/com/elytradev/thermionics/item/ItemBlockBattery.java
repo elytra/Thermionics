@@ -26,9 +26,11 @@ package com.elytradev.thermionics.item;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraft.world.World;
 
 @SuppressWarnings("deprecation")
 public class ItemBlockBattery extends ItemBlockEquivalentState {
@@ -46,7 +48,7 @@ public class ItemBlockBattery extends ItemBlockEquivalentState {
 	}
 	
 	@Override
-	public void addInformation(ItemStack stack, EntityPlayer player, List<String> tooltip, boolean advanced) {
+	public void addInformation(ItemStack stack, World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
 		String storedEnergy = I18n.translateToLocal("thermionics.data.energystorage");
 		
 		if (stack.hasTagCompound() && stack.getTagCompound().hasKey("energy")) {

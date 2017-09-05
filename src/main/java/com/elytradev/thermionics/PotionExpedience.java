@@ -39,6 +39,7 @@ public class PotionExpedience extends Potion {
 	public PotionExpedience() {
 		super(false, 0x428cae);
 		setPotionName("effect.moveSpeed.effortless");
+		setRegistryName("thermionics", "effortless_speed");
 		registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, "91AEAA56-376B-4498-935B-2F7F68070635", 0.8D, 2);
 		setBeneficial();
 	}

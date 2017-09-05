@@ -42,6 +42,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -180,9 +181,39 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
         if (WHITELIST.contains(state.getBlock())) return this.efficiencyOnProperMaterial;
         else return super.getStrVsBlock(stack, state);
     }
+	
+	/**
+	 * Sets the toolMaterial for the passed-in stack and returns it. Doesn't make a defensive copy, do that yourself!
+	 * @param stack the ItemStack to alter
+	 * @return the passed-in stack
+	 */
+	public static ItemStack setToolMaterial(ItemStack stack, String toolMaterial) {
+		if (!stack.hasTagCompound()) {
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		NBTTagCompound tag = stack.getTagCompound();
+		tag.setString("toolMaterial", toolMaterial);
+		
+		return stack;
+	}
 
+	public static ItemStack createTool(String toolMaterial) {
+		ItemStack result = new ItemStack(ThermionicsItems.HAMMER, 1);
+		
+		return setToolMaterial(result, toolMaterial);
+	}
+	
+	public String getFakeToolMaterial(ItemStack stack) {
+		if (!stack.hasTagCompound()) return this.fakeToolMaterial; //Support legacy hammers without comment.
+		String material = stack.getTagCompound().getString("toolMaterial").trim();
+		if (material==null || material.isEmpty()) return this.fakeToolMaterial; //Again, default to legacy hammers.
+		
+		return material;
+	}
+	
 	@Override
-	public String getOreRepairMaterial() {
-		return fakeToolMaterial;
+	public String getOreRepairMaterial(ItemStack stack) {
+		return getFakeToolMaterial(stack);
 	}
 }

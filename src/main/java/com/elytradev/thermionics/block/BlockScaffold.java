@@ -92,10 +92,10 @@ public class BlockScaffold extends BlockBase {
 		return false;
 	}
 	
-	@Override
-	public boolean isFullyOpaque(IBlockState state) {
-		return false;
-	}
+	//@Override
+	//public boolean isFullyOpaque(IBlockState state) {
+	//	return false;
+	//}
 	
 	@Override
 	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess World, BlockPos pos, EnumFacing side) {

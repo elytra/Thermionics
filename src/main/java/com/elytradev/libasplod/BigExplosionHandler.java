@@ -44,11 +44,11 @@ public class BigExplosionHandler {
 	@Nullable
 	public Scheduler getOrCreateScheduler(World w) {
 		if (w.isRemote) return null;
-		int wid = w.getWorldType().getWorldTypeID();
+		int wid = w.getWorldType().getId();
 		synchronized(schedulers) {
 			if (schedulers.containsKey(wid)) return schedulers.get(wid);
 			Scheduler scheduler = new Scheduler(wid);
-			schedulers.put(w.getWorldType().getWorldTypeID(), scheduler);
+			schedulers.put(w.getWorldType().getId(), scheduler);
 			return scheduler;
 		}
 	}
@@ -61,6 +61,7 @@ public class BigExplosionHandler {
 	
 	@SubscribeEvent
 	public void onServerTick(TickEvent.ServerTickEvent event) {
+		if (event.phase!=TickEvent.Phase.START) return;
 		inc++;
 		if (inc>=10) { //Only pulse about twice a second.
 			inc = 0;
@@ -75,7 +76,7 @@ public class BigExplosionHandler {
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {
 		if (event.getWorld().isRemote) return;
-		Integer worldid = event.getWorld().getWorldType().getWorldTypeID();
+		Integer worldid = event.getWorld().getWorldType().getId();
 		synchronized(schedulers) {
 			if (schedulers.containsKey(worldid)) {
 				String worldName = event.getWorld().getWorldInfo().getWorldName();

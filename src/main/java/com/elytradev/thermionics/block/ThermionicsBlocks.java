@@ -23,53 +23,126 @@
  */
 package com.elytradev.thermionics.block;
 
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.tileentity.TileEntityBattery;
+import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
+import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
+import com.elytradev.thermionics.tileentity.TileEntityCableRF;
+import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
+import com.elytradev.thermionics.tileentity.TileEntityDrum;
+import com.elytradev.thermionics.tileentity.TileEntityFirebox;
+import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
+import com.elytradev.thermionics.tileentity.TileEntityOven;
+import com.elytradev.thermionics.tileentity.TileEntitySerger;
+
 import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraft.block.material.Material;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 
-@ObjectHolder("thermionics")
 public class ThermionicsBlocks {
-	@ObjectHolder("scaffold.basic")
-	public static final BlockScaffold SCAFFOLD_BASIC = null;
+	//Cabling
+	public static BlockCableRF         CABLE_RF;
+	public static BlockHeatPipe        CABLE_HEAT;
 	
-	@ObjectHolder("cable.rf")
-	public static final BlockCableRF CABLE_RF = null;
+	//Fluid Storage
+	public static BlockDrum            DRUM;
 	
-	@ObjectHolder("cable.heat")
-	public static final BlockHeatPipe CABLE_HEAT = null;
+	//Heatmachines
+	public static BlockFirebox         FIREBOX;
+	public static BlockOven            OVEN;
 	
-	@ObjectHolder("drum")
-	public static final BlockDrum DRUM = null;
+	//Motors
+	public static BlockConvectionMotor MOTOR_CONVECTION;
 	
-	@ObjectHolder("machine.firebox")
-	public static final BlockFirebox FIREBOX = null;
+	//Gears & Meshing
+	public static BlockGearbox         GEARBOX;
+	public static BlockAxle            AXLE_WOOD;
+	public static BlockAxle            AXLE_IRON;
 	
-	@ObjectHolder("machine.oven")
-	public static final BlockOven OVEN = null;
+	//Rotarymachines
+	public static BlockHammerMill      HAMMER_MILL;
+	public static BlockSerger          SERGER;
 	
-	@ObjectHolder("machine.convectionmotor")
-	public static final BlockConvectionMotor MOTOR_CONVECTION = null;
+	//RFmachines
+	public static BlockBattery         BATTERY_LEAD;
+	public static BlockBatteryCreative BATTERY_CREATIVE;
 	
-	@ObjectHolder("machine.hammermill")
-	public static final BlockHammerMill HAMMER_MILL = null;
+	//Explosives
+	public static BlockTNTCreative     TNT_CREATIVE;
 	
-	@ObjectHolder("machine.gearbox")
-	public static final BlockGearbox GEARBOX = null;
+	//Randoms
+	public static BlockScaffold        SCAFFOLD_BASIC;
+	public static BlockRoad            ROAD;
+	public static BlockRoad            ROAD_COMPRESSED;
 	
-	@ObjectHolder("machine.serger")
-	public static final BlockSerger SERGER = null;
 	
-	@ObjectHolder("axle.wood")
-	public static final BlockAxle AXLE_WOOD = null;
-	
-	@ObjectHolder("axle.iron")
-	public static final BlockAxle AXLE_IRON = null;
+	@SubscribeEvent
+	public static void onRegister(RegistryEvent.Register<Block> event) {
+		Thermionics.LOG.info("Registering blocks");
+		IForgeRegistry<Block> r = event.getRegistry();
+		
+		//Cabling
+		ThermionicsBlocks.CABLE_RF         = block(r, new BlockCableRF("rf"));
+		ThermionicsBlocks.CABLE_HEAT       = block(r, new BlockHeatPipe());
+		
+		//Fluid Storage
+		ThermionicsBlocks.DRUM             = block(r, new BlockDrum());
+		
+		//Heatmachines
+		ThermionicsBlocks.FIREBOX          = block(r, new BlockFirebox());
+		ThermionicsBlocks.OVEN             = block(r, new BlockOven());
+		
+		//Motors
+		ThermionicsBlocks.MOTOR_CONVECTION = block(r, new BlockConvectionMotor());
+		
+		//Gears & Meshing
+		ThermionicsBlocks.GEARBOX          = block(r, new BlockGearbox());
+		ThermionicsBlocks.AXLE_WOOD        = block(r, new BlockAxle(Material.WOOD, "wood")).withHardness(1.0f).withHarvestLevel("axe", 0);
+		ThermionicsBlocks.AXLE_IRON        = block(r, new BlockAxle(Material.IRON, "iron"));
+		
+		//Rotarymachines
+		ThermionicsBlocks.HAMMER_MILL      = block(r, new BlockHammerMill());
+		ThermionicsBlocks.SERGER           = block(r, new BlockSerger());
+		
+		//RFmachines
+		ThermionicsBlocks.BATTERY_LEAD     = block(r, new BlockBattery("lead"));
+		ThermionicsBlocks.BATTERY_CREATIVE = block(r, new BlockBatteryCreative());
+		
+		//Explosives
+		ThermionicsBlocks.TNT_CREATIVE     = block(r, new BlockTNTCreative());
+		
+		//Randoms
+		ThermionicsBlocks.SCAFFOLD_BASIC   = block(r, new BlockScaffold("basic"));
+		ThermionicsBlocks.ROAD             = block(r, new BlockRoad(0));
+		ThermionicsBlocks.ROAD_COMPRESSED  = block(r, new BlockRoad(1));
 
-	@ObjectHolder("battery.lead")
-	public static final Block BATTERY_LEAD = null;
+		//TODO: Fix battery item registration
+		//registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));
+		//registerBlockAndItem(creativeBattery, new ItemBlockBattery(creativeBattery));
+			
+		//registerBlock(new BlockMotorBase("redstone"));
+		
+		
+		
+		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
+		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
+		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
+		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
+		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
+		GameRegistry.registerTileEntity(TileEntityOven.class,            "thermionics:machine.oven");
+		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
+		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
+		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
+		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
+		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
+	}
 	
-	@ObjectHolder("road")
-	public static final BlockRoad ROAD = null;
-	
-	@ObjectHolder("road.1")
-	public static final BlockRoad ROAD_COMPRESSED = null;
+	public static <T extends Block> T block(IForgeRegistry<Block> registry, T t) {
+		registry.register(t);
+		Thermionics.instance().needItemRegistration.add(t);
+		return t;
+	}
 }

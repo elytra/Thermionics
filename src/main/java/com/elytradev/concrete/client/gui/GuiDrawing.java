@@ -26,9 +26,9 @@ package com.elytradev.concrete.client.gui;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 
@@ -50,7 +50,7 @@ public class GuiDrawing {
 	    float g = (float)(color >> 8 & 255) / 255.0F;
 	    float b = (float)(color & 255) / 255.0F;
 	    Tessellator tessellator = Tessellator.getInstance();
-	    VertexBuffer vertexbuffer = tessellator.getBuffer();
+	    BufferBuilder vertexbuffer = tessellator.getBuffer();
 	    GlStateManager.enableBlend();
 	    //GlStateManager.disableTexture2D();
 	    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -76,7 +76,7 @@ public class GuiDrawing {
 	    float g = (float)(color >> 8 & 255) / 255.0F;
 	    float b = (float)(color & 255) / 255.0F;
 	    Tessellator tessellator = Tessellator.getInstance();
-	    VertexBuffer vertexbuffer = tessellator.getBuffer();
+	    BufferBuilder vertexbuffer = tessellator.getBuffer();
 	    GlStateManager.enableBlend();
 	    GlStateManager.disableTexture2D();
 	    GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

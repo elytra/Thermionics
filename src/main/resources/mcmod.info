@@ -5,7 +5,7 @@
     "name": "Thermionics|Core",
     "description": "Creative Industrial Automation",
     "version": "${version}",
-    "mcversion": "1.11.2",
+    "mcversion": "${mcversion}",
     "url": "",
     "updateUrl": "",
     "authorList": [ "Falkreon" ],

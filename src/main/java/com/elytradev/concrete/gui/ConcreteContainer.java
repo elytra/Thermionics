@@ -116,7 +116,7 @@ public class ConcreteContainer extends Container {
 	            for(int field = 0; field<numFields; field++) {
 	            	int newValue = container.getField(field);
 	            	if (syncFields[field]!=newValue) {
-	            		listener.sendProgressBarUpdate(this, field, newValue);
+	            		listener.sendWindowProperty(this, field, newValue);
 	            		syncFields[field] = newValue;
 	            	}
 	            }

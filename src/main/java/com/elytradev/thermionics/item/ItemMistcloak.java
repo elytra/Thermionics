@@ -38,6 +38,7 @@ import net.minecraftforge.fml.common.Optional;
 public class ItemMistcloak extends ItemBodyBauble implements IMetaItemModel {
 	private static final String NAME_TASSELCLOAK = "item.thermionics.bauble.tasselcloak";
 	private static final String NAME_MISTCLOAK = "item.thermionics.bauble.mistcloak";
+	private final Potion POTION_INVIS;
 	
 	public ItemMistcloak() {
 		super("cloak");
@@ -45,6 +46,8 @@ public class ItemMistcloak extends ItemBodyBauble implements IMetaItemModel {
 		this.setMaxDamage(0);
 		this.setMaxStackSize(1);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		
+		POTION_INVIS = Potion.getPotionFromResourceLocation("minecraft:invisibility");
 	}
 
 	public boolean isAllomantic(ItemStack stack) {
@@ -61,9 +64,11 @@ public class ItemMistcloak extends ItemBodyBauble implements IMetaItemModel {
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
-		list.add(new ItemStack(item, 1, 0));
-		list.add(new ItemStack(item, 1, 1));
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if (tab.equals(this.getCreativeTab())) {
+			list.add(new ItemStack(this, 1, 0));
+			list.add(new ItemStack(this, 1, 1));
+		}
 	}
 
 	@Override
@@ -82,10 +87,9 @@ public class ItemMistcloak extends ItemBodyBauble implements IMetaItemModel {
 		if (player.world.isRemote) return;
 		
 		if (stack.getItemDamage()==1) {
-			Potion invis = Potion.getPotionFromResourceLocation("minecraft:invisibility");
 			
-			if (player.getBrightness(0f) < 0.4375f) {
-				player.addPotionEffect(new PotionEffect(invis, 5));
+			if (player.getBrightness() < 0.4375f) {
+				player.addPotionEffect(new PotionEffect(POTION_INVIS, 5));
 			}
 		}
 	}

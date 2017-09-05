@@ -25,6 +25,7 @@ package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
 
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
@@ -45,7 +46,7 @@ public class BlockRoad extends BlockBase {
 	private final int level;
 	
 	public BlockRoad(int level) {
-		super(Material.ROCK, EnumDyeColor.WHITE.getMapColor());
+		super(Material.ROCK, MapColor.QUARTZ);
 		
 		String registryName = "road";
 		if (level>0) registryName+="."+level;
@@ -83,13 +84,14 @@ public class BlockRoad extends BlockBase {
 			EntityLivingBase living = (EntityLivingBase)entity;
 			
 			living.addPotionEffect(new PotionEffect(Thermionics.POTION_EFFORTLESS_SPEED, 20, level));
-			//living.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("speed"), 5, 2));
 		}
 	}
 	
 	@Override
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
-		getVariants(itemIn, list);
+	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> list) {
+		if (itemIn.equals(this.getCreativeTabToDisplayOn())) {
+			getVariants(Item.getItemFromBlock(this), list);
+		}
 	}
 	
 	@Override

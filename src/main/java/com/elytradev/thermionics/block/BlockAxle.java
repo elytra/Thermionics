@@ -59,7 +59,17 @@ public class BlockAxle extends BlockBase implements IPreferredRenderState {
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setDefaultState(blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y));
 	}
+	
+	public BlockAxle withHardness(float hardness) {
+		setHardness(hardness);
+		return this;
+	}
 
+	public BlockAxle withHarvestLevel(String toolClass, int level) {
+		this.setHarvestLevel(toolClass, level);
+		return this;
+	}
+	
 	@Override
 	public BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, AXIS);

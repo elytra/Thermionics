@@ -59,9 +59,11 @@ public class ItemSubtyped<T extends Enum<T>> extends Item implements IMetaItemMo
 	}
 	
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
-		for(int i=0; i<enumValues.length; i++) {
-			list.add(new ItemStack(item, 1, i));
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if (tab.equals(this.getCreativeTab())) {
+			for(int i=0; i<enumValues.length; i++) {
+				list.add(new ItemStack(this, 1, i));
+			}
 		}
 	}
 	

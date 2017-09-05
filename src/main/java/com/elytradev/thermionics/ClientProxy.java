@@ -36,8 +36,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends Proxy {
 	@Override
@@ -50,7 +52,7 @@ public class ClientProxy extends Proxy {
 	public void registerItemModel(Item item) {
 		ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 		NonNullList<ItemStack> variantList = NonNullList.create();
-		item.getSubItems(item, Thermionics.TAB_THERMIONICS, variantList);
+		item.getSubItems(Thermionics.TAB_THERMIONICS, variantList);
 		if (item instanceof ItemBlock && ((ItemBlock)item).getBlock() instanceof IPreferredRenderState) {
 			String state = ((IPreferredRenderState)((ItemBlock)item).getBlock()).getPreferredRenderState();
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, state));
@@ -75,6 +77,13 @@ public class ClientProxy extends Proxy {
 					ModelLoader.setCustomModelResourceLocation(item, subItem.getItemDamage(), new ModelResourceLocation(loc, "variant="+subItem.getItemDamage()));
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onRegisterModel(ModelRegistryEvent event) {
+		for(Item i : Thermionics.instance().needModelRegistration) {
+			registerItemModel(i);
 		}
 	}
 }
