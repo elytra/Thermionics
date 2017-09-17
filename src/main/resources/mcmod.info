@@ -12,7 +12,7 @@
     "credits": "Made by Falkreon",
     "logoFile": "",
     "requiredMods": [ "forge" ],
-    "dependencies": [ "probedataprovider" ],
+    "dependencies": [ ],
     "useDependencyInformation": true
   }]
 }

@@ -40,9 +40,7 @@ public class TileEntityMachine extends TileEntity {
 	protected CapabilityProvider capabilities = new CapabilityProvider();
 	
 	public TileEntityMachine() {
-		if (ProbeDataSupport.PROBE_PRESENT) {
-			capabilities.registerForAllSides(ProbeDataSupport.PROBE_CAPABILITY, ()->new ProbeDataSupport.MachineInspector(this));
-		}
+		ProbeDataSupport.registerMachineInspector(this, capabilities);
 	}
 	
 	public EnumFacing getFacing() {

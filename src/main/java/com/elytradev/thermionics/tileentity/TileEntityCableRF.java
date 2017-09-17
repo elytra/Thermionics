@@ -48,10 +48,7 @@ public class TileEntityCableRF extends TileEntity implements ITickable {
 		capabilities.registerForAllSides(CapabilityEnergy.ENERGY, ()->energyStorage);
 		energyStorage.listen(this::markDirty);
 		
-		
-		if (ProbeDataSupport.PROBE_PRESENT) {
-			capabilities.registerForAllSides(ProbeDataSupport.PROBE_CAPABILITY, ()->new ProbeDataSupport.RFInspector(this));
-		}
+		ProbeDataSupport.registerRFInspector(this, capabilities);
 	}
 	
 	@Override

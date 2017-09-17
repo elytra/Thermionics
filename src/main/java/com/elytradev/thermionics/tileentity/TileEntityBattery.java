@@ -59,9 +59,7 @@ public class TileEntityBattery extends TileEntity implements ITickable {
 		
 		energyStorage.listen(this::markDirty);
 		
-		if (ProbeDataSupport.PROBE_PRESENT) {
-			capabilities.registerForAllSides(ProbeDataSupport.PROBE_CAPABILITY, ()->new ProbeDataSupport.RFInspector(this));
-		}
+		ProbeDataSupport.registerRFInspector(this, capabilities);
 	}
 	
 	@Override

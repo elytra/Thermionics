@@ -31,10 +31,12 @@ import com.elytradev.probe.api.IUnit;
 import com.elytradev.probe.api.UnitDictionary;
 import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
+import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerSupply;
 import com.elytradev.thermionics.api.ISignalStorage;
+import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityMachine;
 import com.google.common.collect.ImmutableList;
 
@@ -48,6 +50,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -57,7 +60,7 @@ public class ProbeDataSupport {
 	public static IUnit UNIT_ENTHALPY;
 	public static IUnit UNIT_TORQUE;
 	@CapabilityInject(IProbeDataProvider.class)
-	public static final Capability<IProbeDataProvider> PROBE_CAPABILITY = null;
+	public static final Object PROBE_CAPABILITY = null;
 	
 	public static void init() {
 		if (Loader.isModLoaded("probedataprovider")) {
@@ -71,6 +74,25 @@ public class ProbeDataSupport {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static void registerMachineInspector(TileEntityMachine te, CapabilityProvider provider) {
+		if (PROBE_PRESENT) {
+			//This is externally checked, so it's typesafe, and yet we know nothing about the (possibly missing) interface
+			MachineInspector inspector = new MachineInspector(te);
+			provider.registerForAllSides((Capability<Object>)PROBE_CAPABILITY, (()->inspector));
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void registerRFInspector(TileEntity te, CapabilityProvider provider) {
+		if (PROBE_PRESENT) {
+			//This is externally checked, so it's typesafe, and yet we know nothing about the (possibly missing) interface
+			RFInspector inspector = new RFInspector(te);
+			provider.registerForAllSides((Capability<Object>)PROBE_CAPABILITY, (()->inspector));
+		}
+	}
+	
+	@Optional.Interface(modid="probedataprovider", iface="com.elytradev.probe.api.IProbeDataProvider")
 	public static class MachineInspector implements IProbeDataProvider {
 		private final TileEntityMachine machine;
 		
