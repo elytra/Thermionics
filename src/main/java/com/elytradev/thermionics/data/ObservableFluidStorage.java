@@ -26,10 +26,7 @@ package com.elytradev.thermionics.data;
 import java.util.ArrayList;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import net.minecraftforge.fluids.FluidEvent;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 public class ObservableFluidStorage extends FluidTank {
@@ -46,19 +43,6 @@ public class ObservableFluidStorage extends FluidTank {
 			r.run();
 		}
 	}
-	/*
-	@Override
-	public int fill(FluidStack resource, boolean doFill) {
-		if (doFill) System.out.println("FILL "+resource);
-		return super.fill(resource, doFill);
-	}
-	
-	@Override
-	@Nullable
-	public FluidStack drain(FluidStack resource, boolean doDrain) {
-		if (doDrain) System.out.println("DRAIN "+resource);
-		return super.drain(resource, doDrain);
-	}*/
 	
 	public void listen(@Nonnull Runnable r) {
 		listeners.add(r);
