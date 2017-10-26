@@ -38,28 +38,28 @@ public class FluidAccess implements IFluidTank, IFluidHandler {
 		delegate = tank;
 	}
 	
-	public FluidAccess readOnly(IFluidTank tank) {
+	public static FluidAccess readOnly(IFluidTank tank) {
 		FluidAccess result = new FluidAccess(tank);
 		result.canExtract = false;
 		result.canInsert = false;
 		return result;
 	}
 	
-	public FluidAccess insertOnly(IFluidTank tank) {
+	public static FluidAccess insertOnly(IFluidTank tank) {
 		FluidAccess result = new FluidAccess(tank);
 		result.canExtract = false;
 		result.canInsert = true;
 		return result;
 	}
 	
-	public FluidAccess extractOnly(IFluidTank tank) {
+	public static FluidAccess extractOnly(IFluidTank tank) {
 		FluidAccess result = new FluidAccess(tank);
 		result.canExtract = true;
 		result.canInsert = false;
 		return result;
 	}
 	
-	public FluidAccess fullAccess(IFluidTank tank) {
+	public static FluidAccess fullAccess(IFluidTank tank) {
 		FluidAccess result = new FluidAccess(tank);
 		result.canExtract = true;
 		result.canInsert = true;
