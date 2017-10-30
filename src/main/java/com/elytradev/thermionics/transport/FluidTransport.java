@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,9 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.thermionics.transport;
 
-import com.elytradev.thermionics.tileentity.TileEntityDrum;
+package com.elytradev.thermionics.transport;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -39,34 +38,9 @@ public class FluidTransport {
 		FluidActionResult result = FluidUtil.tryEmptyContainer(stack, handler, maxTransfer, player, true);
 		if (result.success) {
 			return result;
-			/*
-			ItemStack remaining = result.result;
-			if (remaining==null || remaining==ItemStack.EMPTY) {
-				player.setHeldItem(hand, ItemStack.EMPTY);
-			} else {
-				player.setHeldItem(hand, remaining);
-			}
-			System.out.println("SUCCESS: "+remaining);
-			return true;*/
 		} else {
-			//System.out.println("UNSUCCESS.");
-			
 			FluidActionResult resultFill = FluidUtil.tryFillContainer(stack, handler, maxTransfer, player, true);
 			return resultFill;
-			/*
-			if (resultFill.success) {
-				ItemStack remaining = resultFill.result;
-				if (remaining==null || remaining==ItemStack.EMPTY) {
-					player.setHeldItem(hand, ItemStack.EMPTY);
-				} else {
-					player.setHeldItem(hand, remaining);
-				}
-				System.out.println("SUCCESS-Empty: "+remaining);
-				return true;
-			}
-			System.out.println("UNSUCCESS-Empty");
-			player.swingArm(hand);
-			return true;*/
 		}
 	}
 	
@@ -77,15 +51,11 @@ public class FluidTransport {
 			return false;
 		}
 		
-		//System.out.println("Handling fluid interaction...");
-		
 		FluidActionResult result = tryEmptyOrFillContainer(fluidItem, tank, maxTransfer, player);
 		if (result.isSuccess()) {
-			//System.out.println("Successful fluid interaction! Result is: "+result.result.toString());
 			player.setHeldItem(hand, result.result);
 			return true;
 		} else {
-			//System.out.println("Unsuccessful fluid interaction.");
 			return false;
 		}
 	}

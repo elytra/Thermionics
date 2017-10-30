@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,11 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.thermionics.gui;
 
 import java.util.function.BiFunction;
 
-import com.elytradev.concrete.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.inventory.IInventory;
 

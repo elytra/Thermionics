@@ -1,29 +1,30 @@
 buildscript {
-
-
-  repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-      name = "forge"
-      url = "http://files.minecraftforge.net/maven"
-    }
-    maven {
-      name = "sonatype"
-      url = "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-  }
-  dependencies {
-    classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-  }
-}
-
-plugins {
-    id "com.github.hierynomus.license" version "0.13.1"
+	repositories {
+		mavenCentral()
+		jcenter()
+		maven {
+			name = "forge"
+			url = "http://files.minecraftforge.net/maven"
+		}
+		maven {
+			name = "sonatype"
+			url = "https://oss.sonatype.org/content/repositories/snapshots/"
+		}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+		classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+		classpath 'gradle.plugin.net.minecrell:licenser:0.3'
+	}
 }
 
 apply plugin: 'java'
+apply plugin: 'net.minecrell.licenser'
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
 	maven {
@@ -31,15 +32,26 @@ repositories {
 	}
 	
 	maven {
+		// Primary JEI Maven
+		name = "Progwml6 maven"
+		url = "http://dvs1.progwml6.com/files/maven"
+	}
+	maven {
+		// Fallback JEI Maven
+		name = "ModMaven"
+		url = "modmaven.k-4u.nl"
+	}
+
+	maven {
 		// location of the maven that hosts JEI files
 		url = "http://dvs1.progwml6.com/files/maven"
 	}
 	
-	ivy {
+	//ivy {
 		//Resolves baubles. Consider just dropping Baubles in your libs folder or rehosting it
-		name 'asie dependency mirror'
-		artifactPattern "http://asie.pl/javadeps/[module]-[revision](-[classifier]).[ext]"
-	}
+	//	name 'asie dependency mirror'
+	//	artifactPattern "http://asie.pl/javadeps/[module]-[revision](-[classifier]).[ext]"
+	//}
 	
 	//maven {
 	//	name "Cyclops Repo"
@@ -47,22 +59,37 @@ repositories {
 	//}
 }
 
-dependencies {
-	deobfCompile "com.elytradev:probedataproviderapi:MC1.12_ver1.1.1";
-	//deobfCompile "org.cyclops.commoncapabilities:CommonCapabilities:1.11.2-1.3.1-95";
+def project_package='com.elytradev.thermionics';
+def mc_version='1.12.1';
+def jei_version="4.7.8.92";
+def concrete_version="0.3.2-SNAPSHOT";
+def concrete_modules=["common","gui"];
 
-	deobfCompile name: "Baubles", version: "1.12-1.4.5"
-	//compile(group: 'com.azanor.baubles', name: 'Baubles', version: '1.12-1.5.1');
-	//compile files(
-	//	'Baubles-1.11-1.4.4-deobf.jar'
-	//);
-	
-	deobfCompile "mezz.jei:jei_1.12.1:4.7.8.92:api";
-	runtime "mezz.jei:jei_1.12.1:4.7.8.92";
-	
+shadowJar {
+	classifier = ''
+	relocate 'com.elytradev.concrete', project_package + '.repackage.com.elytradev.concrete'
+	configurations = [project.configurations.shadow]
 }
 
+dependencies {
+	deobfCompile "com.elytradev:probedataproviderapi:MC1.12_ver1.1.1";
 
+	//deobfCompile name: "Baubles", version: "1.12-1.4.5"
+	compile files(
+		'Baubles-1.12-1.5.2-deobf.jar'
+	);
+	
+	deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
+	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
+
+	//deobfCompile "mezz.jei:jei_1.12.1:4.7.8.92:api";
+	//runtime "mezz.jei:jei_1.12.1:4.7.8.92";
+	for (String module : concrete_modules) {
+		shadow 'com.elytradev:concrete:' + concrete_version + ':' + module;
+		compile 'com.elytradev:concrete:' + concrete_version + ':' + module;
+	}
+	
+}
 
 group = "com.elytradev"
 archivesBaseName = "Thermionics"
@@ -73,7 +100,7 @@ targetCompatibility = 1.8
 
 minecraft {
 	version = '1.12.1-14.22.0.2446'
-    mappings = 'snapshot_20170817'
+	mappings = 'snapshot_20170817'
 
   runDir = "minecraft"
 
@@ -82,31 +109,46 @@ minecraft {
 }
 
 processResources {
-  // this will ensure that this task is redone when the versions change.
-  inputs.property "version", project.version
-  inputs.property "mcversion", project.minecraft.version
+	// this will ensure that this task is redone when the versions change.
+	inputs.property "version", project.version
+	inputs.property "mcversion", project.minecraft.version
 
-  // replace stuff in mcmod.info, nothing else
-  from(sourceSets.main.resources.srcDirs) {
-    include 'mcmod.info'
+	// replace stuff in mcmod.info, nothing else
+	from(sourceSets.main.resources.srcDirs) {
+		include 'mcmod.info'
 
-    // replace version and mcversion
-    expand 'version':project.version, 'mcversion':project.minecraft.version
-  }
+		// replace version and mcversion
+		expand 'version':project.version, 'mcversion':project.minecraft.version
+	}
 
-  // copy everything else, thats not the mcmod.info
-  from(sourceSets.main.resources.srcDirs) {
-    exclude 'mcmod.info'
-    exclude '*.xcf' //Always exclude gimp source files.
-  }
+	// copy everything else, thats not the mcmod.info
+	from(sourceSets.main.resources.srcDirs) {
+		exclude 'mcmod.info'
+		exclude '*.xcf' //Always exclude gimp source files.
+	}
 }
 
 license {
+	sourceSets = [project.sourceSets.main]
+	//style {
+    //    java = 'JAVADOC' // Sets Java license header style to JAVADOC (/**)
+    //}
+    //header = file('LICENSE')
+
+
+    include '**/*.java';
+
+    exclude "**/mcmod.info";
 	exclude "**/*.json";
 	exclude "**/*.png";
 	exclude "**/*.mcmeta";
 	exclude "**/*.ogg";
 	exclude "**/*.lang";
 	exclude "/src/main/resources/**";
+	//Should be covered by the above
+	exclude "**/*.mtl";
+	exclude "**/*.obj";
+
 	exclude "/doc/**";
+	exclude "/com/elytradev/concrete/**";
 }

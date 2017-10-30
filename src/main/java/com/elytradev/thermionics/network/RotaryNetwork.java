@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.thermionics.network;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 
 public class RotaryNetwork {
-	private static ArrayList<RotaryNetwork> liveNetworks = new ArrayList<>();
+	//private static ArrayList<RotaryNetwork> liveNetworks = new ArrayList<>();
 	
 	public IBlockAccess world = null;
 	public HashMap<BlockPos, NetworkMember> membership = new HashMap<>();

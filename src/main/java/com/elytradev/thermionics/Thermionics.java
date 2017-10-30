@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.thermionics;
 
 import java.time.LocalDateTime;
@@ -30,9 +31,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
-import com.elytradev.concrete.client.gui.ConcreteGui;
-import com.elytradev.concrete.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.client.ConcreteGui;
 import com.elytradev.libasplod.BigExplosionHandler;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerConsumer;
@@ -62,6 +63,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -127,6 +129,9 @@ public class Thermionics {
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);
 		CapabilityManager.INSTANCE.register(IRotaryPowerSupply.class, new DefaultRotaryPowerSerializer(), RotaryPowerSupply::new);
 		CapabilityManager.INSTANCE.register(IRotaryPowerConsumer.class, new DefaultRotaryConsumerSerializer(), RotaryPowerConsumer::new);
+		
+		OBJLoader.INSTANCE.addDomain(MODID);
+		
 		
 		ProbeDataSupport.init();
 		MinecraftForge.EVENT_BUS.register(this);

@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
@@ -53,6 +54,7 @@ public class ThermionicsBlocks {
 	//Heatmachines
 	public static BlockFirebox         FIREBOX;
 	public static BlockOven            OVEN;
+	public static BlockPotStill        POT_STILL;
 	
 	//Motors
 	public static BlockConvectionMotor MOTOR_CONVECTION;
@@ -85,39 +87,40 @@ public class ThermionicsBlocks {
 		IForgeRegistry<Block> r = event.getRegistry();
 		
 		//Cabling
-		ThermionicsBlocks.CABLE_RF         = block(r, new BlockCableRF("rf"));
-		ThermionicsBlocks.CABLE_HEAT       = block(r, new BlockHeatPipe());
+		CABLE_RF         = block(r, new BlockCableRF("rf"));
+		CABLE_HEAT       = block(r, new BlockHeatPipe());
 		
 		//Fluid Storage
-		ThermionicsBlocks.DRUM             = block(r, new BlockDrum());
+		DRUM             = block(r, new BlockDrum());
 		
 		//Heatmachines
-		ThermionicsBlocks.FIREBOX          = block(r, new BlockFirebox());
-		ThermionicsBlocks.OVEN             = block(r, new BlockOven());
+		FIREBOX          = block(r, new BlockFirebox());
+		OVEN             = block(r, new BlockOven());
+		POT_STILL        = block(r, new BlockPotStill());
 		
 		//Motors
-		ThermionicsBlocks.MOTOR_CONVECTION = block(r, new BlockConvectionMotor());
+		MOTOR_CONVECTION = block(r, new BlockConvectionMotor());
 		
 		//Gears & Meshing
-		ThermionicsBlocks.GEARBOX          = block(r, new BlockGearbox());
-		ThermionicsBlocks.AXLE_WOOD        = block(r, new BlockAxle(Material.WOOD, "wood")).withHardness(1.0f).withHarvestLevel("axe", 0);
-		ThermionicsBlocks.AXLE_IRON        = block(r, new BlockAxle(Material.IRON, "iron"));
+		GEARBOX          = block(r, new BlockGearbox());
+		AXLE_WOOD        = block(r, new BlockAxle(Material.WOOD, "wood")).withHardness(1.0f).withHarvestLevel("axe", 0);
+		AXLE_IRON        = block(r, new BlockAxle(Material.IRON, "iron"));
 		
 		//Rotarymachines
-		ThermionicsBlocks.HAMMER_MILL      = block(r, new BlockHammerMill());
-		ThermionicsBlocks.SERGER           = block(r, new BlockSerger());
+		HAMMER_MILL      = block(r, new BlockHammerMill());
+		SERGER           = block(r, new BlockSerger());
 		
 		//RFmachines
-		ThermionicsBlocks.BATTERY_LEAD     = block(r, new BlockBattery("lead"));
-		ThermionicsBlocks.BATTERY_CREATIVE = block(r, new BlockBatteryCreative());
+		BATTERY_LEAD     = block(r, new BlockBattery("lead"));
+		BATTERY_CREATIVE = block(r, new BlockBatteryCreative());
 		
 		//Explosives
-		ThermionicsBlocks.TNT_CREATIVE     = block(r, new BlockTNTCreative());
+		TNT_CREATIVE     = block(r, new BlockTNTCreative());
 		
 		//Randoms
-		ThermionicsBlocks.SCAFFOLD_BASIC   = block(r, new BlockScaffold("basic"));
-		ThermionicsBlocks.ROAD             = block(r, new BlockRoad(0));
-		ThermionicsBlocks.ROAD_COMPRESSED  = block(r, new BlockRoad(1));
+		SCAFFOLD_BASIC   = block(r, new BlockScaffold("basic"));
+		ROAD             = block(r, new BlockRoad(0));
+		ROAD_COMPRESSED  = block(r, new BlockRoad(1));
 
 		//TODO: Fix battery item registration
 		//registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));

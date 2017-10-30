@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,10 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 /**
  * <h1>Drastically improves explosions
  * 
- * <p>"You mad them worse!"
+ * <p>"You made them worse!"
  * 
  * <p>Worse? Or... better?
  */

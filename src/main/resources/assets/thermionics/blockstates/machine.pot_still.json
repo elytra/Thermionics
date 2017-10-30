@@ -1,0 +1,22 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"thermionics:pot_still.obj",
+		"custom": { "flip-v": true }
+		
+	},
+	
+	"variants": {
+		"facing": {
+			"north": { "x": 0, "y":  0},
+			"east" : { "x": 0, "y": 90},
+			"south": { "x": 0, "y":180},
+			"west" : { "x": 0, "y":270}
+		},
+		"active" : {
+			"true": {},
+			"false": {}
+		}
+    }
+}

@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,12 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.elytradev.thermionics.gui;
 
-import com.elytradev.concrete.gui.ConcreteContainer;
-import com.elytradev.concrete.gui.widget.WBar;
-import com.elytradev.concrete.gui.widget.WGridPanel;
-import com.elytradev.concrete.gui.widget.WItemSlot;
+import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.widget.WBar;
+import com.elytradev.concrete.inventory.gui.widget.WGridPanel;
+import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;

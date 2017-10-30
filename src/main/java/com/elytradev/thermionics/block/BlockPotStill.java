@@ -1,4 +1,4 @@
-/**
+/*
  * MIT License
  *
  * Copyright (c) 2017 Isaac Ellingson (Falkreon) and contributors
@@ -21,30 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.elytradev.concrete.gui.widget;
 
-import com.elytradev.concrete.client.gui.GuiDrawing;
+package com.elytradev.thermionics.block;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
-public class WImage extends WWidget {
-	ResourceLocation texture;
-	
-	public WImage(ResourceLocation loc) {
-		this.texture = loc;
+public class BlockPotStill extends BlockMachineBase {
+
+	public BlockPotStill() {
+		super("pot_still");
+	}
+
+	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
+		return createBB(state).offset(pos);
 	}
 	
-	
-	@Override
-	public boolean canResize() {
-		return true;
+	public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return createBB(state);
 	}
 	
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void paintBackground(int x, int y) {
-		GuiDrawing.rect(texture, x, y, getWidth(), getHeight(), 0xFFFFFFFF);
+	public AxisAlignedBB createBB(IBlockState state) {
+		switch(state.getValue(FACING)) {
+		case EAST:
+		default:
+			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
+		case SOUTH:
+			return new AxisAlignedBB(-1, 0, 0, 2, 1.5, 2);
+		case NORTH:
+			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
+		case WEST:
+			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
+		}
 	}
 }
