@@ -31,8 +31,19 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class WPlasma extends WWidget {
+	//Written before panels were translucent
+	//private int[] lut = { 0xFFb0b0b0, 0xFFc0c0c0, 0xFFc6c6c6, 0xFFd2d2d2, 0xFFd6d6d6 };
 	
-	private int[] lut = { 0xFFb0b0b0, 0xFFc0c0c0, 0xFFc6c6c6, 0xFFd2d2d2, 0xFFd6d6d6 };
+	private int[] lut = {
+			0x00C0C0C0,
+			0x22bf8ebb,
+			0x33c665be,
+			0x55db35cd,
+			0x66ff00ea,
+			0x88ae00ff,
+			0x995a00ff
+	};
+	
 	private Term[] xTerms = { new Term(), new Term(), new Term() };
 	private Term[] yTerms = { new Term(), new Term(), new Term() };
 	
@@ -76,7 +87,7 @@ public class WPlasma extends WWidget {
 	
 	private static class Term {
 		public float amplitude = 10f + (float)Math.random()*5f;
-		public float frequency = (float)(Math.PI*2)/(10f+(float)Math.random()*30f);
+		public float frequency = (float)(Math.PI*2)/(100f+(float)Math.random()*100f);
 		public float phase = (float)Math.random()*20f; //Changes over time!
 		public float dc = 0f;
 		public float v = (float)(Math.random()-0.5f)*0.5f;

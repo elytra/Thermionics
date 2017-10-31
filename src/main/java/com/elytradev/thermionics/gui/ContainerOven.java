@@ -32,6 +32,7 @@ import com.elytradev.concrete.inventory.gui.widget.WBar;
 import com.elytradev.concrete.inventory.gui.widget.WGridPanel;
 import com.elytradev.concrete.inventory.gui.widget.WImage;
 import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
+import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.gui.widget.WPlasma;
 
 import net.minecraft.inventory.IInventory;
@@ -43,11 +44,14 @@ public class ContainerOven extends ConcreteContainer {
 	public ContainerOven(IInventory player, IInventory container) {
 		super(player, container);
 		
+		this.setTitleColor(0xFFFFFFFF);
+		this.setColor(0xCC707070);
+		
 		WGridPanel panel = new WGridPanel();
 		super.setRootPanel(panel);
 		
-		if (LocalDateTime.now().getMonth()==Month.APRIL && LocalDateTime.now().getDayOfMonth()==1) {
-			panel.add(new WPlasma(), 0, 0, 9, 3);
+		if (Thermionics.isAprilFools()) {
+			panel.add(new WPlasma(), 0, 0, 9, 4);
 		}
 		
 		panel.add(WItemSlot.of(container, 0), 2, 1);
@@ -64,9 +68,7 @@ public class ContainerOven extends ConcreteContainer {
 				container, 2, 3, WBar.Direction.RIGHT
 				), 1, 2, 7, 1);
 		
-		panel.add(WItemSlot.ofPlayerStorage(player), 0, 4);
-		panel.add(new WImage(new ResourceLocation("thermionics","textures/gui/scrollwork.png")), 2, 7, 5, 1);
-		panel.add(WItemSlot.of(player, 0, 9, 1), 0, 8);
+		panel.add(this.createPlayerInventoryPanel(), 0, 4);
 	}
 
 }

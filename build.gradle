@@ -52,17 +52,12 @@ repositories {
 		name 'endless.blue dependency mirror'
 		artifactPattern "https://endless.blue/files/rehost/[module]-[revision].[ext]"
 	}
-	
-	//maven {
-	//	name "Cyclops Repo"
-	//	url "https://dl.bintray.com/cyclopsmc/dev/"
-	//}
 }
 
 
 def mc_version='1.12.1';
 def jei_version="4.7.8.92";
-def concrete_version="0.3.2-SNAPSHOT";
+def concrete_version="0.3.3-SNAPSHOT";
 def concrete_modules=["common","gui"];
 def project_package='com.elytradev.thermionics';
 
@@ -76,15 +71,10 @@ dependencies {
 	deobfCompile "com.elytradev:probedataproviderapi:MC1.12_ver1.1.1";
 
 	deobfCompile name: "Baubles", version: "1.12-1.5.2"
-	//compile files(
-	//	'Baubles-1.12-1.5.2-deobf.jar'
-	//);
 	
 	deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
 	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 
-	//deobfCompile "mezz.jei:jei_1.12.1:4.7.8.92:api";
-	//runtime "mezz.jei:jei_1.12.1:4.7.8.92";
 	for (String module : concrete_modules) {
 		shadow 'com.elytradev:concrete:' + concrete_version + ':' + module;
 		compile 'com.elytradev:concrete:' + concrete_version + ':' + module;
