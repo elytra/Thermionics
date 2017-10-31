@@ -26,11 +26,18 @@ package com.elytradev.thermionics.item;
 
 import java.util.Iterator;
 import java.util.Set;
+
+import com.elytradev.thermionics.data.IArmor;
+import com.google.common.collect.Multimap;
+
 import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
@@ -55,6 +62,22 @@ public class ItemBlockEquivalentState extends ItemBlock {
 	@Override
 	public int getMetadata(int damage) {
 		return damage;
+	}
+	
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
+		if (block instanceof IArmor) {
+			return ((IArmor)block).isValidArmor(stack, armorType, entity);
+		} else {
+			return super.isValidArmor(stack, armorType, entity);
+		}
+	}
+	
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+		if (block instanceof IArmor) {
+			return ((IArmor)block).getAttributeModifiers(slot,stack);
+		} else {
+			return super.getAttributeModifiers(slot, stack);
+		}
 	}
 	
 	public static String toVanilla(IBlockState state) {

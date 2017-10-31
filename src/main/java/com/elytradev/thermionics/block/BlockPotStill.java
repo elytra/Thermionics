@@ -24,16 +24,31 @@
 
 package com.elytradev.thermionics.block;
 
+import java.util.UUID;
+
+import com.elytradev.thermionics.data.IArmor;
+import com.elytradev.thermionics.tileentity.TileEntityPotStill;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockPotStill extends BlockMachineBase {
+public class BlockPotStill extends BlockMachineBase implements ITileEntityProvider, IArmor {
 
 	public BlockPotStill() {
 		super("pot_still");
+		this.setLightOpacity(2);
 	}
 
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
@@ -45,16 +60,42 @@ public class BlockPotStill extends BlockMachineBase {
 	}
 	
 	public AxisAlignedBB createBB(IBlockState state) {
-		switch(state.getValue(FACING)) {
-		case EAST:
-		default:
-			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
-		case SOUTH:
-			return new AxisAlignedBB(-1, 0, 0, 2, 1.5, 2);
-		case NORTH:
-			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
-		case WEST:
-			return new AxisAlignedBB(0, 0, 0, 2, 1.5, 2);
+		return new AxisAlignedBB(-0.25, 0.0, -0.25, 1.25, 1.75, 1.25);
+	}
+	
+	//overrides light opacity if true >:|
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false; 
+	}
+	
+	//controls hidden surface removal
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World worldIn, int meta) {
+		return new TileEntityPotStill();
+	}
+
+	@Override
+	public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity) {
+		return armorType==EntityEquipmentSlot.HEAD;
+	}
+
+	@Override
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+		Multimap<String, AttributeModifier> modifiers = HashMultimap.create();
+		if (slot==EntityEquipmentSlot.HEAD) {
+			modifiers.put(
+					SharedMonsterAttributes.ARMOR.getName(),
+					new AttributeModifier(UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"), "Armor modifier", 3D, 0)
+					);
+
 		}
+		
+		return modifiers;
 	}
 }

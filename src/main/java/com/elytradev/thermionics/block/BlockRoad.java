@@ -81,6 +81,7 @@ public class BlockRoad extends BlockBase {
 	
 	@Override
 	public void onEntityWalk(World world, BlockPos pos, Entity entity) {
+		if (world.isRemote) return;
 		if (entity instanceof EntityLivingBase) {
 			EntityLivingBase living = (EntityLivingBase)entity;
 			

@@ -28,9 +28,11 @@ import java.util.List;
 
 import com.elytradev.probe.api.IProbeData;
 import com.elytradev.probe.api.IProbeDataProvider;
+import com.elytradev.probe.api.IUnit;
 import com.elytradev.probe.api.UnitDictionary;
 import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
+import com.elytradev.probe.api.impl.Unit;
 import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IHeatStorage;
@@ -46,6 +48,10 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -158,6 +164,10 @@ public class ProbeDataSupport {
 					addInventoryData(machine.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.UP), data);
 				}
 				
+				if (machine.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP)) {
+					addFluidData(machine.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, EnumFacing.UP), data);
+				}
+				
 				//data.add(new ProbeData("MEMES: 9001"));
 			}
 		}
@@ -218,6 +228,20 @@ public class ProbeDataSupport {
 			list.add(new ProbeData(new TextComponentTranslation("thermionics.data.torque"))
 					.withBar(0, storage.getTorqueSetting(), storage.getMaxBufferedPower(), (com.elytradev.probe.api.IUnit)UNIT_TORQUE)
 					);
+		}
+		
+		public static void addFluidData(IFluidHandler storage, List<IProbeData> list) {
+			for(IFluidTankProperties info : storage.getTankProperties()) {
+				FluidStack cur = info.getContents();
+				int capacity = info.getCapacity();
+				if (cur!=null) {
+					IUnit unit = UnitDictionary.getInstance().getUnit(info.getContents().getFluid());
+					list.add(new ProbeData().withBar(0, cur.amount, capacity, unit));
+				} else {
+					IUnit unit = UnitDictionary.BUCKETS_ANY;
+					list.add(new ProbeData().withBar(0, 0, capacity, unit));
+				}
+			}
 		}
 		
 		/*

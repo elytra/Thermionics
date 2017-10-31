@@ -24,8 +24,8 @@
 
 package com.elytradev.thermionics.tileentity;
 
+import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.thermionics.CapabilityProvider;
-import com.elytradev.thermionics.data.ObservableFluidStorage;
 import com.elytradev.thermionics.data.RelativeDirection;
 
 import net.minecraft.block.state.IBlockState;
@@ -41,11 +41,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 public class TileEntityDrum extends TileEntity {
-	private ObservableFluidStorage storage;
+	private ConcreteFluidTank storage;
 	private CapabilityProvider capabilities = new CapabilityProvider();
 	
 	public TileEntityDrum() {
-		this.storage = new ObservableFluidStorage(16000);
+		this.storage = new ConcreteFluidTank(16000);
 		storage.listen(this::markDirty);
 		capabilities.registerForAllSides(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, ()->storage);
 	}
@@ -90,9 +90,9 @@ public class TileEntityDrum extends TileEntity {
 		return result;
 	}
 	
-	public ObservableFluidStorage getFluidStorage() {
+	public ConcreteFluidTank getFluidStorage() {
 		//return storage;
-		return (ObservableFluidStorage) capabilities.provide(RelativeDirection.BOW, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
+		return (ConcreteFluidTank) capabilities.provide(RelativeDirection.BOW, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
 	}
 	
 	@Override

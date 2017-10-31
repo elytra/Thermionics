@@ -34,6 +34,7 @@ import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
+import com.elytradev.thermionics.tileentity.TileEntityPotStill;
 import com.elytradev.thermionics.tileentity.TileEntitySerger;
 
 import net.minecraft.block.Block;
@@ -140,6 +141,7 @@ public class ThermionicsBlocks {
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
 		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
+		GameRegistry.registerTileEntity(TileEntityPotStill.class,        "thermionics:machine.pot_still");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
 	}
 	
