@@ -24,39 +24,39 @@
 
 package com.elytradev.thermionics.gui;
 
-import java.util.function.BiFunction;
-
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 
 public enum EnumGui {
 	FIREBOX         (ContainerFirebox::new),
 	OVEN            (ContainerOven::new),
 	CONVECTION_MOTOR(ContainerMotor::new),
 	HAMMER_MILL     (ContainerHammerMill::new),
-	SERGER          (ContainerSerger::new);
+	SERGER          (ContainerSerger::new),
+	POT_STILL       (ContainerPotStill::new);
 	
-	private final BiFunction<IInventory, IInventory, ConcreteContainer> supplier;
+	private final GuiSupplier supplier;
 	
-	EnumGui(BiFunction<IInventory, IInventory, ConcreteContainer> supplier) {
+	EnumGui(GuiSupplier supplier) {
 		this.supplier = supplier;
 	}
 	
-	public ConcreteContainer createContainer(IInventory player, IInventory tile) {
-		return supplier.apply(player, tile);
+	public ConcreteContainer createContainer(IInventory player, IInventory tile, TileEntity te) {
+		return supplier.apply(player, tile, te);
 	}
 	
 	public int id() {
-		return ordinal(); //Oh. Right. This exists.
-		/*for(int i = 0; i<values().length; i++) {
-			if (values()[i]==this) return i;
-		}
-		return 0; //Should be impossible*/
+		return ordinal();
 	}
 	
 	public static EnumGui forId(int i) {
 		if (i<0 || i>=values().length) return FIREBOX;
 		return values()[i];
+	}
+	
+	public static interface GuiSupplier {
+		public ConcreteContainer apply(IInventory player, IInventory tile, TileEntity te);
 	}
 }

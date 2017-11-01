@@ -154,8 +154,8 @@ public class Thermionics {
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
 					ConcreteContainer container = EnumGui.forId(id).createContainer(
 							player.inventory,
-							((IContainerInventoryHolder)te).getContainerInventory());
-					//ConcreteContainer container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+							((IContainerInventoryHolder)te).getContainerInventory(),
+							te);
 					container.validate();
 					return container;
 				}
@@ -171,8 +171,8 @@ public class Thermionics {
 				if (te!=null && (te instanceof IContainerInventoryHolder)) {
 					container = EnumGui.forId(id).createContainer(
 							player.inventory,
-							((IContainerInventoryHolder)te).getContainerInventory());
-					//container = getContainer(id, player.inventory, ((IContainerInventoryHolder)te).getContainerInventory());
+							((IContainerInventoryHolder)te).getContainerInventory(),
+							te);
 				}
 				
 				return new ConcreteGui(container);

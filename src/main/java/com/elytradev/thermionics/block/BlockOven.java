@@ -26,6 +26,7 @@ package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.gui.ContainerOven;
+import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 
 import net.minecraft.block.ITileEntityProvider;
@@ -52,7 +53,7 @@ public class BlockOven extends BlockMachineBase implements ITileEntityProvider {
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			player.openGui(Thermionics.instance(), ContainerOven.ID, world, pos.getX(), pos.getY(), pos.getZ());
+			player.openGui(Thermionics.instance(), EnumGui.OVEN.id(), world, pos.getX(), pos.getY(), pos.getZ());
 		} else {
 			
 		}

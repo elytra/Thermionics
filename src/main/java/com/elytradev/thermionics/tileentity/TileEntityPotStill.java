@@ -26,23 +26,44 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
+import com.elytradev.concrete.inventory.IContainerInventoryHolder;
+import com.elytradev.concrete.inventory.ValidatedInventoryView;
 import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
+import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.ValidatedDoubleTank;
 
+import net.minecraft.inventory.IInventory;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
-public class TileEntityPotStill extends TileEntityMachine {
+public class TileEntityPotStill extends TileEntityMachine implements ITickable, IContainerInventoryHolder {
+	public static final int SLOT_PRECIPITATE        = 0;
+	public static final int SLOT_FULL_BUCKET_IN     = 1;
+	public static final int SLOT_EMPTY_BUCKET_OUT   = 2;
+	public static final int SLOT_EMPTY_BUCKET_IN    = 3;
+	public static final int SLOT_FULL_BUCKET_OUT    = 4;
+	
 	private ConcreteFluidTank inputTank = new ConcreteFluidTank(8000);
 	private ConcreteFluidTank outputTank = new ConcreteFluidTank(8000);
 	private ValidatedDoubleTank cap = new ValidatedDoubleTank(inputTank, outputTank);
-	private boolean tanksLocked;
+	private boolean tanksLocked = false;
+	private boolean lastTickPower = false;
 	
-	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(1);
+	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(5)
+			.withValidators(Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING)
+			.setCanExtract(0, true)
+			.setCanExtract(1, false)
+			.setCanExtract(2, true)
+			.setCanExtract(3, false)
+			.setCanExtract(4, true)
+			.withName("tile.thermionics.machine.pot_still.name");
 	
 	private HeatStorage heat = new HeatStorage(8000);
 	
@@ -67,6 +88,7 @@ public class TileEntityPotStill extends TileEntityMachine {
 	public void setTanksLocked(boolean locked) {
 		inputTank.setCanFill(!locked);
 		outputTank.setCanDrain(!locked);
+		itemStorage.setCanExtract(0, !locked);
 		tanksLocked = locked;
 	}
 	
@@ -82,7 +104,7 @@ public class TileEntityPotStill extends TileEntityMachine {
 		tagOut.setTag("heatstorage", Thermionics.CAPABILITY_HEATSTORAGE.writeNBT(heat, null));
 		tagOut.setTag("inventory", CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.writeNBT(itemStorage, null));
 		
-		//tagOut.setInteger("progress", progress);
+		tagOut.setTag("locked", new NBTTagByte((byte) (tanksLocked ? 1 : 0)));
 		
 		return tagOut;
 	}
@@ -104,6 +126,57 @@ public class TileEntityPotStill extends TileEntityMachine {
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY.readNBT(itemStorage, null, tag.getTag("inventory"));
 		}
 		
-		//if (tag.hasKey("progress")) progress = tag.getInteger("progress");
+		if (tag.hasKey("locked")) {
+			tanksLocked = tag.getByte("locked")!=0;
+		}
+	}
+
+	@Override
+	public void update() {
+		boolean curTickPower = world.isBlockIndirectlyGettingPowered(pos)!=0;
+		
+		if (!tanksLocked) {
+			if (curTickPower & !lastTickPower) {
+				//Lock the tanks on a rising current edge.
+				setTanksLocked(true);
+			}
+		} else {
+			FluidStack in = inputTank.getFluid();
+			if (in==null) {
+				//Batch is done...?
+				setTanksLocked(false);
+			} else {
+				//Find a recipe, let's go :D
+				
+				
+			}
+		}
+		
+		lastTickPower = curTickPower;
+	}
+	
+	/** Returns 1mB of whatever distilling this fluid would produce. */
+	public FluidStack exampleOutput(FluidStack in) {
+		return null;
+	}
+
+	public ConcreteFluidTank getInputTank() {
+		return inputTank;
+	}
+	
+	public ConcreteFluidTank getOutputTank() {
+		return outputTank;
+	}
+
+	@Override
+	public IInventory getContainerInventory() {
+		ValidatedInventoryView result = new ValidatedInventoryView(itemStorage);
+		if (world.isRemote) {
+			return result;
+		} else {
+			return result
+					.withField(0, heat::getHeatStored)
+					.withField(1, heat::getMaxHeatStored);
+		}
 	}
 }

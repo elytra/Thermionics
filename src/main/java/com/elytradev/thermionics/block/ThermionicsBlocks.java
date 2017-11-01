@@ -25,6 +25,7 @@
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.item.FluidSpirit;
 import com.elytradev.thermionics.tileentity.TileEntityBattery;
 import com.elytradev.thermionics.tileentity.TileEntityBatteryCreative;
 import com.elytradev.thermionics.tileentity.TileEntityCableHeat;
@@ -39,7 +40,10 @@ import com.elytradev.thermionics.tileentity.TileEntitySerger;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -81,6 +85,8 @@ public class ThermionicsBlocks {
 	public static BlockRoad            ROAD;
 	public static BlockRoad            ROAD_COMPRESSED;
 	
+	public static Fluid                FLUID_SPIRITS;
+	public static Fluid                FLUID_HOOTCH;
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Block> event) {
@@ -143,6 +149,31 @@ public class ThermionicsBlocks {
 		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
 		GameRegistry.registerTileEntity(TileEntityPotStill.class,        "thermionics:machine.pot_still");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
+		
+		
+		
+		/* Base stats come from ethanol; most common spirits irl behave in-between these numbers and water. Because
+		 * they're alcohol mixed with water. I err on the side of alcohol to give the fluid more distinct properties.
+		 */
+		FLUID_SPIRITS = new FluidSpirit("spirit",
+				new ResourceLocation("thermionics:fluids/spirit"),
+				new ResourceLocation("thermionics:fluids/spirit"))
+				.setDensity(789)     //ethanol is ~789 kg/m^3 at 20C
+				.setLuminosity(0)    //liquor does not emit light
+				.setTemperature(293) //cold! Best enjoyed at 20C
+				.setViscosity(1250)  //A touch slower than water at 1.250 centipoise at 20C (to water's 1.0 at room temp)
+				.setRarity(EnumRarity.UNCOMMON) //Not *rare*, but highly coveted.
+				;
+		
+		FLUID_HOOTCH = new FluidSpirit("hootch",
+				new ResourceLocation("thermionics:fluids/hootch"),
+				new ResourceLocation("thermionics:fluids/hootch"))
+				.setDensity(1400)             //almost molasses at 1400kg/m^3, and often actually is alcoholic molasses
+				.setLuminosity(0)             //nope
+				.setTemperature(300)          //disgustingly room-temperature, but often warmer
+				.setViscosity(4_000_000)      //I hope you're prepared to wait. Molasses clocks in at 5K centipoise, this is only 4K
+				.setRarity(EnumRarity.COMMON) //Can be produced safely in any ordinary backyard.
+				;
 	}
 	
 	public static <T extends Block> T block(IForgeRegistry<Block> registry, T t) {

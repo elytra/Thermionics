@@ -32,12 +32,13 @@ import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.gui.widget.WPlasma;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class ContainerSerger extends ConcreteContainer {
 	public static final int ID = 4;
 
-	public ContainerSerger(IInventory player, IInventory container) {
+	public ContainerSerger(IInventory player, IInventory container, TileEntity te) {
 		super(player, container);
 		
 		this.setTitleColor(0xFFFFFFFF);

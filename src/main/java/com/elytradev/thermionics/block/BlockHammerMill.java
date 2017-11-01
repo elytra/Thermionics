@@ -26,6 +26,7 @@ package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.gui.ContainerHammerMill;
+import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 
 import net.minecraft.block.ITileEntityProvider;
@@ -51,7 +52,7 @@ public class BlockHammerMill extends BlockMachineBase implements ITileEntityProv
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			player.openGui(Thermionics.instance(), ContainerHammerMill.ID, world, pos.getX(), pos.getY(), pos.getZ());
+			player.openGui(Thermionics.instance(), EnumGui.HAMMER_MILL.id(), world, pos.getX(), pos.getY(), pos.getZ());
 		} else {
 			
 		}

@@ -24,24 +24,21 @@
 
 package com.elytradev.thermionics.gui;
 
-import java.time.LocalDateTime;
-import java.time.Month;
-
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
 import com.elytradev.concrete.inventory.gui.widget.WBar;
 import com.elytradev.concrete.inventory.gui.widget.WGridPanel;
-import com.elytradev.concrete.inventory.gui.widget.WImage;
 import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.gui.widget.WPlasma;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class ContainerOven extends ConcreteContainer {
 	public static final int ID = 1;
 	
-	public ContainerOven(IInventory player, IInventory container) {
+	public ContainerOven(IInventory player, IInventory container, TileEntity te) {
 		super(player, container);
 		
 		this.setTitleColor(0xFFFFFFFF);

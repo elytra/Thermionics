@@ -68,6 +68,29 @@ thermionics.data.chunkunloader.loaded=Chunk loaded
 #Potions
 effect.moveSpeed.effortless=Expedience
 
+#Spirit
+hootch.vodka=Potato Hootch
+hootch.whiskey=Grain Hootch
+hootch.rum=Sugarcane Hootch
+hootch.moonshine=Hootch
+hootch.hard_cider=Apple Hootch
+hootch.molasses=Molasses Hootch
+hootch.dr_purpur=Purple Hootch
+hootch.carrot_brandy=Carrot Hootch
+hootch.gin=Juniper Hootch
+hootch.tequila=Agave Hootch
+
+spirit.vodka=Vodka
+spirit.whiskey=Whiskey
+spirit.rum=Rum
+spirit.moonshine=Moonshine
+spirit.hard_cider=Hard Cider
+spirit.molasses=Vodka
+spirit.dr_purpur=Dr. Purpur
+spirit.carrot_brandy=Carrot Brandy
+spirit.gin=Gin
+spirit.tequila=Tequila
+
 #Relocalizations
 item.horsearmormetal.name=Iron Barding
 item.horsearmorgold.name=Gold Barding
