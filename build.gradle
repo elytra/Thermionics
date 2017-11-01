@@ -57,8 +57,8 @@ repositories {
 
 def mc_version='1.12.1';
 def jei_version="4.7.8.92";
-def concrete_version="0.3.3-SNAPSHOT";
-def concrete_modules=["common","gui"];
+def concrete_version="0.3.4-SNAPSHOT";
+def concrete_modules=["common","inventory"];
 def project_package='com.elytradev.thermionics';
 
 shadowJar {
@@ -76,8 +76,8 @@ dependencies {
 	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
 
 	for (String module : concrete_modules) {
-		shadow 'com.elytradev:concrete:' + concrete_version + ':' + module;
-		compile 'com.elytradev:concrete:' + concrete_version + ':' + module;
+		shadow 'com.elytradev.concrete:concrete-' + module + ':' + concrete_version;
+		compile 'com.elytradev.concrete:concrete-' + module + ':' + concrete_version;
 	}
 	
 }
