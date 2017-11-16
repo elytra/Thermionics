@@ -37,65 +37,54 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-/**
- * Lighter-weight 
- * @param <T>
- */
-public class Registry<T> implements Iterable<T> {
-	private BiMap<ResourceLocation, T> items = HashBiMap.create();
-	private final Class<T> superType;
+public class Registry<K extends Comparable<K>, V> implements Iterable<V> {
+	private BiMap<K, V> items = HashBiMap.create();
+	private final Class<V> superType;
 	
-	public Registry(Class<T> superType) {
+	public Registry(Class<V> superType) {
 		this.superType = superType;
 	}
 	
-	public void register(ResourceLocation id, T t) {
+	public void register(K id, V t) {
 		items.put(id, t);
 	}
 	
-	//XXX This might explode horribly in some cases, I'm not sure.
-	@SuppressWarnings("unchecked")
-	public <Q extends IForgeRegistryEntry<T>> void register(Q q) {
-		if (!superType.isAssignableFrom(q.getClass())) throw new IllegalArgumentException("Cannot cast "+q.getClass().getCanonicalName()+" to "+superType.getCanonicalName());
-		items.put(q.getRegistryName(), (T) q);
-	}
-	
 	@Override
-	public Iterator<T> iterator() {
+	public Iterator<V> iterator() {
 		return ImmutableSet.copyOf(items.values()).iterator();
 	}
 	
-	public boolean containsKey(ResourceLocation key) {
+	public boolean containsKey(K key) {
 		return items.containsKey(key);
 	}
 	
-	public boolean containsValue(T value) {
+	public boolean containsValue(V value) {
 		return items.containsValue(value);
 	}
 	
 	@Nullable
-	public T getValue(ResourceLocation key) {
+	public V getValue(K key) {
 		return items.get(key);
 	}
 	
 	@Nullable
-	public ResourceLocation getKey(T value) {
+	public K getKey(V value) {
 		return items.inverse().get(value);
 	}
 	
-	public Set<ResourceLocation> getKeys() {
+	public Set<K> getKeys() {
 		return ImmutableSet.copyOf(items.keySet());
 	}
 	
-	public Set<T> getValues() {
+	public Set<V> getValues() {
 		return ImmutableSet.copyOf(items.values());
 	}
 	
-	public Set<Map.Entry<ResourceLocation, T>> getEntries() {
+	public Set<Map.Entry<K, V>> getEntries() {
 		return ImmutableSet.copyOf(items.entrySet());
 	}
 	
-	public Class<T> getSuperType() {
+	public Class<V> getSuperType() {
 		return superType;
 	}
 }

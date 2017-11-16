@@ -28,9 +28,11 @@ import com.elytradev.thermionics.api.Spirits;
 
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
+@SuppressWarnings("deprecation")
 public class FluidSpirit extends Fluid {
 
 	public FluidSpirit(String fluidName, ResourceLocation still, ResourceLocation flowing) {
@@ -61,7 +63,7 @@ public class FluidSpirit extends Fluid {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
 			if (actual!=null) return actual.getUnlocalizedDistilledName();
 		}
-		
+		getLocalizedName(stack);
 		String potion = stack.tag.getString("Potion");
 		if (potion!=null) {
 			Potion actual = Potion.getPotionFromResourceLocation(potion);
@@ -69,4 +71,32 @@ public class FluidSpirit extends Fluid {
 		}
 		return "spirit.ethanol.name";
 	}
+	
+	@Override
+	public ResourceLocation getStill(FluidStack stack) {
+		if (stack==null || stack.tag==null) return Spirit.Clarity.MEDIUM.getStillSpiritIcon();
+		
+		String spirit = stack.tag.getString("Spirit");
+		if (spirit!=null) {
+			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
+			if (actual!=null) return actual.getClarity().getStillSpiritIcon();
+		}
+		return Spirit.Clarity.MEDIUM.getStillSpiritIcon();
+	}
+	
+	@Override
+	public ResourceLocation getFlowing(FluidStack stack) {
+		String spirit = stack.tag.getString("Spirit");
+		if (spirit!=null) {
+			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
+			if (actual!=null) return actual.getClarity().getStillSpiritIcon();
+		}
+		return Spirit.Clarity.MEDIUM.getFlowingSpiritIcon();
+	}
+	
+	@Override
+	public String getLocalizedName(FluidStack stack) {
+        String s = this.getUnlocalizedName(stack);
+        return s == null ? "" : I18n.translateToLocal(s);
+    }
 }

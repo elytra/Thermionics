@@ -33,13 +33,19 @@ import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
+import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.ValidatedDoubleTank;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -139,6 +145,14 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 			if (curTickPower & !lastTickPower) {
 				//Lock the tanks on a rising current edge.
 				setTanksLocked(true);
+			} else {
+				//Fluid loading/unloading mode
+				ItemStack inBucket = itemStorage.getStackInSlot(SLOT_FULL_BUCKET_IN);
+				FluidActionResult result = FluidUtil.tryEmptyContainer(inBucket, inputTank, inputTank.getCapacity(), null, true);
+				if (result.isSuccess()) {
+					itemStorage.setStackInSlot(SLOT_FULL_BUCKET_IN, ItemStack.EMPTY);
+					itemStorage.setStackInSlot(SLOT_EMPTY_BUCKET_OUT, result.getResult());
+				}
 			}
 		} else {
 			FluidStack in = inputTank.getFluid();
@@ -147,8 +161,15 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 				setTanksLocked(false);
 			} else {
 				//Find a recipe, let's go :D
-				
-				
+				//For the moment, use Water->Rum
+				Fluid inFluid = inputTank.getFluid().getFluid();
+				if (inFluid.getName().equals("water")) {
+					inputTank.drainInternal(1, true);
+					NBTTagCompound spirit = new NBTTagCompound();
+					spirit.setString("Spirit", new ResourceLocation("thermionics","rum").toString());
+					FluidStack outStack = new FluidStack(ThermionicsBlocks.FLUID_SPIRITS, 1, spirit);
+					outputTank.fillInternal(outStack, true);
+				}
 			}
 		}
 		

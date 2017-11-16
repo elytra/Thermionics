@@ -36,6 +36,7 @@ import net.minecraft.item.ItemTool;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -82,5 +83,11 @@ public class ClientProxy extends Proxy {
 		for(Item i : Thermionics.instance().needModelRegistration) {
 			registerItemModel(i);
 		}
+	}
+	
+	@SubscribeEvent
+	public void onTextureStitch(TextureStitchEvent.Pre event) {
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/hootch"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/spirit"));
 	}
 }

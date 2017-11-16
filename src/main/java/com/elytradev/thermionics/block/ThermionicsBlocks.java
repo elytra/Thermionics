@@ -44,6 +44,7 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -164,6 +165,7 @@ public class ThermionicsBlocks {
 				.setViscosity(1250)  //A touch slower than water at 1.250 centipoise at 20C (to water's 1.0 at room temp)
 				.setRarity(EnumRarity.UNCOMMON) //Not *rare*, but highly coveted.
 				;
+		FluidRegistry.registerFluid(FLUID_SPIRITS);
 		
 		FLUID_HOOTCH = new FluidSpirit("hootch",
 				new ResourceLocation("thermionics:fluids/hootch"),
@@ -174,6 +176,7 @@ public class ThermionicsBlocks {
 				.setViscosity(4_000_000)      //I hope you're prepared to wait. Molasses clocks in at 5K centipoise, this is only 4K
 				.setRarity(EnumRarity.COMMON) //Can be produced safely in any ordinary backyard.
 				;
+		FluidRegistry.registerFluid(FLUID_HOOTCH);
 	}
 	
 	public static <T extends Block> T block(IForgeRegistry<Block> registry, T t) {

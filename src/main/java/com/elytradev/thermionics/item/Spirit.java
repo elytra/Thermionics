@@ -30,16 +30,14 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreIngredient;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class Spirit implements IForgeRegistryEntry<Spirit> {
-	private ResourceLocation registryName;
+public class Spirit {
 	private String name;
 	private Ingredient mashBase;
 	private int color = 0x60FFFFFF;
+	private Clarity clarity = Clarity.MEDIUM;
 	
 	public Spirit(String name, Ingredient mashBase) {
-		this.registryName = new ResourceLocation(name);
 		this.name = name;
 		this.mashBase = mashBase;
 	}
@@ -53,25 +51,8 @@ public class Spirit implements IForgeRegistryEntry<Spirit> {
 	}
 	
 	public Spirit(String name, String mashBase) {
-		this.registryName = new ResourceLocation(name);
 		this.name = name;
 		this.mashBase = new OreIngredient(mashBase);
-	}
-
-	@Override
-	public Spirit setRegistryName(ResourceLocation name) {
-		this.registryName = name;
-		return this;
-	}
-
-	@Override
-	public ResourceLocation getRegistryName() {
-		return registryName;
-	}
-
-	@Override
-	public Class<Spirit> getRegistryType() {
-		return Spirit.class;
 	}
 
 	public Ingredient getMashBase() {
@@ -88,10 +69,49 @@ public class Spirit implements IForgeRegistryEntry<Spirit> {
 	}
 
 	public String getUnlocalizedDistilledName() {
-		return "spirit."+name;
+		return "spirit.thermionics."+name;
 	}
 	
 	public String getUnlocalizedBrewedName() {
-		return "hootch."+name;
+		return "hootch.thermionics."+name;
+	}
+	
+	public Clarity getClarity() {
+		return clarity;
+	}
+	
+	public Spirit withClarity(Clarity clarity) {
+		this.clarity = clarity;
+		return this;
+	}
+	
+	public enum Clarity {
+		CLEAR("fluids/"),
+		MEDIUM("fluids/"),
+		DARK("fluids/");
+		
+		private final ResourceLocation still_hootch;
+		private final ResourceLocation still_spirit;
+		
+		Clarity(String loc) {
+			this.still_hootch = new ResourceLocation("thermionics", loc+"hootch");
+			this.still_spirit = new ResourceLocation("thermionics", loc+"spirit");
+		}
+		
+		public ResourceLocation getStillHootchIcon() {
+			return still_hootch;
+		}
+		
+		public ResourceLocation getStillSpiritIcon() {
+			return still_spirit;
+		}
+		
+		public ResourceLocation getFlowingHootchIcon() {
+			return still_hootch;
+		}
+		
+		public ResourceLocation getFlowingSpiritIcon() {
+			return still_spirit;
+		}
 	}
 }
