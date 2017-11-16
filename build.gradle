@@ -57,15 +57,25 @@ repositories {
 
 def mc_version='1.12.1';
 def jei_version="4.7.8.92";
-def concrete_version="0.3.4-SNAPSHOT";
+def concrete_version="0.3.5-SNAPSHOT";
 //def concrete_modules=[]; //For eclipse import
-def concrete_modules=["common","inventory"];
+def concrete_modules=["common","inventory","recipe"];
 def project_package='com.elytradev.thermionics';
 
 shadowJar {
 	classifier = ''
 	relocate 'com.elytradev.concrete', project_package + '.repackage.com.elytradev.concrete'
 	configurations = [project.configurations.shadow]
+}
+
+reobf {
+    shadowJar { mappingType = 'SEARGE' }
+}
+
+tasks.build.dependsOn reobfShadowJar
+
+artifacts {
+    archives shadowJar
 }
 
 dependencies {
