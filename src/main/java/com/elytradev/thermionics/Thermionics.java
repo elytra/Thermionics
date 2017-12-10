@@ -91,7 +91,7 @@ public class Thermionics {
 	public static boolean CONFIG_ENFORCE_COMPATIBILITY = true;
 	@Instance(MODID)
 	private static Thermionics instance;
-	@SidedProxy(clientSide="com.elytradev.thermionics.ClientProxy", serverSide="com.elytradev.thermionics.Proxy")
+	@SidedProxy(clientSide="com.elytradev.thermionics.client.ClientProxy", serverSide="com.elytradev.thermionics.Proxy")
 	public static Proxy proxy;
 	@CapabilityInject(IHeatStorage.class)
 	public static Capability<IHeatStorage> CAPABILITY_HEATSTORAGE;
