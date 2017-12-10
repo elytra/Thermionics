@@ -24,29 +24,32 @@
 
 package com.elytradev.thermionics.data;
 
-import com.elytradev.concrete.recipe.FluidIngredient;
 import com.elytradev.concrete.recipe.ICustomRecipe;
+import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.items.IItemHandler;
 
-public class PotStillRecipe implements ICustomRecipe<PotStillRecipe, FluidStack> {
+public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack> {
 	protected ResourceLocation registryName;
-	protected FluidStack output;
-	protected ItemStack outputItem;
-	protected float itemChance = 0.0f;
-	protected FluidIngredient recipe;
+	protected InventoryGridRecipe plan;
+	protected float revolutions = 300;
+	protected float torque = 8;
 	
-	public PotStillRecipe(FluidStack output, FluidIngredient input) {
-		this.recipe = input;
-		this.output = output;
+	public SergerRecipe(InventoryGridRecipe plan) {
+		this.plan = plan;
 	}
 	
+	public SergerRecipe(InventoryGridRecipe plan, float torque, float revolutions) {
+		this.plan = plan;
+		this.torque = torque;
+		this.revolutions = revolutions;
+	}
 	
 	@Override
-	public PotStillRecipe setRegistryName(ResourceLocation name) {
+	public SergerRecipe setRegistryName(ResourceLocation name) {
 		this.registryName = name;
 		return this;
 	}
@@ -57,26 +60,28 @@ public class PotStillRecipe implements ICustomRecipe<PotStillRecipe, FluidStack>
 	}
 
 	@Override
-	public Class<PotStillRecipe> getRegistryType() {
-		return PotStillRecipe.class;
+	public ItemStack getOutput() {
+		return plan.getOutput();
+	}
+	
+	public ItemStack getOutput(IInventory inventory) {
+		return plan.getOutput(inventory);
+	}
+	
+	public ItemStack getOutput(IItemHandler inventory) {
+		return plan.getOutput(inventory);
 	}
 
 	@Override
-	public FluidStack getOutput() {
-		return output;
+	public Class<SergerRecipe> getRegistryType() {
+		return SergerRecipe.class;
 	}
 	
-	public boolean matches(FluidStack input) {
-		return recipe.apply(input);
+	public boolean matches(IItemHandler inventory) {
+		return plan.matches(inventory);
 	}
 	
-	public boolean matches(FluidTank input) {
-		if (input==null) return false;
-		return recipe.apply(input.getFluid());
-	}
-
-	public boolean consumeIngredients(FluidTank input) {
-		if (!recipe.apply(input.getFluid())) return false;
-		return input.drain(recipe.getAmount(), true)!=null;
+	public void consumeIngredients(IItemHandler inventory) {
+		plan.consumeIngredients(inventory, true);
 	}
 }

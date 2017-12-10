@@ -25,39 +25,27 @@
 package com.elytradev.thermionics.gui;
 
 import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import com.elytradev.concrete.inventory.gui.widget.WGridPanel;
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.gui.widget.WPlasma;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntity;
 
-public enum EnumGui {
-	FIREBOX         (ContainerFirebox::new),
-	OVEN            (ContainerOven::new),
-	CONVECTION_MOTOR(ContainerMotor::new),
-	HAMMER_MILL     (ContainerHammerMill::new),
-	SERGER          (ContainerSerger::new),
-	POT_STILL       (ContainerPotStill::new),
-	MASH_TUN        (ContainerMashTun::new);
+public class ContainerMachine extends ConcreteContainer {
+	protected WGridPanel panel;
 	
-	private final GuiSupplier supplier;
-	
-	EnumGui(GuiSupplier supplier) {
-		this.supplier = supplier;
-	}
-	
-	public ConcreteContainer createContainer(IInventory player, IInventory tile, TileEntity te) {
-		return supplier.apply(player, tile, te);
-	}
-	
-	public int id() {
-		return ordinal();
-	}
-	
-	public static EnumGui forId(int i) {
-		if (i<0 || i>=values().length) return FIREBOX;
-		return values()[i];
-	}
-	
-	public static interface GuiSupplier {
-		public ConcreteContainer apply(IInventory player, IInventory tile, TileEntity te);
+	public ContainerMachine(IInventory player, IInventory container) {
+		super(player, container);
+		
+		this.setTitleColor(0xFFFFFFFF);
+		this.setColor(0xCC707070);
+		this.setBevelStrength(0.4f);
+		
+		panel = new WGridPanel();
+		super.setRootPanel(panel);
+		
+		if (Thermionics.isAprilFools()) {
+			panel.add(new WPlasma(), 0, 0, 9, 4);
+		}
 	}
 }

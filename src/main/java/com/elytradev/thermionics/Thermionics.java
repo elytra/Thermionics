@@ -63,7 +63,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -130,7 +129,7 @@ public class Thermionics {
 		CapabilityManager.INSTANCE.register(IRotaryPowerSupply.class, new DefaultRotaryPowerSerializer(), RotaryPowerSupply::new);
 		CapabilityManager.INSTANCE.register(IRotaryPowerConsumer.class, new DefaultRotaryConsumerSerializer(), RotaryPowerConsumer::new);
 		
-		OBJLoader.INSTANCE.addDomain(MODID);
+		proxy.preInit();
 		
 		
 		ProbeDataSupport.init();

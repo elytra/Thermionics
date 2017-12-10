@@ -26,55 +26,34 @@ package com.elytradev.thermionics.gui;
 
 import com.elytradev.concrete.inventory.gui.widget.WBar;
 import com.elytradev.concrete.inventory.gui.widget.WFluidBar;
-import com.elytradev.concrete.inventory.gui.widget.WImage;
 import com.elytradev.concrete.inventory.gui.widget.WItemSlot;
-import com.elytradev.thermionics.gui.widget.WColoredSlot;
-import com.elytradev.thermionics.tileentity.TileEntityPotStill;
+import com.elytradev.thermionics.tileentity.TileEntityMashTun;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class ContainerPotStill extends ContainerMachine {
+public class ContainerMashTun extends ContainerMachine {
 
-	public ContainerPotStill(IInventory player, IInventory container, TileEntity te) {
+	public ContainerMashTun(IInventory player, IInventory container, TileEntity te) {
 		super(player, container);
-		TileEntityPotStill still = (TileEntityPotStill)te;
-		/*
-		this.setTitleColor(0xFFFFFFFF);
-		this.setColor(0xCC707070);
-		this.setBevelStrength(0.4f);
 		
-		WGridPanel panel = new WGridPanel();
-		super.setRootPanel(panel);
+		TileEntityMashTun tun = (TileEntityMashTun)te;
 		
-		if (Thermionics.isAprilFools()) {
-			panel.add(new WPlasma(), 0, 0, 9, 4);
-		}*/
-		
-		panel.add(WColoredSlot.of(container, 1, WColoredSlot.INPUT), 0, 1); //Full buckets for loading in fluids
-		panel.add(WItemSlot.of(container, 2), 0, 3);                        //Empty buckets from inserting fluids
-		panel.add(new WImage(new ResourceLocation("thermionics", "textures/gui/input_bucket_arrows.png")), 1, 1, 1, 3);
 		panel.add(new WFluidBar(
 				new ResourceLocation("thermionics", "textures/gui/bg_tank.png"),
 				new ResourceLocation("thermionics", "textures/gui/input_tank.png"),
-				still.getInputTank())
+				tun.getInputTank())
 				.withTooltip("%3$s\n\u00A77%1$d/%2$dmB"),
-				2, 1, 1, 3); //Input tank
-		
-		
-		//TODO: FANCEH DISTILLER LOOPS
-		panel.add(WItemSlot.of(container, 0), 4, 3); //Precipitate
-		
+				3, 1, 1, 2);
 		panel.add(new WFluidBar(
 				new ResourceLocation("thermionics", "textures/gui/bg_tank.png"),
 				new ResourceLocation("thermionics", "textures/gui/output_tank.png"),
-				still.getOutputTank())
+				tun.getOutputTank())
 				.withTooltip("%3$s\n\u00A77%1$d/%2$dmB"),
-				6, 1, 1, 3); //Output tank
-		panel.add(new WImage(new ResourceLocation("thermionics", "textures/gui/output_bucket_arrows.png")), 7, 1, 1, 3);
-		panel.add(WColoredSlot.of(container, 3, WColoredSlot.OUTPUT), 8, 1); //Empty buckets for unloading fluids
-		panel.add(WItemSlot.of(container, 2), 8, 3);                         //Full buckets of output fluid
+				4, 1, 1, 2);
+		
+		panel.add(WItemSlot.of(container, 0, 2, 1), 2, 3);
 		
 		panel.add(new WBar(
 				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),
@@ -82,7 +61,7 @@ public class ContainerPotStill extends ContainerMachine {
 				container, 0, 1, WBar.Direction.RIGHT
 				), 1, 4, 7, 1);
 		
-		panel.add(this.createPlayerInventoryPanel(), 0, 5);
+		panel.add(this.createPlayerInventoryPanel(), 0, 6);
 	}
 
 }

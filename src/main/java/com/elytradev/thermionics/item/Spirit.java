@@ -24,26 +24,26 @@
 
 package com.elytradev.thermionics.item;
 
+import com.elytradev.concrete.recipe.ItemIngredient;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreIngredient;
 
 public class Spirit {
 	private String name;
-	private Ingredient mashBase;
+	private ItemIngredient mashBase;
 	private int color = 0x60FFFFFF;
 	private Clarity clarity = Clarity.MEDIUM;
 	
-	public Spirit(String name, Ingredient mashBase) {
+	public Spirit(String name, ItemIngredient mashBase) {
 		this.name = name;
 		this.mashBase = mashBase;
 	}
 	
 	public Spirit(String name, Item mashBase) {
-		this(name, Ingredient.fromItem(mashBase));
+		this(name, ItemIngredient.of(mashBase));
 	}
 	
 	public Spirit(String name, Block mashBase) {
@@ -52,10 +52,10 @@ public class Spirit {
 	
 	public Spirit(String name, String mashBase) {
 		this.name = name;
-		this.mashBase = new OreIngredient(mashBase);
+		this.mashBase = ItemIngredient.of(mashBase);
 	}
 
-	public Ingredient getMashBase() {
+	public ItemIngredient getMashBase() {
 		return mashBase;
 	}
 

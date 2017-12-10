@@ -41,6 +41,7 @@ public class FluidSpirit extends Fluid {
 
 	@Override
 	public int getColor(FluidStack stack) {
+		if (stack==null || stack.tag==null) return 0x20FFFFFF;
 		String spirit = stack.tag.getString("Spirit");
 		if (spirit!=null) {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
@@ -58,6 +59,7 @@ public class FluidSpirit extends Fluid {
 	
 	@Override
 	public String getUnlocalizedName(FluidStack stack) {
+		if (stack==null || stack.tag==null) return "spirit.ethanol.name";
 		String spirit = stack.tag.getString("Spirit");
 		if (spirit!=null) {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
@@ -86,6 +88,7 @@ public class FluidSpirit extends Fluid {
 	
 	@Override
 	public ResourceLocation getFlowing(FluidStack stack) {
+		if (stack==null || stack.tag==null) return Spirit.Clarity.MEDIUM.getFlowingSpiritIcon();
 		String spirit = stack.tag.getString("Spirit");
 		if (spirit!=null) {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));

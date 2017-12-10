@@ -24,16 +24,26 @@
 
 package com.elytradev.thermionics;
 
+import java.util.Map.Entry;
+
+import com.elytradev.concrete.recipe.FluidIngredient;
+import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.impl.ShapedInventoryRecipe;
 import com.elytradev.thermionics.api.HammerMillRecipes;
-import com.elytradev.thermionics.api.SergerRecipes;
-import com.elytradev.thermionics.api.impl.RotaryGridRecipe;
+import com.elytradev.thermionics.api.Spirits;
 import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
 import com.elytradev.thermionics.api.impl.RotaryRecipe;
 import com.elytradev.thermionics.block.BlockBase;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.EnumDyeSource;
+import com.elytradev.thermionics.data.MachineRecipes;
+import com.elytradev.thermionics.data.MashTunRecipe;
+import com.elytradev.thermionics.data.PotStillRecipe;
+import com.elytradev.thermionics.data.SergerRecipe;
 import com.elytradev.thermionics.item.EnumAllomanticPowder;
+import com.elytradev.thermionics.item.EnumIngredient;
 import com.elytradev.thermionics.item.ItemHammer;
+import com.elytradev.thermionics.item.Spirit;
 import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.init.Blocks;
@@ -43,9 +53,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
@@ -179,50 +191,153 @@ public class ThermionicsRecipes {
 		millRecipes("Bronze");
 		millRecipes("Invar");
 		millRecipes("Steel");
+		millRecipes("Uranium");
+		millRecipes("Cobalt");
+		millRecipes("Ardite");
 		
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal", new ItemStack(Items.COAL,3), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT,2), 2f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.SAND,1), 8f, 20f));
 		
 		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
 		}
 		
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.SADDLE),
-				10f, //Working with leather tends to have a steeper torque
-				30f,
-				"   ",
-				"LLL",
-				"I I",
-				'L', "leather",
-				'I', "ingotIron"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.DIAMOND_HORSE_ARMOR),
-				15f,
-				30f,
-				"  d",
-				"ddd",
-				"ddd",
-				'd', "gemDiamond"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.GOLDEN_HORSE_ARMOR),
-				6f,
-				30f,
-				"  g",
-				"ggg",
-				"ggg",
-				'g', "ingotGold"
-				));
-		SergerRecipes.registerRecipe(new RotaryGridRecipe(
-				new ItemStack(Items.IRON_HORSE_ARMOR),
-				8f,
-				30f,
-				"  i",
-				"iii",
-				"iii",
-				'i', "ingotIron"
-				));
+		ItemIngredient potato    = ItemIngredient.of(Items.POTATO);
+		ItemIngredient leather   = ItemIngredient.of("leather");
+		ItemIngredient ingotIron = ItemIngredient.of("ingotIron");
+		ItemIngredient ingotGold = ItemIngredient.of("ingotGold");
+		ItemIngredient diamond   = ItemIngredient.of("gemDiamond");
+		ItemIngredient string    = ItemIngredient.of(Items.STRING);
+		
+		SergerRecipe saddleRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+						new ItemStack(Items.SADDLE), //Output
+						3, 3,                        //3x3 grid
+						3, 2,                        //3x2 recipe
+						false,                       //recipe is already horizontally symmetrical
+						leather,   leather, leather,
+						ingotIron, null,    ingotIron
+				),
+				10, //Leather requires a steeper torque than the default 8 for cloth
+				30  //Done after 30 complete axle rotations
+				);
+		MachineRecipes.register(saddleRecipe);
+		
+		SergerRecipe diamondBardingRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+						new ItemStack(Items.DIAMOND_HORSE_ARMOR),
+						3, 3,                        //3x3 grid
+						3, 3,                        //3x3 recipe
+						true,                        //or flipped
+						null,    null,    diamond,
+						diamond, diamond, diamond,
+						diamond, diamond, diamond
+				),
+				15, //Lots of torque for hard materials
+				30  //Done after 30 complete axle rotations
+				);
+		MachineRecipes.register(diamondBardingRecipe);
+		
+		SergerRecipe goldBardingRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+						new ItemStack(Items.GOLDEN_HORSE_ARMOR),
+						3, 3,                        //3x3 grid
+						3, 3,                        //3x3 recipe
+						true,                        //or flipped
+						null,      null,      ingotGold,
+						ingotGold, ingotGold, ingotGold,
+						ingotGold, ingotGold, ingotGold
+				),
+				6,  //Nothing to it
+				30  //Done after 30 complete axle rotations
+				);
+		MachineRecipes.register(goldBardingRecipe);
+		
+		SergerRecipe ironBardingRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+						new ItemStack(Items.IRON_HORSE_ARMOR),
+						3, 3,                        //3x3 grid
+						3, 3,                        //3x3 recipe
+						true,                        //or flipped
+						null,      null,      ingotIron,
+						ingotIron, ingotIron, ingotIron,
+						ingotIron, ingotIron, ingotIron
+				),
+				15, //Lots of torque for hard materials
+				30  //Done after 30 complete axle rotations
+				);
+		MachineRecipes.register(ironBardingRecipe);
+		
+		SergerRecipe ribbonRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+					new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.RIBBON.ordinal()),
+					3, 3,  //3x3 serger grid
+					3, 2,  //3x2 recipe
+					false, //symmetrical
+					string, string, string,
+					string, string, string
+				),
+				6,  //soft fabric crafting
+				10  //*fast*
+				);
+		MachineRecipes.register(ribbonRecipe);
+		
+		/*
+		SergerRecipe fabricRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+					new ItemStack(ThermionicsItems.FABRIC, 1),
+					3, 3,  //3x3 serger grid
+					2, 2,  //2x2 recipe
+					false, //symmetrical
+					ribbon, ribbon,
+					ribbon, ribbon
+				),
+				6,  //soft fabric crafting
+				10  //*fast*
+				);
+		MachineRecipes.register(ribbonRecipe);
+		*/
+		
+		
+		/*
+		SergerRecipe tasselcloakRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+						new ItemStack(ThermionicsItems.MISTCLOAK, 1),
+						3, 3,  //3x3 serger grid
+						3, 3,  //3x3 recipe
+						false, //symmetrical
+						fabric, fabric, fabric,
+						fabric, fabric, fabric,
+						ribbon, ribbon, ribbon
+					),
+					6,  //soft fabric crafting
+					10  //*fast*
+				);
+		MachineRecipes.register(tasselcloakRecipe);
+		*/
+		
+		//### MASH TUN and POT STILL###
+		for(Entry<ResourceLocation, Spirit> entry : Spirits.REGISTRY.getEntries()) {
+			FluidStack mashFluid = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 1000);
+			mashFluid.tag = new NBTTagCompound();
+			mashFluid.tag.setString("Spirit", entry.getKey().toString());
+			MashTunRecipe mashRecipe = new MashTunRecipe(mashFluid, 1000, entry.getValue().getMashBase(), 16);
+			MachineRecipes.register(mashRecipe);
+			
+			FluidStack stillInput = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 4);
+			stillInput.tag = new NBTTagCompound();
+			stillInput.tag.setString("Spirit", entry.getKey().toString());
+			
+			FluidStack stillOutput = new FluidStack(ThermionicsBlocks.FLUID_SPIRITS, 3);
+			stillOutput.tag = new NBTTagCompound();
+			stillInput.tag.setString("Spirit", entry.getKey().toString());
+			
+			PotStillRecipe distillation = new PotStillRecipe(stillOutput, FluidIngredient.of(stillInput));
+			MachineRecipes.register(distillation);
+		}
+		
 	}
 	
 	/**

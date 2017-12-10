@@ -27,6 +27,7 @@ package com.elytradev.thermionics;
 import net.minecraft.item.Item;
 
 public class Proxy {
+	public void preInit() {}
 	public void init() {}
 	public void registerItemModel(Item item) {}
 }

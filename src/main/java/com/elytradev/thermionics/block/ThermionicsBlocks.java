@@ -34,6 +34,7 @@ import com.elytradev.thermionics.tileentity.TileEntityConvectionMotor;
 import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
+import com.elytradev.thermionics.tileentity.TileEntityMashTun;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityPotStill;
 import com.elytradev.thermionics.tileentity.TileEntitySerger;
@@ -60,6 +61,7 @@ public class ThermionicsBlocks {
 	//Heatmachines
 	public static BlockFirebox         FIREBOX;
 	public static BlockOven            OVEN;
+	public static BlockMashTun         MASH_TUN;
 	public static BlockPotStill        POT_STILL;
 	
 	//Motors
@@ -104,6 +106,7 @@ public class ThermionicsBlocks {
 		//Heatmachines
 		FIREBOX          = block(r, new BlockFirebox());
 		OVEN             = block(r, new BlockOven());
+		MASH_TUN         = block(r, new BlockMashTun());
 		POT_STILL        = block(r, new BlockPotStill());
 		
 		//Motors
@@ -136,8 +139,6 @@ public class ThermionicsBlocks {
 			
 		//registerBlock(new BlockMotorBase("redstone"));
 		
-		
-		
 		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
 		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
 		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
@@ -148,6 +149,7 @@ public class ThermionicsBlocks {
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
 		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
 		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
+		GameRegistry.registerTileEntity(TileEntityMashTun.class,         "thermionics:machine.mash_tun");
 		GameRegistry.registerTileEntity(TileEntityPotStill.class,        "thermionics:machine.pot_still");
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
 		

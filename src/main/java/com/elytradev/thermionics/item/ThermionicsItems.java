@@ -85,8 +85,10 @@ public class ThermionicsItems {
 			ThermionicsItems.HAMMER_GOLD    = item(r, new ItemHammer(ToolMaterial.GOLD,    "gold"));
 			ThermionicsItems.HAMMER_DIAMOND = item(r, new ItemHammer(ToolMaterial.DIAMOND, "diamond"));
 			//Since we can't *safely*, *cleanly* rendezvous with other mods about Item.ToolMaterial properties, make our own
-            /*                                                       name      repairOre      level  uses eff dmg ench */
-            /*                                                       iron      ingotIron      2      250  6f  2f  14   */
+			//For hammers, these values are multiplied by 9 (so iron, which gives a pick 250 uses, gives a hammer 2250 to
+			//compensate for the extra material used
+            /*                                                        name      repairOre     level  uses eff dmg ench */
+            /*                                                        iron      ingotIron      2     250  6f  2f  14   */
 			ThermionicsItems.HAMMER_COPPER  = item(r, new ItemHammer("copper", "ingotCopper", 2,     200, 7f, 1f, 20));
 			ThermionicsItems.HAMMER_LEAD    = item(r, new ItemHammer("lead",   "ingotLead",   2,    1550, 4f, 2f,  8));
 			ThermionicsItems.HAMMER_INVAR   = item(r, new ItemHammer("invar",  "ingotInvar",  2,     300, 6f, 2f, 14));

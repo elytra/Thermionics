@@ -24,14 +24,24 @@
 
 package com.elytradev.thermionics.block;
 
+import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.tileentity.TileEntityMashTun;
 
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class BlockMashTun extends BlockMachineBase implements ITileEntityProvider {
-
+	private PropertyInteger waterLevel = PropertyInteger.create("level", 0, 3);
+	
 	public BlockMashTun() {
 		super("mash_tun");
 		
@@ -41,5 +51,29 @@ public class BlockMashTun extends BlockMachineBase implements ITileEntityProvide
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileEntityMashTun();
 	}
-
+	
+	@Override
+	public BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING, ACTIVE);
+	}
+	
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 0x03));
+	}
+	
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(FACING).getHorizontalIndex();
+	}
+	
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		if (!world.isRemote) {
+			player.openGui(Thermionics.instance(), EnumGui.MASH_TUN.id(), world, pos.getX(), pos.getY(), pos.getZ());
+		} else {
+			
+		}
+		return true;
+	}
 }

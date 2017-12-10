@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-package com.elytradev.thermionics;
+package com.elytradev.thermionics.client;
 
+import com.elytradev.thermionics.Proxy;
+import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
@@ -38,9 +40,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ClientProxy extends Proxy {
+	
+	@Override
+	public void preInit() {
+		OBJLoader.INSTANCE.addDomain(Thermionics.MODID);
+	}
+	
+	
 	@Override
 	public void init() {
 
