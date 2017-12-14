@@ -159,8 +159,8 @@ public class ThermionicsBlocks {
 		 * they're alcohol mixed with water. I err on the side of alcohol to give the fluid more distinct properties.
 		 */
 		FLUID_SPIRITS = new FluidSpirit("spirit",
-				new ResourceLocation("thermionics:fluids/spirit"),
-				new ResourceLocation("thermionics:fluids/spirit"))
+				new ResourceLocation("thermionics:fluids/medium_spirit"),
+				new ResourceLocation("thermionics:fluids/medium_spirit"))
 				.setDensity(789)     //ethanol is ~789 kg/m^3 at 20C
 				.setLuminosity(0)    //liquor does not emit light
 				.setTemperature(293) //cold! Best enjoyed at 20C
@@ -170,8 +170,8 @@ public class ThermionicsBlocks {
 		FluidRegistry.registerFluid(FLUID_SPIRITS);
 		
 		FLUID_HOOTCH = new FluidSpirit("hootch",
-				new ResourceLocation("thermionics:fluids/hootch"),
-				new ResourceLocation("thermionics:fluids/hootch"))
+				new ResourceLocation("thermionics:fluids/medium_hootch"),
+				new ResourceLocation("thermionics:fluids/medium_hootch"))
 				.setDensity(1400)             //almost molasses at 1400kg/m^3, and often actually is alcoholic molasses
 				.setLuminosity(0)             //nope
 				.setTemperature(300)          //disgustingly room-temperature, but often warmer

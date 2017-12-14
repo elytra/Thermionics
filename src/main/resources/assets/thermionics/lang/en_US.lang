@@ -6,6 +6,8 @@ item.thermionics.allomanticpowder.tin.name=Allomantic Tin
 item.thermionics.allomanticpowder.iron.name=Allomantic Iron
 item.thermionics.allomanticpowder.steel.name=Allomantic Steel
 
+item.thermionics.ingredient.ribbon.name=Ribbon
+
 #Tools
 item.thermionics.hammer.iron.name=Iron Hammer
 item.thermionics.hammer.gold.name=Gold Hammer
@@ -96,3 +98,6 @@ spirit.thermionics.tequila=Tequila
 item.horsearmormetal.name=Iron Barding
 item.horsearmorgold.name=Gold Barding
 item.horsearmordiamond.name=Diamond Barding
+
+#Weaponskill damage
+death.attack.weaponskill.smash=%1$s was flattened by %2$s.

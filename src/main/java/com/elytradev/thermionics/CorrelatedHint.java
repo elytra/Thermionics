@@ -26,6 +26,9 @@ package com.elytradev.thermionics;
 
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class CorrelatedHint {
 	
 	/* This constant's content is selected quotes copied in / adapted from
@@ -127,7 +130,8 @@ public class CorrelatedHint {
 	
 	static {
 		Random rnd = new Random();
-		Thermionics.LOG.info("I think so, Correlated, but "+CORRELATED_REPLIES[rnd.nextInt(CORRELATED_REPLIES.length)]);
+		Logger log = LogManager.getLogger("Thermionics");
+		log.info("I think so, Correlated, but "+CORRELATED_REPLIES[rnd.nextInt(CORRELATED_REPLIES.length)]);
 		
 		try {
 			Class.forName("com.elytradev.correlated.ThermionicsHint");

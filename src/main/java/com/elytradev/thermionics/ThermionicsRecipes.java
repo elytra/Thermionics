@@ -195,7 +195,11 @@ public class ThermionicsRecipes {
 		millRecipes("Cobalt");
 		millRecipes("Ardite");
 		
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal", new ItemStack(Items.COAL,3), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal",     new ItemStack(Items.COAL,3),     8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreRedstone", new ItemStack(Items.REDSTONE,6), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreDiamond",  new ItemStack(Items.DIAMOND,2), 10f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreEmerald",  new ItemStack(Items.EMERALD,2),  8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreLapis",    new ItemStack(Items.DYE, 10, 4),  8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT,2), 2f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.SAND,1), 8f, 20f));
@@ -320,19 +324,26 @@ public class ThermionicsRecipes {
 		
 		//### MASH TUN and POT STILL###
 		for(Entry<ResourceLocation, Spirit> entry : Spirits.REGISTRY.getEntries()) {
-			FluidStack mashFluid = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 1000);
-			mashFluid.tag = new NBTTagCompound();
-			mashFluid.tag.setString("Spirit", entry.getKey().toString());
+			
+			//MASH TUN
+			
+			NBTTagCompound mashTag = new NBTTagCompound();
+			mashTag.setString("Spirit", entry.getKey().toString());
+			FluidStack mashFluid = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 1000, mashTag);
+			
 			MashTunRecipe mashRecipe = new MashTunRecipe(mashFluid, 1000, entry.getValue().getMashBase(), 16);
 			MachineRecipes.register(mashRecipe);
 			
-			FluidStack stillInput = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 4);
-			stillInput.tag = new NBTTagCompound();
-			stillInput.tag.setString("Spirit", entry.getKey().toString());
+			//POT STILL
 			
-			FluidStack stillOutput = new FluidStack(ThermionicsBlocks.FLUID_SPIRITS, 3);
-			stillOutput.tag = new NBTTagCompound();
-			stillInput.tag.setString("Spirit", entry.getKey().toString());
+			NBTTagCompound stillInputTag = new NBTTagCompound();
+			stillInputTag.setString("Spirit", entry.getKey().toString());
+			FluidStack stillInput = new FluidStack(ThermionicsBlocks.FLUID_HOOTCH, 4, stillInputTag);
+			
+			
+			NBTTagCompound stillOutputTag = new NBTTagCompound();
+			stillOutputTag.setString("Spirit", entry.getKey().toString());
+			FluidStack stillOutput = new FluidStack(ThermionicsBlocks.FLUID_SPIRITS, 3, stillOutputTag);
 			
 			PotStillRecipe distillation = new PotStillRecipe(stillOutput, FluidIngredient.of(stillInput));
 			MachineRecipes.register(distillation);

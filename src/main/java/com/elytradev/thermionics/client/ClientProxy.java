@@ -26,11 +26,16 @@ package com.elytradev.thermionics.client;
 
 import com.elytradev.thermionics.Proxy;
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.api.Spirits;
 import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.item.Spirit;
+import com.elytradev.thermionics.item.ThermionicsItems;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -42,6 +47,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientProxy extends Proxy {
 	
@@ -53,7 +59,6 @@ public class ClientProxy extends Proxy {
 	
 	@Override
 	public void init() {
-
 	}
 	
 	@Override
@@ -95,9 +100,34 @@ public class ClientProxy extends Proxy {
 		}
 	}
 	
+	public void postInit() {
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+				if (tintIndex!=1) return 0xFFFFFFFF;
+				if (ThermionicsItems.SPIRIT_BOTTLE.isEmpty(stack)) return 0x00000000;
+				Spirit spirit = ThermionicsItems.SPIRIT_BOTTLE.getSpirit(stack);
+				if (spirit==null) return 0x70000000;
+				
+				return spirit.getColor();
+			}
+		}, ThermionicsItems.SPIRIT_BOTTLE);
+	}
+	
 	@SubscribeEvent
 	public void onTextureStitch(TextureStitchEvent.Pre event) {
-		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/hootch"));
-		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/spirit"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/clear_hootch"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/medium_hootch"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/dark_hootch"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/clear_spirit"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/medium_spirit"));
+		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/dark_spirit"));
+	}
+	
+	@SubscribeEvent
+	public void onClientTick(TickEvent.ClientTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) {
+			FX.update(Minecraft.getMinecraft().world);
+		}
 	}
 }

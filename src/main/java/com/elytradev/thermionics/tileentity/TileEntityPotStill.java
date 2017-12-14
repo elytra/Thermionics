@@ -33,7 +33,8 @@ import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.impl.HeatStorage;
 import com.elytradev.thermionics.api.impl.HeatStorageView;
-import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.data.MachineRecipes;
+import com.elytradev.thermionics.data.PotStillRecipe;
 import com.elytradev.thermionics.data.ValidatedDoubleTank;
 
 import net.minecraft.inventory.IInventory;
@@ -41,8 +42,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -56,11 +55,15 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 	public static final int SLOT_EMPTY_BUCKET_IN    = 3;
 	public static final int SLOT_FULL_BUCKET_OUT    = 4;
 	
+	public static final int HEAT_REQUIRED = 10;
+	public static final int MAX_PROCESS_TIME = 100;
+	
 	private ConcreteFluidTank inputTank = new ConcreteFluidTank(8000);
 	private ConcreteFluidTank outputTank = new ConcreteFluidTank(8000);
 	private ValidatedDoubleTank cap = new ValidatedDoubleTank(inputTank, outputTank);
 	private boolean tanksLocked = false;
 	private boolean lastTickPower = false;
+	private int processTime = 0;
 	
 	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(5)
 			.withValidators(Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING)
@@ -145,6 +148,7 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 			if (curTickPower & !lastTickPower) {
 				//Lock the tanks on a rising current edge.
 				setTanksLocked(true);
+				processTime = 0;
 			} else {
 				//Fluid loading/unloading mode
 				ItemStack inBucket = itemStorage.getStackInSlot(SLOT_FULL_BUCKET_IN);
@@ -155,6 +159,7 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 				}
 			}
 		} else {
+			if (processTime<MAX_PROCESS_TIME) processTime++;
 			FluidStack in = inputTank.getFluid();
 			if (in==null) {
 				//Batch is done...?
@@ -162,13 +167,17 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 			} else {
 				//Find a recipe, let's go :D
 				//For the moment, use Water->Rum
-				Fluid inFluid = inputTank.getFluid().getFluid();
-				if (inFluid.getName().equals("water")) {
-					inputTank.drainInternal(1, true);
-					NBTTagCompound spirit = new NBTTagCompound();
-					spirit.setString("Spirit", new ResourceLocation("thermionics","rum").toString());
-					FluidStack outStack = new FluidStack(ThermionicsBlocks.FLUID_SPIRITS, 1, spirit);
-					outputTank.fillInternal(outStack, true);
+				PotStillRecipe recipe = MachineRecipes.getPotStill(inputTank);
+				if (recipe!=null) {
+					FluidStack output = recipe.getOutput();
+					int filled = outputTank.fillInternal(output, false);
+					int extracted = heat.extractHeat(HEAT_REQUIRED, true);
+					if (output.amount==filled && extracted==HEAT_REQUIRED) {
+						recipe.consumeIngredients(inputTank);
+						outputTank.fillInternal(output, true);
+						heat.extractHeat(HEAT_REQUIRED, false);
+					}
+					
 				}
 			}
 		}

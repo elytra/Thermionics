@@ -51,6 +51,9 @@ public class ThermionicsItems {
 	public static ItemSubtyped<EnumIngredient>       INGREDIENT;
 	public static ItemSubtyped<EnumAllomanticPowder> ALLOMANTIC_POWDER;
 	
+	//Booze - Drink responsibly, kids
+	public static ItemSpiritBottle                   SPIRIT_BOTTLE;
+	
 	//Cloaks
 	public static ItemMistcloak                      MISTCLOAK;
 	
@@ -98,13 +101,14 @@ public class ThermionicsItems {
 		ThermionicsItems.INGREDIENT         = item(r, new ItemSubtyped<EnumIngredient>      ("ingredient",       EnumIngredient.values(),       false));
 		ThermionicsItems.ALLOMANTIC_POWDER  = item(r, new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true));
 		
+		//Booze
+		ThermionicsItems.SPIRIT_BOTTLE      = item(r, new ItemSpiritBottle());
+		
 		//Cloaks
 		ThermionicsItems.MISTCLOAK          = item(r, new ItemMistcloak());
 		
 		//Creative
 		ThermionicsItems.CHUNK_UNLOADER     = item(r, new ItemChunkUnloader());
-		
-		
 	}
 	
 	public static <T extends Item> T item(IForgeRegistry<Item> registry, T t) {

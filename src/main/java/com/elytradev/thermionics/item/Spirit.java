@@ -86,9 +86,9 @@ public class Spirit {
 	}
 	
 	public enum Clarity {
-		CLEAR("fluids/"),
-		MEDIUM("fluids/"),
-		DARK("fluids/");
+		CLEAR("fluids/clear_"),
+		MEDIUM("fluids/medium_"),
+		DARK("fluids/dark_");
 		
 		private final ResourceLocation still_hootch;
 		private final ResourceLocation still_spirit;

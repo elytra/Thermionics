@@ -28,30 +28,29 @@ import com.elytradev.thermionics.data.Registry;
 import com.elytradev.thermionics.item.Spirit;
 
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
 public class Spirits {
 	public static final Registry<ResourceLocation, Spirit> REGISTRY = new Registry<>(Spirit.class);
 	
 	static {
-		register("vodka", Items.POTATO, 0xffffff);
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"),      new Spirit("vodka",        Items.POTATO)  .withColor(0x77ffffff));
-		REGISTRY.register(new ResourceLocation("thermionics:whiskey"),    new Spirit("whiskey",      Items.WHEAT)   .withColor(0x88ef8f41));
-		REGISTRY.register(new ResourceLocation("thermionics:rum"),        new Spirit("rum",          Items.REEDS)   .withColor(0x77502f15));
-		REGISTRY.register(new ResourceLocation("thermionics:moonshine"),  new Spirit("moonshine",    Items.SUGAR)   .withColor(0x88ffffff)); //Processed sugar will always have higher alcohol content
-		REGISTRY.register(new ResourceLocation("thermionics:hard_cider"), new Spirit("hard_cider",   Items.APPLE)   .withColor(0x99f6c70b));
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"), new Spirit("molasses",     Items.BEETROOT).withColor(0x994d2c1a)); //Also extremely strong for the same reason
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"), new Spirit("dr_purpur",    Items.CHORUS_FRUIT_POPPED).withColor(0x44ff24fc)); //A serious drink for real discriminating persons of science
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"), new Spirit("carrot_brandy",Items.CARROT)  .withColor(0x558a032f)); //This was actually a thing in WW2. Also, cabbage. Disgusting!
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"), new Spirit("gin",          "berryJuniper").withColor(0x77ffffff));
-		REGISTRY.register(new ResourceLocation("thermionics:vodka"), new Spirit("tequila",      "fruitAgave")  .withColor(0x44ffde00));
+		//register("vodka", Items.POTATO, 0xffffff);
+		REGISTRY.register(new ResourceLocation("thermionics:vodka"),         new Spirit("vodka",        Items.POTATO)  .withColor(0x77ffffff));
+		REGISTRY.register(new ResourceLocation("thermionics:whiskey"),       new Spirit("whiskey",      Items.WHEAT)   .withColor(0x88ef8f41));
+		REGISTRY.register(new ResourceLocation("thermionics:rum"),           new Spirit("rum",          Items.REEDS)   .withColor(0x77502f15));
+		REGISTRY.register(new ResourceLocation("thermionics:moonshine"),     new Spirit("moonshine",    Items.SUGAR)   .withColor(0x88ffffff)); //Processed sugar will always have higher alcohol content
+		REGISTRY.register(new ResourceLocation("thermionics:hard_cider"),    new Spirit("hard_cider",   Items.APPLE)   .withColor(0x99f6c70b));
+		REGISTRY.register(new ResourceLocation("thermionics:molasses"),      new Spirit("molasses",     Items.BEETROOT).withColor(0x994d2c1a)); //Also extremely strong for the same reason
+		REGISTRY.register(new ResourceLocation("thermionics:dr_purpur"),     new Spirit("dr_purpur",    Items.CHORUS_FRUIT_POPPED).withColor(0x44ff24fc)); //A serious drink for real discriminating persons of science
+		REGISTRY.register(new ResourceLocation("thermionics:carrot_brandy"), new Spirit("carrot_brandy",Items.CARROT)  .withColor(0x558a032f)); //This was actually a thing in WW2. Also, cabbage. Disgusting!
+		REGISTRY.register(new ResourceLocation("thermionics:gin"),           new Spirit("gin",          "berryJuniper").withColor(0x77ffffff));
+		REGISTRY.register(new ResourceLocation("thermionics:tequila"),       new Spirit("tequila",      "fruitAgave")  .withColor(0x44ffde00));
 	}
-	
+	/*
 	private static final void register(String name, Item source, int color) {
 		REGISTRY.register(
 				new ResourceLocation("thermionics", name), 
 				new Spirit(name, source).withColor(color)
 				);
-	}
+	}*/
 }

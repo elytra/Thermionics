@@ -2,55 +2,31 @@
 	"forge_marker":1,
 	
 	"defaults":{
-		"model":"thermionics:pot_still.obj",
-		"custom": { "flip-v": true },
-		"transform": {
-			"thirdperson": { "scale":0.25 },
-			"firstperson": { "scale":0.25 },
-			"gui": { "scale":0.25 },
-			"head": { "scale":0.5 }
+		"model":"minecraft:orientable",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures":{
+			"front":"thermionics:blocks/machine/pot_still_front",
+			"side":"thermionics:blocks/machine/pot_still_side",
+			"top":"thermionics:blocks/machine/pot_still_top",
+			"down":"thermionics:blocks/machine/pot_still_top",
+			"particle":"thermionics:blocks/machine/pot_still_front"
 		}
 	},
 	
 	"variants": {
 		"facing": {
-			"north": {
-				"transform": {
-					"thirdperson": { "scale":0.25 },
-					"firstperson": { "scale":0.25 },
-					"gui": {
-						"scale":0.3,
-						"translation": [0, -0.3, 0]
-					},
-					"head": {
-						"scale":0.6,
-						"translation": [0, 0.3, 0]
-						},
-					"translation": [0.5, 0, 0.5],
-					"rotation": {"y":   0}
-				}
-			},
-			"west" : {
-				"transform": {
-					"translation": [0.5, 0, -0.5],
-					"rotation": {"y":  90}
-				}
-			},
-			"south": {
-				"transform": {
-					"translation": [-0.5, 0, -0.5],
-					"rotation": {"y": 180}
-				}
-			},
-			"east" : {
-				"transform": {
-					"translation": [-0.5, 0, 0.5],
-					"rotation": {"y": 270}
-				}
-			}
+			"north": { "x": 0, "y":  0},
+			"east" : { "x": 0, "y": 90},
+			"south": { "x": 0, "y":180},
+			"west" : { "x": 0, "y":270}
 		},
 		"active" : {
-			"true": {},
+			"true": {
+				"textures":{ "front":"thermionics:blocks/machine/pot_still_front" }
+			},
 			"false": {}
 		}
     }

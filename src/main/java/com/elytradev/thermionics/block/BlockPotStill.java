@@ -44,9 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockPotStill extends BlockMachineBase implements ITileEntityProvider, IArmor {
@@ -55,7 +53,7 @@ public class BlockPotStill extends BlockMachineBase implements ITileEntityProvid
 		super("pot_still");
 		this.setLightOpacity(2);
 	}
-
+	/* //This isn't even its final form. The world isn't ready yet for a big, beautiful still.
 	public AxisAlignedBB getSelectedBoundingBox(IBlockState state, World world, BlockPos pos) {
 		return createBB(state).offset(pos);
 	}
@@ -66,7 +64,7 @@ public class BlockPotStill extends BlockMachineBase implements ITileEntityProvid
 	
 	public AxisAlignedBB createBB(IBlockState state) {
 		return new AxisAlignedBB(-0.25, 0.0, -0.25, 1.25, 1.75, 1.25);
-	}
+	}*/
 	
 	//overrides light opacity if true >:|
 	@Override

@@ -26,29 +26,43 @@ package com.elytradev.thermionics.item;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IAuxDestroyBlock;
 import com.elytradev.thermionics.api.IOreRepair;
+import com.elytradev.thermionics.api.IWeaponSkillInfo;
+import com.elytradev.thermionics.api.impl.ISkillActivating;
+import com.elytradev.thermionics.data.EnumWeaponSkill;
+import com.elytradev.thermionics.network.SpawnParticleEmitterMessage;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair {
+public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair, ISkillActivating {
 	String fakeToolMaterial = "ingotIron";
 	
 	//Whoever in Mojang specialcased literally every effective pickaxe block inside ItemPickaxe can die in a fire.
@@ -69,6 +83,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		BLACKLIST.add(Blocks.WALL_BANNER);
 		BLACKLIST.add(Blocks.STANDING_SIGN);
 		BLACKLIST.add(Blocks.WALL_SIGN);
+		BLACKLIST.add(Blocks.BEDROCK);
 		
 		WHITELIST.addAll(VANILLA_WHITELIST);
 	}
@@ -84,7 +99,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
         this.setMaxDamage(materialIn.getMaxUses() * 9);
         this.efficiencyOnProperMaterial = materialIn.getEfficiencyOnProperMaterial();
         this.damageVsEntity = 4 + materialIn.getDamageVsEntity();
-        this.attackSpeed = 2;
+        this.attackSpeed = -3.6f;
         this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 	}
 	
@@ -100,7 +115,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
         this.setMaxDamage(uses * 9);
         this.efficiencyOnProperMaterial = efficiency;
         this.damageVsEntity = 4 + damage;
-        this.attackSpeed = 2;
+        this.attackSpeed = -3.6f;
         this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
 	}
@@ -216,5 +231,45 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 	@Override
 	public String getOreRepairMaterial(ItemStack stack) {
 		return getFakeToolMaterial(stack);
+	}
+	
+	public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+        stack.damageItem(1, attacker);
+        return false;
+    }
+	
+	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {
+		
+		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(slot);
+		
+        if (slot == EntityEquipmentSlot.MAINHAND) {
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.damageVsEntity, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", (double)this.attackSpeed, 0));
+        }
+
+        return multimap;
+    }
+	
+	public float getEntityDamage() {
+		return this.damageVsEntity;
+	}
+
+	private Random rnd = new Random();
+	@Override
+	public int activateSkill(IWeaponSkillInfo info, EntityLivingBase attacker, ItemStack item, DamageSource source, EntityLivingBase opponent) {
+		//If you don't know about Earthbound, we can't be friends. Sorry, I don't make the rules.
+		DamageSource smaaaaaaash = new EntityDamageSource("weaponskill.smash", attacker);
+		opponent.attackEntityFrom(smaaaaaaash, 4f);
+		
+		opponent.addPotionEffect( new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:blindness"), 20*3, 2 ));
+		//Thermionics.LOG.info("SMAAAAAAASH WeaponSkill activated against entity {} at {},{},{}", opponent, opponent.posX, opponent.posY, opponent.posZ);
+		
+		if (!attacker.world.isRemote) {
+			//Serverside, queue the effect
+			SpawnParticleEmitterMessage fx = new SpawnParticleEmitterMessage(Thermionics.CONTEXT, EnumWeaponSkill.SMAAAAAAASH, opponent);
+			fx.sendToAllWatching(opponent);
+		}
+		
+		return 20*5;
 	}
 }

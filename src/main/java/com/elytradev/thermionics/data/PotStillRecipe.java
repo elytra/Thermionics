@@ -79,4 +79,17 @@ public class PotStillRecipe implements ICustomRecipe<PotStillRecipe, FluidStack>
 		if (!recipe.apply(input.getFluid())) return false;
 		return input.drain(recipe.getAmount(), true)!=null;
 	}
+	
+	/* If there was any justice in the world this would be an extension method instead */
+	private String fluidStackToString(FluidStack stack) {
+		if (stack==null) return "null";
+		if (stack.getFluid()==null) return "fluid_null";
+		String tagString = "null";
+		if (stack.tag != null) tagString = "{"+stack.tag.toString()+"}";
+		return "{fluid:"+stack.getFluid().getName()+", tag:"+tagString+", amount:"+stack.amount+"}";
+	}
+	
+	public String toString() {
+		return "{input:"+recipe.toString()+", output:"+fluidStackToString(output)+"}";
+	}
 }

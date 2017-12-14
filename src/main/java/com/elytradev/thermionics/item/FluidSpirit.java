@@ -25,6 +25,7 @@
 package com.elytradev.thermionics.item;
 
 import com.elytradev.thermionics.api.Spirits;
+import com.elytradev.thermionics.block.ThermionicsBlocks;
 
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
@@ -39,6 +40,10 @@ public class FluidSpirit extends Fluid {
 		super(fluidName, still, flowing);
 	}
 
+	public boolean isDistilled() {
+		return this==ThermionicsBlocks.FLUID_SPIRITS;
+	}
+	
 	@Override
 	public int getColor(FluidStack stack) {
 		if (stack==null || stack.tag==null) return 0x20FFFFFF;
@@ -63,9 +68,8 @@ public class FluidSpirit extends Fluid {
 		String spirit = stack.tag.getString("Spirit");
 		if (spirit!=null) {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
-			if (actual!=null) return actual.getUnlocalizedDistilledName();
+			if (actual!=null) return (isDistilled()) ? actual.getUnlocalizedDistilledName() : actual.getUnlocalizedBrewedName();
 		}
-		getLocalizedName(stack);
 		String potion = stack.tag.getString("Potion");
 		if (potion!=null) {
 			Potion actual = Potion.getPotionFromResourceLocation(potion);
@@ -88,13 +92,13 @@ public class FluidSpirit extends Fluid {
 	
 	@Override
 	public ResourceLocation getFlowing(FluidStack stack) {
-		if (stack==null || stack.tag==null) return Spirit.Clarity.MEDIUM.getFlowingSpiritIcon();
+		if (stack==null || stack.tag==null) return (isDistilled()) ? Spirit.Clarity.MEDIUM.getFlowingSpiritIcon() : Spirit.Clarity.MEDIUM.getFlowingHootchIcon();
 		String spirit = stack.tag.getString("Spirit");
 		if (spirit!=null) {
 			Spirit actual = Spirits.REGISTRY.getValue(new ResourceLocation(spirit));
-			if (actual!=null) return actual.getClarity().getStillSpiritIcon();
+			if (actual!=null) return (isDistilled()) ? actual.getClarity().getFlowingSpiritIcon() : actual.getClarity().getFlowingHootchIcon();
 		}
-		return Spirit.Clarity.MEDIUM.getFlowingSpiritIcon();
+		return (isDistilled()) ? Spirit.Clarity.MEDIUM.getFlowingSpiritIcon() : Spirit.Clarity.MEDIUM.getFlowingHootchIcon();
 	}
 	
 	@Override

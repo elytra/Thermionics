@@ -1,0 +1,7 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "thermionics:items/spiritbottle",
+        "layer1": "thermionics:items/spiritbottle_liquid"
+    }
+}

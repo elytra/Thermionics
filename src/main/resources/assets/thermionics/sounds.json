@@ -1,0 +1,9 @@
+{
+	"smash": {
+		"category": "player",
+		"sounds": [{
+			"name": "thermionics:smash",
+			"stream": false
+		}]
+	}
+}

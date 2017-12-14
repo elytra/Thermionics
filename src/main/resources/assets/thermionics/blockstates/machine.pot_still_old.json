@@ -1,0 +1,57 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"thermionics:pot_still.obj",
+		"custom": { "flip-v": true },
+		"transform": {
+			"thirdperson": { "scale":0.25 },
+			"firstperson": { "scale":0.25 },
+			"gui": { "scale":0.25 },
+			"head": { "scale":0.5 }
+		}
+	},
+	
+	"variants": {
+		"facing": {
+			"north": {
+				"transform": {
+					"thirdperson": { "scale":0.25 },
+					"firstperson": { "scale":0.25 },
+					"gui": {
+						"scale":0.3,
+						"translation": [0, -0.3, 0]
+					},
+					"head": {
+						"scale":0.6,
+						"translation": [0, 0.3, 0]
+						},
+					"translation": [0.5, 0, 0.5],
+					"rotation": {"y":   0}
+				}
+			},
+			"west" : {
+				"transform": {
+					"translation": [0.5, 0, -0.5],
+					"rotation": {"y":  90}
+				}
+			},
+			"south": {
+				"transform": {
+					"translation": [-0.5, 0, -0.5],
+					"rotation": {"y": 180}
+				}
+			},
+			"east" : {
+				"transform": {
+					"translation": [-0.5, 0, 0.5],
+					"rotation": {"y": 270}
+				}
+			}
+		},
+		"active" : {
+			"true": {},
+			"false": {}
+		}
+    }
+}

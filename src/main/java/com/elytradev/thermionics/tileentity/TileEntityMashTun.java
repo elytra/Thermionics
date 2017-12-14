@@ -27,7 +27,6 @@ package com.elytradev.thermionics.tileentity;
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
-import com.elytradev.concrete.inventory.ValidatedFluidTankWrapper;
 import com.elytradev.concrete.inventory.ValidatedInventoryView;
 import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
 import com.elytradev.concrete.inventory.Validators;
@@ -129,23 +128,16 @@ public class TileEntityMashTun extends TileEntityMachine implements ITickable, I
 		
 		MashTunRecipe recipe = MachineRecipes.getMashTun(inputTank, items);
 		if (recipe!=null) {
-			System.out.println("Recipe: "+recipe.toString());
-			
 			//Preflight any conditions we didn't verify in the recipe, like whether there's room for output
 			int accepted = outputTank.fillInternal(recipe.getOutput(), false);
-			System.out.println("Accepted:"+accepted+"/"+recipe.getOutput().amount);
 			if (accepted<recipe.getOutput().amount) return;
-			System.out.println("Stored:"+heat.getHeatStored()+"/"+HEAT_COST);
 			if (heat.getHeatStored()<HEAT_COST) return;
-			
-			System.out.println("Applying...");
 			
 			//Apply the recipe
 			recipe.consumeIngredients(inputTank, items);
 			outputTank.fillInternal(recipe.getOutput(), true);
 			cooldown = MAX_COOLDOWN;
 		} else {
-			System.out.println("No recipe available.");
 			cooldown = MAX_COOLDOWN;
 		}
 	}
