@@ -62,6 +62,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ThermionicsRecipes {
@@ -82,6 +83,12 @@ public class ThermionicsRecipes {
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.OVEN,1),
 				"xxx", "x x", "xcx", 'x', "ingotIron", 'c', "ingotCopper"));
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.MASH_TUN,1),
+				"s s", "s s", "scs", 's', "cobblestone", 'c', "ingotCopper"));
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.POT_STILL,1),
+				"bbb", "b b", "bcb", 'b', "ingotBrass", 'c', "ingotCopper"));
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.MOTOR_CONVECTION),
 				"IcI", "ctc", "IsI",
@@ -117,6 +124,16 @@ public class ThermionicsRecipes {
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:hammers"), ItemHammer.createTool("ingotIron"),
 				"I", "s", "s", 'I', "blockIron", 's', "stickWood"
+				));
+		
+		recipe(r, new ShapelessOreRecipe(new ResourceLocation("thermionics:spiritbottle"),
+				new ItemStack(ThermionicsItems.EMPTY_SPIRIT_BOTTLE),
+				new ItemStack(Items.GLASS_BOTTLE)
+				));
+		
+		recipe(r, new ShapelessOreRecipe(new ResourceLocation("thermionics:spiritbottle"),
+				new ItemStack(Items.GLASS_BOTTLE),
+				new ItemStack(ThermionicsItems.EMPTY_SPIRIT_BOTTLE)
 				));
 		
 		//NEW TOOL RECIPES

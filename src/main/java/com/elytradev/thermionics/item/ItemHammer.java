@@ -45,7 +45,13 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -254,7 +260,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		return this.damageVsEntity;
 	}
 
-	private Random rnd = new Random();
+	private static Random rnd = new Random();
 	@Override
 	public int activateSkill(IWeaponSkillInfo info, EntityLivingBase attacker, ItemStack item, DamageSource source, EntityLivingBase opponent) {
 		//If you don't know about Earthbound, we can't be friends. Sorry, I don't make the rules.
@@ -263,7 +269,11 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		
 		opponent.addPotionEffect( new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:blindness"), 20*3, 2 ));
 		//Thermionics.LOG.info("SMAAAAAAASH WeaponSkill activated against entity {} at {},{},{}", opponent, opponent.posX, opponent.posY, opponent.posZ);
-		
+		if (opponent instanceof EntityMob) {
+			EntityMob monster = (EntityMob)opponent;
+			monster.setAttackTarget(null);
+			monster.setRevengeTarget(null);
+		}
 		if (!attacker.world.isRemote) {
 			//Serverside, queue the effect
 			SpawnParticleEmitterMessage fx = new SpawnParticleEmitterMessage(Thermionics.CONTEXT, EnumWeaponSkill.SMAAAAAAASH, opponent);
@@ -271,5 +281,44 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		}
 		
 		return 20*5;
+	}
+	
+	public static void stun(EntityLivingBase entity) {
+		//Takes care of players
+		entity.addPotionEffect( new PotionEffect(Potion.getPotionFromResourceLocation("minecraft:blindness"), 20*3, 2 ));
+		
+		if (entity instanceof EntityMob) {
+			EntityMob mob = (EntityMob)entity;
+			mob.setAttackTarget(null);
+			mob.getNavigator().clearPathEntity();
+			mob.getNavigator().tryMoveToXYZ(mob.posX+rnd.nextGaussian(), mob.posY+rnd.nextGaussian(), mob.posZ+rnd.nextGaussian(), 0.01f);
+			
+			ArrayList<EntityAITasks.EntityAITaskEntry> toRemove = new ArrayList<>();
+			for(EntityAITasks.EntityAITaskEntry entry : mob.tasks.taskEntries) {
+				if (entry.action instanceof EntityAILookIdle) {
+					entry.using = true;
+					entry.action.startExecuting();
+					
+					Thermionics.LOG.info("Found and enabled EntityAILookIdle");
+					//((EntityAILookIdle)entry.action).idleTime = 50; //Without reflecting into this field with an accessor, we get 1-2 seconds of "stun" on supported mobs
+				} else {
+					if (entry.using) {
+						entry.using = false;
+						entry.action.resetTask();
+						Thermionics.LOG.info("Found and disabled AITasks:"+entry.action.getClass().getSimpleName());
+					}
+				}
+			}
+			
+			for(EntityAITasks.EntityAITaskEntry entry: mob.targetTasks.taskEntries) {
+				entry.using = false;
+			}
+			
+			//Special cases
+			if (mob instanceof EntityCreeper) {
+				((EntityCreeper)mob).setCreeperState(-1); //Stun defuses creepers
+			} else {
+			}
+		}
 	}
 }

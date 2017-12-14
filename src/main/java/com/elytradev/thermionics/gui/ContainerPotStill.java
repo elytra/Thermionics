@@ -74,7 +74,7 @@ public class ContainerPotStill extends ContainerMachine {
 				6, 1, 1, 3); //Output tank
 		panel.add(new WImage(new ResourceLocation("thermionics", "textures/gui/output_bucket_arrows.png")), 7, 1, 1, 3);
 		panel.add(WColoredSlot.of(container, 3, WColoredSlot.OUTPUT), 8, 1); //Empty buckets for unloading fluids
-		panel.add(WItemSlot.of(container, 2), 8, 3);                         //Full buckets of output fluid
+		panel.add(WItemSlot.of(container, 4), 8, 3);                         //Full buckets of output fluid
 		
 		panel.add(new WBar(
 				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),

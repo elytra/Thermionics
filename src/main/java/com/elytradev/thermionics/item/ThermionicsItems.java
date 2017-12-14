@@ -52,6 +52,7 @@ public class ThermionicsItems {
 	public static ItemSubtyped<EnumAllomanticPowder> ALLOMANTIC_POWDER;
 	
 	//Booze - Drink responsibly, kids
+	public static ItemSpiritBottle                   EMPTY_SPIRIT_BOTTLE;
 	public static ItemSpiritBottle                   SPIRIT_BOTTLE;
 	
 	//Cloaks
@@ -59,7 +60,6 @@ public class ThermionicsItems {
 	
 	//Creative
 	public static ItemChunkUnloader                  CHUNK_UNLOADER;
-	
 	
 	@SubscribeEvent
 	public static void onRegister(RegistryEvent.Register<Item> event) {
@@ -102,7 +102,8 @@ public class ThermionicsItems {
 		ThermionicsItems.ALLOMANTIC_POWDER  = item(r, new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true));
 		
 		//Booze
-		ThermionicsItems.SPIRIT_BOTTLE      = item(r, new ItemSpiritBottle());
+		ThermionicsItems.EMPTY_SPIRIT_BOTTLE= item(r, new ItemSpiritBottle("empty"));
+		ThermionicsItems.SPIRIT_BOTTLE      = item(r, new ItemSpiritBottle(null));
 		
 		//Cloaks
 		ThermionicsItems.MISTCLOAK          = item(r, new ItemMistcloak());

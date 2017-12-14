@@ -36,6 +36,7 @@ public class Spirit {
 	private ItemIngredient mashBase;
 	private int color = 0x60FFFFFF;
 	private Clarity clarity = Clarity.MEDIUM;
+	private boolean alcoholic = true;
 	
 	public Spirit(String name, ItemIngredient mashBase) {
 		this.name = name;
@@ -83,6 +84,15 @@ public class Spirit {
 	public Spirit withClarity(Clarity clarity) {
 		this.clarity = clarity;
 		return this;
+	}
+	
+	public Spirit setNonAlcoholic() {
+		this.alcoholic = false;
+		return this;
+	}
+	
+	public boolean isAlcoholic() {
+		return alcoholic;
 	}
 	
 	public enum Clarity {

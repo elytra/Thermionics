@@ -124,6 +124,7 @@ public class Thermionics {
 	public static Capability<IWeaponSkillInfo> CAPABILITY_WEAPONSKILL;
 	
 	public static Potion POTION_EFFORTLESS_SPEED;
+	public static Potion POTION_TIPSY;
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		@Override
@@ -216,6 +217,7 @@ public class Thermionics {
 		IForgeRegistry<Potion> r = event.getRegistry();
 		
 		POTION_EFFORTLESS_SPEED = potion(r, new PotionExpedience());
+		POTION_TIPSY = potion(r, new PotionTipsy());
 	}
 	
 	public static <T extends Potion> T potion(IForgeRegistry<Potion> registry, T t) {

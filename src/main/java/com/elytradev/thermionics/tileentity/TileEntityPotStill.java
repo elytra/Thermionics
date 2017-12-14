@@ -24,6 +24,8 @@
 
 package com.elytradev.thermionics.tileentity;
 
+import java.util.function.Predicate;
+
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
@@ -36,6 +38,7 @@ import com.elytradev.thermionics.api.impl.HeatStorageView;
 import com.elytradev.thermionics.data.MachineRecipes;
 import com.elytradev.thermionics.data.PotStillRecipe;
 import com.elytradev.thermionics.data.ValidatedDoubleTank;
+import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -58,6 +61,8 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 	public static final int HEAT_REQUIRED = 10;
 	public static final int MAX_PROCESS_TIME = 100;
 	
+	public static final Predicate<ItemStack> ONLY_EMPTY_SPIRIT_BOTTLES = (stack)->stack.getItem()==ThermionicsItems.EMPTY_SPIRIT_BOTTLE;
+	
 	private ConcreteFluidTank inputTank = new ConcreteFluidTank(8000);
 	private ConcreteFluidTank outputTank = new ConcreteFluidTank(8000);
 	private ValidatedDoubleTank cap = new ValidatedDoubleTank(inputTank, outputTank);
@@ -66,7 +71,7 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 	private int processTime = 0;
 	
 	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(5)
-			.withValidators(Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING)
+			.withValidators(Validators.NOTHING, Validators.FLUID_CONTAINERS, Validators.NOTHING, ONLY_EMPTY_SPIRIT_BOTTLES, Validators.NOTHING)
 			.setCanExtract(0, true)
 			.setCanExtract(1, false)
 			.setCanExtract(2, true)
@@ -143,6 +148,26 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 	@Override
 	public void update() {
 		boolean curTickPower = world.isBlockIndirectlyGettingPowered(pos)!=0;
+		
+		//TODO: Actually lock tanks
+		
+		
+		{ //Bottle fluids out
+			ItemStack bottles = itemStorage.getStackInSlot(SLOT_EMPTY_BUCKET_IN);
+			ItemStack outputItem = itemStorage.getStackInSlot(SLOT_FULL_BUCKET_OUT);
+			FluidStack outputFluid = outputTank.getFluid();
+			//Are there bottles to fill, is there room to put them, is there fluid to fill them with, and is there *enough* of that fluid?
+			if (!bottles.isEmpty() && outputItem.getCount()<outputItem.getMaxStackSize() && outputFluid!=null && outputFluid.amount>250) {
+				ItemStack outBottle = new ItemStack(ThermionicsItems.SPIRIT_BOTTLE);
+				outBottle.setTagCompound(outputFluid.tag.copy());
+				
+				if (itemStorage.insertItem(SLOT_FULL_BUCKET_OUT, outBottle, true).isEmpty()) {
+					outputTank.drainInternal(250,  true);
+					itemStorage.insertItem(SLOT_FULL_BUCKET_OUT, outBottle, false);
+					itemStorage.extractItem(SLOT_EMPTY_BUCKET_IN, 1, false);
+				}
+			}
+		}
 		
 		if (!tanksLocked) {
 			if (curTickPower & !lastTickPower) {

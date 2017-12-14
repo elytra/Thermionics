@@ -36,21 +36,32 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 public class ItemSpiritBottle extends Item {
-	public ItemSpiritBottle() {
-		this.setRegistryName("thermionics", "spiritbottle");
-		this.setUnlocalizedName("thermionics.spiritbottle");
+	public ItemSpiritBottle(String id) {
+		if (id==null) {
+			this.setRegistryName("thermionics", "spiritbottle");
+			this.setUnlocalizedName("thermionics.spiritbottle");
+		} else {
+			this.setRegistryName("thermionics", "spiritbottle."+id);
+			this.setUnlocalizedName("thermionics.spiritbottle."+id);
+		}
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		this.setMaxStackSize(16);
 	}
 	
 	public boolean isEmpty(ItemStack bottle) {
-		return getSpirit(bottle)==null && PotionUtils.getEffectsFromStack(bottle).isEmpty();
+		return this==ThermionicsItems.EMPTY_SPIRIT_BOTTLE;
+		//return getSpirit(bottle)==null && PotionUtils.getEffectsFromStack(bottle).isEmpty();
 	}
 	
 	@Nullable
@@ -58,7 +69,7 @@ public class ItemSpiritBottle extends Item {
 		if (bottle.hasTagCompound() && bottle.getTagCompound().hasKey("Spirit")) {
 			return Spirits.REGISTRY.getValue(new ResourceLocation(bottle.getTagCompound().getString("Spirit")));
 		} else {
-			return null;
+			return null; // Spirits.REGISTRY.getValue(new ResourceLocation("thermionics:ethanol")); //No formal ethanol exists yet
 		}
 	}
 	
@@ -79,9 +90,20 @@ public class ItemSpiritBottle extends Item {
 	 * Applies all effects in the bottle to the entity; if the bottle has both a potion and a spirit, both are applied.
 	 */
 	public void apply(ItemStack bottle, EntityLivingBase entity) {
+		if (entity.world.isRemote) return;
 		Spirit spirit = getSpirit(bottle);
 		if (spirit!=null) {
-			//TODO: Drunkenness system
+			
+			if (spirit.isAlcoholic()) {
+				PotionEffect effect = entity.getActivePotionEffect(Thermionics.POTION_TIPSY);
+				int curStrength = 0;
+				if (effect!=null) {
+					curStrength = effect.getAmplifier();
+				}
+				
+				entity.removeActivePotionEffect(Thermionics.POTION_TIPSY);
+				entity.addPotionEffect( new PotionEffect(Thermionics.POTION_TIPSY, 20*30, curStrength+1));
+			}
 		}
 		
 		for (PotionEffect potion : PotionUtils.getEffectsFromStack(bottle)) {
@@ -96,6 +118,31 @@ public class ItemSpiritBottle extends Item {
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {
 		return EnumAction.DRINK;
+	}
+	
+	@Override
+	public int getMaxItemUseDuration(ItemStack stack) {
+		return 16;
+	}
+	
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        
+        if (!this.isEmpty(itemstack)) {
+            playerIn.setActiveHand(handIn);
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+        } else {
+            return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+        }
+    }
+	
+	@Override
+	public String getUnlocalizedName(ItemStack stack) {
+		if (isEmpty(stack)) return super.getUnlocalizedName(stack);
+		
+		Spirit spirit = getSpirit(stack);
+		return (spirit==null) ? "item.thermionics.spiritbottle.ethanol" : "item.thermionics.spiritbottle."+spirit.getUnlocalizedDistilledName();
 	}
 	
 	@Override
@@ -120,12 +167,13 @@ public class ItemSpiritBottle extends Item {
         }
         
         if (player == null || !player.capabilities.isCreativeMode) {
-            if (stack.isEmpty()) {
-                return new ItemStack(ThermionicsItems.SPIRIT_BOTTLE);
-            }
+            //if (stack.isEmpty()) {
+                //return new ItemStack(ThermionicsItems.EMPTY_SPIRIT_BOTTLE);
+            	
+            //}
 
             if (player != null) {
-                player.inventory.addItemStackToInventory(new ItemStack(ThermionicsItems.SPIRIT_BOTTLE));
+                player.inventory.addItemStackToInventory(new ItemStack(ThermionicsItems.EMPTY_SPIRIT_BOTTLE));
             }
         }
         

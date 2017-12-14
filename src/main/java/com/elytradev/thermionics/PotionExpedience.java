@@ -35,26 +35,26 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PotionExpedience extends Potion {
-	private static final ResourceLocation EFFORTLESS_TEX = new ResourceLocation("thermionics", "textures/effect/effortless.png");
+	private static final ResourceLocation TEXTURE_EXPEDIENCE = new ResourceLocation("thermionics", "textures/effect/effortless.png");
 	
 	public PotionExpedience() {
 		super(false, 0x428cae);
 		setPotionName("effect.moveSpeed.effortless");
 		setRegistryName("thermionics", "effortless_speed");
-		registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, "91AEAA56-376B-4498-935B-2F7F68070635", 0.8D, 2);
+		registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, "3f07f6c9-a059-4592-8bf2-365802a412bf", 0.8D, 2); //original: "91AEAA56-376B-4498-935B-2F7F68070635" -now stacks with Speed potion
 		setBeneficial();
 	}
 	
 	@SideOnly(Side.CLIENT)
     public void renderInventoryEffect(int x, int y, PotionEffect effect, net.minecraft.client.Minecraft mc) {
-		mc.renderEngine.bindTexture(EFFORTLESS_TEX);
+		mc.renderEngine.bindTexture(TEXTURE_EXPEDIENCE);
 		GlStateManager.color(1, 1, 1);
 		Gui.drawModalRectWithCustomSizedTexture(x+6, y+7, 0, 0, 18, 18, 18, 18);
 	}
 	
 	@Override
 	public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
-		mc.renderEngine.bindTexture(EFFORTLESS_TEX);
+		mc.renderEngine.bindTexture(TEXTURE_EXPEDIENCE);
 		GlStateManager.color(1, 1, 1, alpha);
 		Gui.drawModalRectWithCustomSizedTexture(x+3, y+3, 0, 0, 18, 18, 18, 18);
 	}

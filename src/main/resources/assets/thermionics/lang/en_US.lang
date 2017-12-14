@@ -94,6 +94,18 @@ spirit.thermionics.carrot_brandy=Carrot Brandy
 spirit.thermionics.gin=Gin
 spirit.thermionics.tequila=Tequila
 
+item.thermionics.spiritbottle.empty.name=Spirit Bottle
+item.thermionics.spiritbottle.spirit.thermionics.vodka.name=Vodka Bottle
+item.thermionics.spiritbottle.spirit.thermionics.whiskey.name=Whiskey Bottle
+item.thermionics.spiritbottle.spirit.thermionics.rum.name=Rum Bottle
+item.thermionics.spiritbottle.spirit.thermionics.moonshine.name=Moonshine Bottle
+item.thermionics.spiritbottle.spirit.thermionics.hard_cider.name=Hard Cider Bottle
+item.thermionics.spiritbottle.spirit.thermionics.molasses.name=Dark Vodka Bottle
+item.thermionics.spiritbottle.spirit.thermionics.dr_purpur.name=Dr. Purpur
+item.thermionics.spiritbottle.spirit.thermionics.carrot_brandy.name=Carrot Brandy Bottle
+item.thermionics.spiritbottle.spirit.thermionics.gin.name=Gin Bottle
+item.thermionics.spiritbottle.spirit.thermionics.tequila.name=Tequila Bottle
+
 #Relocalizations
 item.horsearmormetal.name=Iron Barding
 item.horsearmorgold.name=Gold Barding

@@ -141,7 +141,6 @@ public class FX {
 
 		@Override
 		public void begin(World world) {
-			System.out.println("PLAYING SOUND");
 			world.playSound(x, y, z, Thermionics.SOUNDEVENT_SMAAAAAAASH, SoundCategory.BLOCKS, 1f, 0.7f + (rnd.nextFloat()*0.3f), false);
 		}
 		

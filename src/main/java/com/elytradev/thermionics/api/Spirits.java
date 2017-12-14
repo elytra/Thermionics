@@ -41,7 +41,7 @@ public class Spirits {
 		REGISTRY.register(new ResourceLocation("thermionics:moonshine"),     new Spirit("moonshine",    Items.SUGAR)   .withColor(0x88ffffff)); //Processed sugar will always have higher alcohol content
 		REGISTRY.register(new ResourceLocation("thermionics:hard_cider"),    new Spirit("hard_cider",   Items.APPLE)   .withColor(0x99f6c70b));
 		REGISTRY.register(new ResourceLocation("thermionics:molasses"),      new Spirit("molasses",     Items.BEETROOT).withColor(0x994d2c1a)); //Also extremely strong for the same reason
-		REGISTRY.register(new ResourceLocation("thermionics:dr_purpur"),     new Spirit("dr_purpur",    Items.CHORUS_FRUIT_POPPED).withColor(0x44ff24fc)); //A serious drink for real discriminating persons of science
+		REGISTRY.register(new ResourceLocation("thermionics:dr_purpur"),     new Spirit("dr_purpur",    Items.CHORUS_FRUIT_POPPED).withColor(0x44ff24fc).setNonAlcoholic()); //A serious drink for real discriminating persons of science
 		REGISTRY.register(new ResourceLocation("thermionics:carrot_brandy"), new Spirit("carrot_brandy",Items.CARROT)  .withColor(0x558a032f)); //This was actually a thing in WW2. Also, cabbage. Disgusting!
 		REGISTRY.register(new ResourceLocation("thermionics:gin"),           new Spirit("gin",          "berryJuniper").withColor(0x77ffffff));
 		REGISTRY.register(new ResourceLocation("thermionics:tequila"),       new Spirit("tequila",      "fruitAgave")  .withColor(0x44ffde00));

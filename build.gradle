@@ -95,7 +95,7 @@ dependencies {
 
 group = "com.elytradev"
 archivesBaseName = "Thermionics"
-version = "MC1.12_ver1.0.9"
+version = "MC1.12_ver1.1.0"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

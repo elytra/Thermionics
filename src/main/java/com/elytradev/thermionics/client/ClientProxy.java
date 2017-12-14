@@ -26,7 +26,6 @@ package com.elytradev.thermionics.client;
 
 import com.elytradev.thermionics.Proxy;
 import com.elytradev.thermionics.Thermionics;
-import com.elytradev.thermionics.api.Spirits;
 import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
@@ -34,6 +33,8 @@ import com.elytradev.thermionics.item.Spirit;
 import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
@@ -42,6 +43,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -104,10 +106,10 @@ public class ClientProxy extends Proxy {
 		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
 			@Override
 			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
-				if (tintIndex!=1) return 0xFFFFFFFF;
-				if (ThermionicsItems.SPIRIT_BOTTLE.isEmpty(stack)) return 0x00000000;
+				if (tintIndex!=1) return 0xFFFFFF;
+				//if (ThermionicsItems.SPIRIT_BOTTLE.isEmpty(stack)) return 0x00000000;
 				Spirit spirit = ThermionicsItems.SPIRIT_BOTTLE.getSpirit(stack);
-				if (spirit==null) return 0x70000000;
+				if (spirit==null) return 0xFFFFFF;
 				
 				return spirit.getColor();
 			}
@@ -124,10 +126,37 @@ public class ClientProxy extends Proxy {
 		event.getMap().registerSprite(new ResourceLocation("thermionics", "fluids/dark_spirit"));
 	}
 	
+	private float swayTheta = 0f;
+	private float swaySpeed = 0.05f;
+	private float swayAmplitudePerTipsy = 0.1f;
 	@SubscribeEvent
-	public void onClientTick(TickEvent.ClientTickEvent event) {
+	public void onClientTick(TickEvent.RenderTickEvent event) {
+		if (event.phase != TickEvent.Phase.START) return;
+		
+		EntityPlayerSP player = Minecraft.getMinecraft().player;
+		if (player==null) return; //We're not in-game
+		
 		if (event.phase == TickEvent.Phase.START) {
 			FX.update(Minecraft.getMinecraft().world);
+			
+			
+			if (player.isPotionActive(Thermionics.POTION_TIPSY)) {
+				swayTheta += swaySpeed * event.renderTickTime;
+				
+				int magnitude = player.getActivePotionEffect(Thermionics.POTION_TIPSY).getAmplifier();
+				if (magnitude>10) {
+					//TODO: Extra-magnitude effects. My idea of inducing nausea was vetoed by people clearly unfamiliar with the effects of ten forties of vodka.
+					
+				}
+				
+				if (player.movementInput.forwardKeyDown) {
+					//Modulate the player direction
+					float swayBase = MathHelper.cos(swayTheta);
+					float sway = swayAmplitudePerTipsy * player.getActivePotionEffect(Thermionics.POTION_TIPSY).getAmplifier() * swayBase;
+					player.rotationYaw += sway;
+					//player.cameraYaw += sway;
+				}
+			}
 		}
 	}
 }
