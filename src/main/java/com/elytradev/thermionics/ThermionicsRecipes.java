@@ -26,8 +26,10 @@ package com.elytradev.thermionics;
 
 import java.util.Map.Entry;
 
+import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.recipe.FluidIngredient;
 import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
 import com.elytradev.concrete.recipe.impl.ShapedInventoryRecipe;
 import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.Spirits;
@@ -40,6 +42,7 @@ import com.elytradev.thermionics.data.MachineRecipes;
 import com.elytradev.thermionics.data.MashTunRecipe;
 import com.elytradev.thermionics.data.PotStillRecipe;
 import com.elytradev.thermionics.data.SergerRecipe;
+import com.elytradev.thermionics.data.WildcardNBTIngredient;
 import com.elytradev.thermionics.item.EnumAllomanticPowder;
 import com.elytradev.thermionics.item.EnumIngredient;
 import com.elytradev.thermionics.item.ItemHammer;
@@ -48,18 +51,22 @@ import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -72,6 +79,25 @@ public class ThermionicsRecipes {
 	public static void onRegisterRecipes(RegistryEvent.Register<IRecipe> event) {
 		//LOG.info("Registering recipes");
 		IForgeRegistry<IRecipe> r = event.getRegistry();
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:ingredients"), new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.GEAR_BRASS.ordinal()),
+				" b ", "bib", " b ", 'b', "ingotBrass", 'i', "ingotIron"));
+		
+		for(EnumDyeColor dye : EnumDyeColor.values()) {
+			ItemStack result = new ItemStack(ThermionicsItems.FABRIC_SQUARE);
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setInteger("Color", dye.getColorValue());
+			result.setTagCompound(tag);
+			
+			ShapelessRecipes recipe = new ShapelessRecipes("thermionics:ingredientDye",
+					result,
+					NonNullList.from(null,
+							Ingredient.fromItem(ThermionicsItems.FABRIC_SQUARE),
+							Ingredient.fromStacks(new ItemStack(Items.DYE, 1, dye.getDyeDamage()))
+					));
+			recipe(r, recipe);
+		}
+		
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.CABLE_RF,8),
 				"wlw", 'w', new ItemStack(Blocks.WOOL,1,OreDictionary.WILDCARD_VALUE), 'l', "ingotLead"));
@@ -231,6 +257,10 @@ public class ThermionicsRecipes {
 		ItemIngredient ingotGold = ItemIngredient.of("ingotGold");
 		ItemIngredient diamond   = ItemIngredient.of("gemDiamond");
 		ItemIngredient string    = ItemIngredient.of(Items.STRING);
+		ItemIngredient ribbon    = ItemIngredient.of(new ItemStack(ThermionicsItems.INGREDIENT,1, EnumIngredient.RIBBON.ordinal()));
+		ItemIngredient fabric    = ItemIngredient.of(ThermionicsItems.FABRIC_SQUARE);
+		ItemIngredient anyFabric = new WildcardNBTIngredient(ThermionicsItems.FABRIC_SQUARE);
+		ItemIngredient anyScarf  = new WildcardNBTIngredient(ThermionicsItems.SCARF);
 		
 		SergerRecipe saddleRecipe = new SergerRecipe(
 				new ShapedInventoryRecipe(
@@ -295,9 +325,8 @@ public class ThermionicsRecipes {
 				new ShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.RIBBON.ordinal()),
 					3, 3,  //3x3 serger grid
-					3, 2,  //3x2 recipe
+					3, 1,  //3x1 recipe
 					false, //symmetrical
-					string, string, string,
 					string, string, string
 				),
 				6,  //soft fabric crafting
@@ -305,39 +334,76 @@ public class ThermionicsRecipes {
 				);
 		MachineRecipes.register(ribbonRecipe);
 		
-		/*
 		SergerRecipe fabricRecipe = new SergerRecipe(
 				new ShapedInventoryRecipe(
-					new ItemStack(ThermionicsItems.FABRIC, 1),
+					new ItemStack(ThermionicsItems.FABRIC_SQUARE, 1),
 					3, 3,  //3x3 serger grid
 					2, 2,  //2x2 recipe
 					false, //symmetrical
-					ribbon, ribbon,
-					ribbon, ribbon
+					string, string,
+					string, string
 				),
 				6,  //soft fabric crafting
 				10  //*fast*
 				);
-		MachineRecipes.register(ribbonRecipe);
-		*/
+		MachineRecipes.register(fabricRecipe);
 		
 		
-		/*
+		SergerRecipe scarfRecipe = new SergerRecipe(
+				new ShapedInventoryRecipe(
+					new ItemStack(ThermionicsItems.SCARF, 1),
+					3, 3,  //3x3 serger grid
+					3, 1,  //3x1 recipe
+					false, //symmetrical
+					ribbon, anyFabric, ribbon
+				),
+				6,  //soft fabric crafting
+				10  //*fast*
+				);
+		MachineRecipes.register(scarfRecipe);
+		
+		SergerRecipe leftScarfRecipe = new ScarfConstructRecipe(
+				new ShapedInventoryRecipe(
+					new ItemStack(ThermionicsItems.SCARF, 1),
+					3, 3,  //3x3 serger grid
+					3, 1,  //3x1 recipe
+					false, //intentionally asymmetrical
+					anyFabric, string, anyScarf
+				),
+				6,  //soft fabric crafting
+				10, //*fast*
+				true
+				);
+		MachineRecipes.register(leftScarfRecipe);
+		
+		SergerRecipe rightScarfRecipe = new ScarfConstructRecipe(
+				new ShapedInventoryRecipe(
+					new ItemStack(ThermionicsItems.SCARF, 1),
+					3, 3,  //3x3 serger grid
+					3, 1,  //3x1 recipe
+					false, //intentionally asymmetrical
+					anyScarf, string, anyFabric
+				),
+				6,  //soft fabric crafting
+				10, //*fast*
+				false
+				);
+		MachineRecipes.register(rightScarfRecipe);
+		
 		SergerRecipe tasselcloakRecipe = new SergerRecipe(
 				new ShapedInventoryRecipe(
 						new ItemStack(ThermionicsItems.MISTCLOAK, 1),
 						3, 3,  //3x3 serger grid
 						3, 3,  //3x3 recipe
 						false, //symmetrical
-						fabric, fabric, fabric,
-						fabric, fabric, fabric,
+						anyFabric,   null, anyFabric,
+						anyFabric, anyFabric, anyFabric,
 						ribbon, ribbon, ribbon
 					),
 					6,  //soft fabric crafting
 					10  //*fast*
 				);
 		MachineRecipes.register(tasselcloakRecipe);
-		*/
 		
 		//### MASH TUN and POT STILL###
 		for(Entry<ResourceLocation, Spirit> entry : Spirits.REGISTRY.getEntries()) {
@@ -375,10 +441,20 @@ public class ThermionicsRecipes {
 		//LOG.info("Recipe:"+t.toString());
 		//LOG.info("OutputItemStack:"+t.getRecipeOutput());
 		//LOG.info("OutputItem:"+t.getRecipeOutput().getItem().getRegistryName());
-		
-		t.setRegistryName(new ResourceLocation(t.getRecipeOutput().getItem().getRegistryName()+"_"+t.getRecipeOutput().getItemDamage()));
+		String registryName = makeUnique(registry, t.getRecipeOutput().getItem().getRegistryName()+"_"+t.getRecipeOutput().getItemDamage());
+		t.setRegistryName(new ResourceLocation(registryName));
 		registry.register(t);
 		return t;
+	}
+	
+	public static String makeUnique(IForgeRegistry<IRecipe> registry, String baseName) {
+		String result = baseName.replace(':', '.');
+		if (!registry.containsKey(new ResourceLocation("thermionics",result))) return "thermionics:"+result;
+		
+		int i=0;
+		while (registry.containsKey(new ResourceLocation("thermionics",result+"."+i))) i++;
+		
+		return "thermionics:"+result+"."+i;
 	}
 	
 	public static void craftingCircle(IForgeRegistry<IRecipe> registry, BlockBase block) {
@@ -420,6 +496,54 @@ public class ThermionicsRecipes {
 				//}
 				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
 			}
+		}
+	}
+	
+	private static class ScarfConstructRecipe extends SergerRecipe {
+		private boolean left = false;
+		
+		public ScarfConstructRecipe(InventoryGridRecipe plan, float torque, float revolutions, boolean left) {
+			super(plan, torque, revolutions);
+			this.left = left;
+		}
+		
+		@Override
+		public ItemStack getOutput(IItemHandler inventory) {
+			ItemStack out = plan.getOutput(inventory).copy();
+			//Find the scarf and the fabric stack
+			ItemStack scarf = null;
+			ItemStack fabric = null;
+			for(int i=0; i<9; i++) {
+				ItemStack stack = inventory.getStackInSlot(i);
+				if (stack!=null && stack.getItem()==ThermionicsItems.FABRIC_SQUARE) {
+					fabric = stack;
+				} else if (stack!=null && stack.getItem()==ThermionicsItems.SCARF) {
+					scarf = stack;
+				}
+			}
+			
+			if (scarf!=null && fabric!=null) {
+				NBTTagCompound tag = null;
+				if (scarf.getTagCompound()!=null) {
+					tag = scarf.getTagCompound().copy();
+				} else {
+					tag = new NBTTagCompound();
+				}
+				out.setTagCompound(tag);
+				String sideKey = (left) ? "LeftScarf" : "RightScarf";
+				
+				NBTTagList sideList = tag.getTagList(sideKey, 10); //list of compound
+				NBTTagCompound fabricTag = null;
+				if (fabric.hasTagCompound()) {
+					fabricTag = fabric.getTagCompound().copy();
+				} else {
+					fabricTag = new NBTTagCompound();
+					fabricTag.setInteger("Color", 0xFFFFFF);
+				}
+				sideList.appendTag(fabricTag);
+				tag.setTag(sideKey, sideList);
+			}
+			return out;
 		}
 	}
 }

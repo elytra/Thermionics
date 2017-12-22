@@ -6,7 +6,9 @@ item.thermionics.allomanticpowder.tin.name=Allomantic Tin
 item.thermionics.allomanticpowder.iron.name=Allomantic Iron
 item.thermionics.allomanticpowder.steel.name=Allomantic Steel
 
+item.thermionics.fabricsquare.name=Fabric Square
 item.thermionics.ingredient.ribbon.name=Ribbon
+item.thermionics.ingredient.gear_brass.name=Brass Gear
 
 #Tools
 item.thermionics.hammer.iron.name=Iron Hammer
@@ -21,6 +23,7 @@ item.thermionics.chunkunloader.tip=Rightclick a block to attune to its chunk. Ri
 #Baubles
 item.thermionics.bauble.tasselcloak.name=Tasselcloak
 item.thermionics.bauble.mistcloak.name=Mistcloak
+item.thermionics.bauble.scarf.name=Scarf
 
 #Locomotion
 tile.thermionics.scaffold.basic.name=Iron Scaffold

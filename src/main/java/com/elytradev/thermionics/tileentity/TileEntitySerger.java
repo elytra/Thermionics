@@ -34,8 +34,11 @@ import com.elytradev.thermionics.api.IRotaryGridRecipe;
 import com.elytradev.thermionics.api.SergerRecipes;
 import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.data.IMachineProgress;
+import com.elytradev.thermionics.data.MachineRecipes;
+import com.elytradev.thermionics.data.SergerRecipe;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -44,7 +47,7 @@ public class TileEntitySerger extends TileEntityMachine implements ITickable, IC
 	private float revolutionsNeeded = 0f;
 	private float revolutionsProcessed = 0f;
 	//private int rpm = 0;
-	private IRotaryGridRecipe lastRecipe = null;
+	private SergerRecipe lastRecipe = null;
 	
 	private RotaryPowerConsumer power = new RotaryPowerConsumer();
 	private ConcreteItemStorage itemStorage = new ConcreteItemStorage(10)
@@ -107,10 +110,12 @@ public class TileEntitySerger extends TileEntityMachine implements ITickable, IC
 			power.clearRevolutions();
 			revolutionsProcessed = 0;
 			
-			lastRecipe = SergerRecipes.forInput(itemStorage);
+			lastRecipe = MachineRecipes.getSerger(itemStorage);
+			//lastRecipe = SergerRecipes.forInput(itemStorage);
 			if (lastRecipe!=null) {
-				revolutionsNeeded = lastRecipe.getRequiredRevolutions();
-				power.setRequiredTorque(lastRecipe.getRequiredTorque());
+				
+				revolutionsNeeded = lastRecipe.getRevolutions();
+				power.setRequiredTorque(lastRecipe.getTorque());
 				
 				//System.out.println("recipe switched to "+lastRecipe);
 				
@@ -127,12 +132,15 @@ public class TileEntitySerger extends TileEntityMachine implements ITickable, IC
 				revolutionsProcessed = revolutionsNeeded;
 				power.setRequiredTorque(0);
 				if (itemStorage.getStackInSlot(9).isEmpty()) {
-					itemStorage.setStackInSlot(9, lastRecipe.performCraft(itemStorage).copy()); //Copy is unnecessary, but defensive as hell.
+					ItemStack output = lastRecipe.getOutput(itemStorage);
+					lastRecipe.consumeIngredients(itemStorage);
+					itemStorage.setStackInSlot(9, output.copy());
+					//itemStorage.setStackInSlot(9, lastRecipe.performCraft(itemStorage).copy()); //Copy is unnecessary, but defensive as hell.
 					revolutionsProcessed = 0;
 					lastRecipe = null;
 				}
 			} else {
-				power.setRequiredTorque(lastRecipe.getRequiredTorque());
+				power.setRequiredTorque(lastRecipe.getTorque());
 			}
 			this.markDirty();
 		}

@@ -22,20 +22,29 @@
  * SOFTWARE.
  */
 
-package com.elytradev.thermionics.item;
+package com.elytradev.thermionics.data;
 
-import net.minecraft.util.IStringSerializable;
+import com.elytradev.concrete.recipe.ItemIngredient;
 
-public enum EnumIngredient implements IStringSerializable {
-	RIBBON("ribbon"),
-	GEAR_BRASS("gear_brass");
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 
-	private final String name;
+public class WildcardNBTIngredient extends ItemIngredient {
+	private ItemStack item;
 	
-	EnumIngredient(String name) { this.name = name; }
+	public WildcardNBTIngredient(ItemStack stack) {
+		item = stack;
+	}
+	
+	public WildcardNBTIngredient(Item item) {
+		this.item = new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE);
+	}
 	
 	@Override
-	public String getName() {
-		return this.name;
+	public boolean apply(ItemStack input) {
+		if (item==null || input==null) return false;
+		return OreDictionary.itemMatches(item, input, false);
 	}
+
 }

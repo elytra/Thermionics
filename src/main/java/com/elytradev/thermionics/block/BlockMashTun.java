@@ -67,6 +67,18 @@ public class BlockMashTun extends BlockMachineBase implements ITileEntityProvide
 		return state.getValue(FACING).getHorizontalIndex();
 	}
 	
+	//overrides light opacity if true >:|
+	@Override
+	public boolean isFullCube(IBlockState state) {
+		return false; 
+	}
+	
+	//controls hidden surface removal
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+	
 	@Override
 	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {

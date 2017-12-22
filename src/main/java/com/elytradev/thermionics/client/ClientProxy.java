@@ -24,6 +24,12 @@
 
 package com.elytradev.thermionics.client;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import com.elytradev.concrete.reflect.accessor.Accessor;
+import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.thermionics.Proxy;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.data.IPreferredRenderState;
@@ -31,27 +37,44 @@ import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
 import com.elytradev.thermionics.item.Spirit;
 import com.elytradev.thermionics.item.ThermionicsItems;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
+import baubles.api.BaublesApi;
+import baubles.api.cap.BaublesContainer;
+import baubles.api.cap.IBaublesItemHandler;
+import baubles.client.BaublesRenderLayer;
+import baubles.common.Baubles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientProxy extends Proxy {
+	
+	//private final Accessor<Map<String, RenderPlayer>> skinMap = Accessors.findField(RenderManager.class, "field_178636_l", "skinMap");
 	
 	@Override
 	public void preInit() {
@@ -114,6 +137,23 @@ public class ClientProxy extends Proxy {
 				return spirit.getColor();
 			}
 		}, ThermionicsItems.SPIRIT_BOTTLE);
+		
+		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+			@Override
+			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+				if (stack==null || stack.isEmpty()) return 0xFFFFFF;
+				NBTTagCompound tag = stack.getTagCompound();
+				if (tag==null || !tag.hasKey("Color")) return 0xFFFFFF;
+				
+				return tag.getInteger("Color");
+			}
+		}, ThermionicsItems.FABRIC_SQUARE);
+		/*
+		RenderManager manager = Minecraft.getMinecraft().getRenderManager();
+		Map<String, RenderPlayer> renders = skinMap.get(manager);
+		for (Map.Entry<String, RenderPlayer> en : renders.entrySet()) {
+			en.getValue().addLayer(new LayerScarf(en.getValue()));
+		}*/
 	}
 	
 	@SubscribeEvent
@@ -157,6 +197,54 @@ public class ClientProxy extends Proxy {
 					//player.cameraYaw += sway;
 				}
 			}
+		}
+	}
+	
+	private Cache<Entity, Scarf> scarfCache = CacheBuilder.newBuilder()
+			.weakKeys()
+			.concurrencyLevel(1)
+			.expireAfterAccess(5, TimeUnit.MINUTES)
+			.build();
+	
+	private static final int BAUBLE_AMULET = 0;
+	private static final int BAUBLE_RING1 = 1;
+	private static final int BAUBLE_RING2 = 2;
+	private static final int BAUBLE_BELT = 3;
+	private static final int BAUBLE_CROWN = 4;
+	private static final int BAUBLE_BODY = 5;
+	private static final int BAUBLE_CHARM = 6;
+	
+	
+	@SubscribeEvent
+	public void onPostRender(RenderWorldLastEvent evt) {
+		if (!Loader.isModLoaded("baubles")) return;
+		
+		EntityPlayer thePlayer = Minecraft.getMinecraft().player;
+		
+		for(EntityPlayer entity : Minecraft.getMinecraft().world.playerEntities) {
+			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(thePlayer);
+			ItemStack scarfStack = baubles.getStackInSlot(BAUBLE_AMULET);
+			if (scarfStack==null || scarfStack.isEmpty() || scarfStack.getItem()!=ThermionicsItems.SCARF) return;
+			Scarf scarf = scarfCache.getIfPresent(entity);
+			if (scarf==null) {
+				scarf = new Scarf();
+				scarfCache.put(entity, scarf);
+				scarf.readFromNBT(scarfStack.getTagCompound());
+				//System.out.println("Created scarf:"+(scarf.leftScarf.size()+scarf.rightScarf.size())+" nodes.");
+			} else {
+				
+				scarf.updateFromNBT(scarfStack.getTagCompound());
+				//System.out.println("Updated scarf:"+(scarf.leftScarf.size()+scarf.rightScarf.size())+" nodes.");
+			}
+			
+			double dx = thePlayer.prevPosX + (thePlayer.posX - thePlayer.prevPosX) * evt.getPartialTicks();
+			double dy = thePlayer.prevPosY + (thePlayer.posY - thePlayer.prevPosY) * evt.getPartialTicks();
+			double dz = thePlayer.prevPosZ + (thePlayer.posZ - thePlayer.prevPosZ) * evt.getPartialTicks();
+			
+			LayerScarf.renderScarf(
+					dx, dy, dz,
+					entity, null, scarf, evt.getPartialTicks(),
+					Minecraft.getMinecraft().world);
 		}
 	}
 }

@@ -24,18 +24,36 @@
 
 package com.elytradev.thermionics.item;
 
-import net.minecraft.util.IStringSerializable;
+import com.elytradev.thermionics.Thermionics;
 
-public enum EnumIngredient implements IStringSerializable {
-	RIBBON("ribbon"),
-	GEAR_BRASS("gear_brass");
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
-	private final String name;
-	
-	EnumIngredient(String name) { this.name = name; }
+public class ItemFabricSquare extends Item {
+	public ItemFabricSquare() {
+		this.setRegistryName("fabricsquare");
+		this.setUnlocalizedName("thermionics.fabricsquare");
+		this.setMaxDamage(0);
+		this.setMaxStackSize(64);
+		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+	}
 	
 	@Override
-	public String getName() {
-		return this.name;
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if (tab.equals(this.getCreativeTab())) {
+			for(int i=0; i<16; i++) {
+				int col = EnumDyeColor.byDyeDamage(i).getColorValue();
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setInteger("Color", col);
+				ItemStack square = new ItemStack(this, 1);
+				square.setTagCompound(tag);
+				list.add(square);
+			}
+		}
 	}
+	
 }

@@ -32,11 +32,15 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 public class ThermionicsItems {
+	
+
 	//Unified Hammer
 	public static ItemHammer                         HAMMER;
 	
@@ -49,6 +53,7 @@ public class ThermionicsItems {
 	
 	//Ingredients
 	public static ItemSubtyped<EnumIngredient>       INGREDIENT;
+	public static ItemFabricSquare                   FABRIC_SQUARE;
 	public static ItemSubtyped<EnumAllomanticPowder> ALLOMANTIC_POWDER;
 	
 	//Booze - Drink responsibly, kids
@@ -57,6 +62,7 @@ public class ThermionicsItems {
 	
 	//Cloaks
 	public static ItemMistcloak                      MISTCLOAK;
+	public static ItemScarf                          SCARF;
 	
 	//Creative
 	public static ItemChunkUnloader                  CHUNK_UNLOADER;
@@ -99,7 +105,9 @@ public class ThermionicsItems {
 		
 		//Ingredients
 		ThermionicsItems.INGREDIENT         = item(r, new ItemSubtyped<EnumIngredient>      ("ingredient",       EnumIngredient.values(),       false));
+		ThermionicsItems.FABRIC_SQUARE      = item(r, new ItemFabricSquare());
 		ThermionicsItems.ALLOMANTIC_POWDER  = item(r, new ItemSubtyped<EnumAllomanticPowder>("allomanticpowder", EnumAllomanticPowder.values(), true));
+		OreDictionary.registerOre("gearBrass", new ItemStack(ThermionicsItems.INGREDIENT,1, EnumIngredient.GEAR_BRASS.ordinal()));
 		
 		//Booze
 		ThermionicsItems.EMPTY_SPIRIT_BOTTLE= item(r, new ItemSpiritBottle("empty"));
@@ -107,6 +115,7 @@ public class ThermionicsItems {
 		
 		//Cloaks
 		ThermionicsItems.MISTCLOAK          = item(r, new ItemMistcloak());
+		ThermionicsItems.SCARF              = item(r, new ItemScarf());
 		
 		//Creative
 		ThermionicsItems.CHUNK_UNLOADER     = item(r, new ItemChunkUnloader());

@@ -22,20 +22,65 @@
  * SOFTWARE.
  */
 
-package com.elytradev.thermionics.item;
+package com.elytradev.thermionics.client;
 
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.math.Vec3d;
 
-public enum EnumIngredient implements IStringSerializable {
-	RIBBON("ribbon"),
-	GEAR_BRASS("gear_brass");
-
-	private final String name;
+public class ScarfNode {
+	public float x = 0;
+	public float y = 0;
+	public float z = 0;
 	
-	EnumIngredient(String name) { this.name = name; }
+	public float vx = 0;
+	public float vy = 0;
+	public float vz = 0;
 	
-	@Override
-	public String getName() {
-		return this.name;
+	//TODO: roll
+	public float roll = 0;
+	
+	public float r = 1;
+	public float g = 1;
+	public float b = 1;
+	
+	public ScarfNode() {
+		
+	}
+	
+	public ScarfNode(Vec3d vec) {
+		x = (float)vec.x;
+		y = (float)vec.y;
+		z = (float)vec.z;
+	}
+	
+	public float distanceTo(ScarfNode node) {
+		float dx = x-node.x;
+		float dy = y-node.y;
+		float dz = z-node.z;
+		return (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
+	}
+	
+	public Vec3d subtract(ScarfNode node) {
+		return new Vec3d(x-node.x, y-node.y, z-node.z);
+	}
+	
+	public void addToNode(Vec3d vec) {
+		x += vec.x;
+		y += vec.y;
+		z += vec.z;
+	}
+
+	public void setColor(int col) {
+		r = ( (col >> 16) & 0xFF ) / 255.0f;
+		g = ( (col >>  8) & 0xFF ) / 255.0f;
+		b = ( (col >>  0) & 0xFF ) / 255.0f;
+	}
+	
+	public void inheritMotion(ScarfNode other) {
+		x = other.x;
+		y = other.y;
+		z = other.z;
+		vx = other.vx;
+		vy = other.vy;
+		vz = other.vz;
 	}
 }

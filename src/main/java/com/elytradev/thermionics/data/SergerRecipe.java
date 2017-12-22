@@ -84,4 +84,7 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack> {
 	public void consumeIngredients(IItemHandler inventory) {
 		plan.consumeIngredients(inventory, true);
 	}
+	
+	public float getRevolutions() { return revolutions; }
+	public float getTorque() { return torque; }
 }
