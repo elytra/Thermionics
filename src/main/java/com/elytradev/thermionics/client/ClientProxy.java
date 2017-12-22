@@ -222,7 +222,7 @@ public class ClientProxy extends Proxy {
 		EntityPlayer thePlayer = Minecraft.getMinecraft().player;
 		
 		for(EntityPlayer entity : Minecraft.getMinecraft().world.playerEntities) {
-			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(thePlayer);
+			IBaublesItemHandler baubles = BaublesApi.getBaublesHandler(entity);
 			ItemStack scarfStack = baubles.getStackInSlot(BAUBLE_AMULET);
 			if (scarfStack==null || scarfStack.isEmpty() || scarfStack.getItem()!=ThermionicsItems.SCARF) return;
 			Scarf scarf = scarfCache.getIfPresent(entity);
