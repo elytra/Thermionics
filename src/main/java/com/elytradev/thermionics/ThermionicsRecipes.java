@@ -26,7 +26,6 @@ package com.elytradev.thermionics;
 
 import java.util.Map.Entry;
 
-import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.recipe.FluidIngredient;
 import com.elytradev.concrete.recipe.ItemIngredient;
 import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
@@ -38,6 +37,7 @@ import com.elytradev.thermionics.api.impl.RotaryRecipe;
 import com.elytradev.thermionics.block.BlockBase;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.EnumDyeSource;
+import com.elytradev.thermionics.data.EnumServerDyeColor;
 import com.elytradev.thermionics.data.MachineRecipes;
 import com.elytradev.thermionics.data.MashTunRecipe;
 import com.elytradev.thermionics.data.PotStillRecipe;
@@ -51,8 +51,6 @@ import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -83,7 +81,7 @@ public class ThermionicsRecipes {
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:ingredients"), new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.GEAR_BRASS.ordinal()),
 				" b ", "bib", " b ", 'b', "ingotBrass", 'i', "ingotIron"));
 		
-		for(EnumDyeColor dye : EnumDyeColor.values()) {
+		for(EnumServerDyeColor dye : EnumServerDyeColor.values()) {
 			ItemStack result = new ItemStack(ThermionicsItems.FABRIC_SQUARE);
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setInteger("Color", dye.getColorValue());
