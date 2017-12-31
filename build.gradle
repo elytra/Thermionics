@@ -57,7 +57,7 @@ repositories {
 
 def mc_version='1.12.1';
 def jei_version="4.7.8.92";
-def concrete_version="0.3.5-SNAPSHOT";
+def concrete_version="0.3.6-SNAPSHOT";
 //def concrete_modules=[]; //For eclipse import
 def concrete_modules=["common","inventory","recipe","network","reflect"];
 def project_package='com.elytradev.thermionics';

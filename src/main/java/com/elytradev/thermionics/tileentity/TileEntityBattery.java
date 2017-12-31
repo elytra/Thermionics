@@ -44,6 +44,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fml.common.Loader;
 
 public class TileEntityBattery extends TileEntity implements ITickable {
 	protected CapabilityProvider capabilities = new CapabilityProvider();
@@ -60,7 +61,9 @@ public class TileEntityBattery extends TileEntity implements ITickable {
 		
 		energyStorage.listen(this::markDirty);
 		
-		ProbeDataSupport.registerRFInspector(this, capabilities);
+		if (Loader.isModLoaded("probedataprovider")) {
+			ProbeDataSupport.registerRFInspector(this, capabilities);
+		}
 	}
 	
 	@Override

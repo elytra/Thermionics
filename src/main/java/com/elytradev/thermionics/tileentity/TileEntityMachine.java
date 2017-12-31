@@ -36,12 +36,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.Loader;
 
 public class TileEntityMachine extends TileEntity {
 	protected CapabilityProvider capabilities = new CapabilityProvider();
 	
 	public TileEntityMachine() {
-		ProbeDataSupport.registerMachineInspector(this, capabilities);
+		if (Loader.isModLoaded("probedataprovider")) {
+			ProbeDataSupport.registerMachineInspector(this, capabilities);
+		}
 	}
 	
 	public EnumFacing getFacing() {

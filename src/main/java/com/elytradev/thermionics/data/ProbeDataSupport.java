@@ -187,6 +187,7 @@ public class ProbeDataSupport {
 		}
 		
 		public static void addRFData(IEnergyStorage storage, List<IProbeData> list) {
+			if (storage==null) return; //Odd!
 			list.add(new ProbeData(new TextComponentTranslation("thermionics.data.energystorage"))
 					.withBar(0, storage.getEnergyStored(), storage.getMaxEnergyStored(), UnitDictionary.FORGE_ENERGY));
 			if (storage instanceof ITransferRate) {
