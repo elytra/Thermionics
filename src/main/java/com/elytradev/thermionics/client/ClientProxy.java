@@ -215,6 +215,8 @@ public class ClientProxy extends Proxy {
 	private static final int BAUBLE_CHARM = 6;
 	
 	
+	
+	
 	@SubscribeEvent
 	public void onPostRender(RenderWorldLastEvent evt) {
 		if (!Loader.isModLoaded("baubles")) return;

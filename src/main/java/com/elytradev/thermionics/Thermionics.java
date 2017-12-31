@@ -106,7 +106,7 @@ public class Thermionics {
 	public static final String MODID = "thermionics";
 	public static Logger LOG;
 	public static Configuration CONFIG;
-	public static boolean CONFIG_ENFORCE_COMPATIBILITY = true;
+	//public static boolean CONFIG_ENFORCE_COMPATIBILITY = true;
 	public static final SoundEvent SOUNDEVENT_SMAAAAAAASH  = new SoundEvent(new ResourceLocation("thermionics","smash")).setRegistryName("smash");
 	@Instance(MODID)
 	private static Thermionics instance;
@@ -141,9 +141,9 @@ public class Thermionics {
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
-		
-		CONFIG = new Configuration(e.getSuggestedConfigurationFile());
-		CONFIG.get("regisration", "register-compatibility-blocks", CONFIG_ENFORCE_COMPATIBILITY);
+		//Skip for now; we have no keys yet
+		//CONFIG = new Configuration(e.getSuggestedConfigurationFile());
+		//CONFIG.save();
 		
 		LOG = e.getModLog();
 		//LOG = LogManager.getLogger(Thermionics.MODID);

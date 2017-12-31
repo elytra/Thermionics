@@ -28,9 +28,9 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -78,46 +78,48 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 	public boolean shouldCombineTextures() {
 		return false;
 	}
-
-	private static void test() {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder vb = tess.getBuffer();
-		
-		
-		
-		tess.draw();
-	}
 	
 	private static final float TAU = (float)(Math.PI*2);
-	private static final float PI = (float)Math.PI;
+	//private static final float PI = (float)Math.PI;
 	private static final float floatDist = 0.25f;
-	private static final float nodeSz = 0.25f;
-	private static final float vTerm = 0.8f;
-	private static final float yTerm = 0.1f;
-	private static final float gravity = 0.008f;
-	private static final float damping = 0.02f;
+	private static final float vTerm = 40.0f;
+	private static final float yTerm = 10.0f;
+	private static final float gravity = 1.00f;
+	private static final float damping = 8.00f;
+	private static final float initialDamping = 0.0f;
+	private static final float mass = 2.00f;
 	
-	private static void simulate(World world, ScarfNode prime, ArrayList<ScarfNode> nodes, float partialTicks) {
+	private static void simulate(World world, ScarfNode prime, ArrayList<ScarfNode> nodes, float frameTime) {
 		ScarfNode lastNode = prime;
+		float resist = 4.0f;
 		for(ScarfNode node : nodes) {
+
+			node.x += node.vx * frameTime;
+			node.y += node.vy * frameTime;
+			node.z += node.vz * frameTime;
+			
+			//Grab start position before tugging but after inertia
 			float sx = node.x;
-			float sy = node.y;
 			float sz = node.z;
+			if (sx==0&&sz==0) { //both coords exactly at the origin? Unlikely!
+				sx=prime.x;
+				sz=prime.z;
+				node.x = prime.x;
+				node.z = prime.z;
+			}
 			
-			node.x += node.vx * partialTicks;
-			node.y += node.vy * partialTicks;
-			node.z += node.vz * partialTicks;
 			
-			if (!world.isAirBlock(new BlockPos((int)node.x, (int)node.y, (int)node.z))) {
+			BlockPos pos = new BlockPos((int)node.x, (int)node.y, (int)node.z);
+			if (blocksScarves(world, pos)) {
 				//kick this node upwards out of the block. Will work unless you manage to snap your scarf up into a ceiling
 				node.y = ((int)node.y) + 1f;
 				node.vy = 0f;
 			}
 			//if (node.y < entity.posY) node.y = (float)entity.posY;
 			
-			node.vx = dampen(node.vx, damping*partialTicks);
-			node.vy = dampen(node.vy, damping*partialTicks);
-			node.vz = dampen(node.vz, damping*partialTicks);
+			node.vx = dampen(node.vx, damping*frameTime);
+			node.vy = dampen(node.vy, damping*frameTime);
+			node.vz = dampen(node.vz, damping*frameTime);
 			node.vy -= gravity;
 			
 			node.vx = clamp(node.vx, vTerm);
@@ -131,15 +133,27 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 				node.addToNode(displacement);
 			}
 			
-			float frameContribX = dampen(node.x - sx, damping*0.5f);
-			float frameContribZ = dampen(node.z - sz, damping*0.5f);
-			if (Math.abs(frameContribX) > Math.abs(node.vx)) node.vx = frameContribX;
-			if (Math.abs(frameContribZ) > Math.abs(node.vz)) node.vz = frameContribZ;
+			//Add the force we were tugged with to our inertia
+			float frameX = (node.x - sx)*mass*(float)Math.random();
+			float frameZ = (node.z - sz)*mass*(float)Math.random();
+			node.vx = clamp(dampen(node.vx+frameX, resist), vTerm);
+			node.vz = clamp(dampen(node.vz+frameZ, resist), vTerm);
+			//float frameContribX = dampen(node.x - sx, damping*initialDamping) * mass;
+			//float frameContribZ = dampen(clamp(node.z - sz, vTerm), damping*initialDamping) * mass;
+			//if (Math.abs(frameContribX) > Math.abs(node.vx)) node.vx = frameContribX;
+			//if (Math.abs(frameContribZ) > Math.abs(node.vz)) node.vz = frameContribZ;
 			
 			
 			//nextNodes.add(placement);
 			lastNode = node;
+			resist -= 0.1f; if (resist<0f) resist=0f;
 		}
+	}
+	
+	private static boolean blocksScarves(World world, BlockPos pos) {
+		if (world.isAirBlock(pos)) return false;
+		IBlockState state = world.getBlockState(pos);
+		return state.causesSuffocation();
 	}
 	
 	private static void draw(World world, double dx, double dy, double dz, Entity entity, ScarfNode prime, ArrayList<ScarfNode> nodes) {
@@ -169,6 +183,8 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 	public static void renderScarf(double dx, double dy, double dz, Entity entity, ItemStack scarfItem, Scarf scarf, float partialTicks, World world) {
 		if (scarf==null || (scarf.leftScarf.isEmpty() && scarf.rightScarf.isEmpty())) return; //Nothing to simulate/render
 		
+		float frameTime = PartialTickTime.getFrameTime();
+		
 		Vec3d backwards = entity.getForward().scale(-1d).scale(0.2f);
 		Vec3d leftShoulderOffset = backwards.rotateYaw(-TAU/4).scale(1.5f);
 		Vec3d rightShoulderOffset = backwards.rotateYaw(TAU/4).scale(1.5f);
@@ -185,11 +201,13 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 			}
 		}
 		
-		if (!scarf.leftScarf.isEmpty())  simulate(world, leftNode,  scarf.leftScarf,  partialTicks);
-		if (!scarf.rightScarf.isEmpty()) simulate(world, rightNode, scarf.rightScarf, partialTicks);
+		if (!scarf.leftScarf.isEmpty())  simulate(world, leftNode,  scarf.leftScarf,  frameTime);
+		if (!scarf.rightScarf.isEmpty()) simulate(world, rightNode, scarf.rightScarf, frameTime);
 		
 		if (!scarf.leftScarf.isEmpty())  draw(world, dx, dy, dz, entity, leftNode, scarf.leftScarf);
 		if (!scarf.rightScarf.isEmpty()) draw(world, dx, dy, dz, entity, rightNode, scarf.rightScarf);
+		
+		PartialTickTime.endFrame();
 	}
 	
 	private static float dampen(final float value, final float dampen) {
@@ -197,7 +215,7 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 		if (result>0) {
 			result-=dampen;
 			if (result<0) result=0;
-		} else if (value<0){
+		} else if (result<0){
 			result+=dampen;
 			if (result>0) result=0;
 		}
@@ -208,55 +226,6 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 		if (value>limit) return limit;
 		if (value<-limit) return -limit;
 		return value;
-	}
-	
-	private static void colorCube(float x, float y, float z, float w, float h, float d, float r, float g, float b) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder vb = tess.getBuffer();
-
-		
-		//float s = 1/16f;
-		GlStateManager.color(r, g, b);
-		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_NORMAL);
-
-		//Sides
-		vb.pos((x+0), (y+h), (z+0)).normal(0, 0, -1).endVertex();
-		vb.pos((x+w), (y+h), (z+0)).normal(0, 0, -1).endVertex();
-		vb.pos((x+w), (y+0), (z+0)).normal(0, 0, -1).endVertex();
-		vb.pos((x+0), (y+0), (z+0)).normal(0, 0, -1).endVertex();
-		
-		vb.pos((x+w), (y+h), (z+d)).normal(0, 0, 1).endVertex();
-		vb.pos((x+0), (y+h), (z+d)).normal(0, 0, 1).endVertex();
-		vb.pos((x+0), (y+0), (z+d)).normal(0, 0, 1).endVertex();
-		vb.pos((x+w), (y+0), (z+d)).normal(0, 0, 1).endVertex();
-		
-		
-		vb.pos((x+0), (y+0), (z+d)).normal(-1, 0, 0).endVertex();
-		vb.pos((x+0), (y+h), (z+d)).normal(-1, 0, 0).endVertex();
-		vb.pos((x+0), (y+h), (z+0)).normal(-1, 0, 0).endVertex();
-		vb.pos((x+0), (y+0), (z+0)).normal(-1, 0, 0).endVertex();
-		
-		vb.pos((x+w), (y+0), (z+0)).normal(1, 0, 0).endVertex();
-		vb.pos((x+w), (y+h), (z+0)).normal(1, 0, 0).endVertex();
-		vb.pos((x+w), (y+h), (z+d)).normal(1, 0, 0).endVertex();
-		vb.pos((x+w), (y+0), (z+d)).normal(1, 0, 0).endVertex();
-		
-		
-		//Bottom
-		vb.pos((x+0), (y+0), (z+0)).normal(0, -1, 0).endVertex();
-		vb.pos((x+w), (y+0), (z+0)).normal(0, -1, 0).endVertex();
-		vb.pos((x+w), (y+0), (z+d)).normal(0, -1, 0).endVertex();
-		vb.pos((x+0), (y+0), (z+d)).normal(0, -1, 0).endVertex();
-
-		//Top
-		vb.pos((x+0), (y+h), (z+0)).normal(0, 1, 0).endVertex();
-		vb.pos((x+0), (y+h), (z+d)).normal(0, 1, 0).endVertex();
-		vb.pos((x+w), (y+h), (z+d)).normal(0, 1, 0).endVertex();
-		vb.pos((x+w), (y+h), (z+0)).normal(0, 1, 0).endVertex();
-			
-		
-		tess.draw();
-		GlStateManager.color(1, 1, 1);
 	}
 	
 	private static void ribbon(float x1, float y1, float z1, float x2, float y2, float z2, float width, TextureAtlasSprite tas, float r, float g, float b, float light1, float light2) {
@@ -284,109 +253,4 @@ public class LayerScarf implements LayerRenderer<EntityLivingBase> {
 		tess.draw();
 	}
 	
-	private static void renderCube(float x, float y, float z, float w, float h, float d, TextureAtlasSprite tas, boolean renderTop, boolean renderBottom, boolean renderSides) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder vb = tess.getBuffer();
-		
-		float minV = tas.getInterpolatedV(0);
-		float maxV = tas.getInterpolatedV(16);
-		
-		float minU = tas.getInterpolatedU(0);
-		float maxU = tas.getInterpolatedU(16);
-		
-		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
-		if (renderSides) {
-			vb.pos((x+0), (y+h), (z+0)).tex(minU, maxV).normal(0, 0, -1).endVertex();
-			vb.pos((x+w), (y+h), (z+0)).tex(maxU, maxV).normal(0, 0, -1).endVertex();
-			vb.pos((x+w), (y+0), (z+0)).tex(maxU, minV).normal(0, 0, -1).endVertex();
-			vb.pos((x+0), (y+0), (z+0)).tex(minU, minV).normal(0, 0, -1).endVertex();
-			
-			vb.pos((x+w), (y+h), (z+d)).tex(maxU, maxV).normal(0, 0, 1).endVertex();
-			vb.pos((x+0), (y+h), (z+d)).tex(minU, maxV).normal(0, 0, 1).endVertex();
-			vb.pos((x+0), (y+0), (z+d)).tex(minU, minV).normal(0, 0, 1).endVertex();
-			vb.pos((x+w), (y+0), (z+d)).tex(maxU, minV).normal(0, 0, 1).endVertex();
-			
-			vb.pos((x+0), (y+0), (z+d)).tex(maxU, minV).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0), (y+h), (z+d)).tex(maxU, maxV).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0), (y+h), (z+0)).tex(minU, maxV).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0), (y+0), (z+0)).tex(minU, minV).normal(-1, 0, 0).endVertex();
-			
-			vb.pos((x+w), (y+0), (z+0)).tex(minU, minV).normal(1, 0, 0).endVertex();
-			vb.pos((x+w), (y+h), (z+0)).tex(minU, maxV).normal(1, 0, 0).endVertex();
-			vb.pos((x+w), (y+h), (z+d)).tex(maxU, maxV).normal(1, 0, 0).endVertex();
-			vb.pos((x+w), (y+0), (z+d)).tex(maxU, minV).normal(1, 0, 0).endVertex();
-		}
-		
-		if (renderBottom) {
-			vb.pos((x+0), (y+0), (z+0)).tex(minU, minV).normal(0, -1, 0).endVertex();
-			vb.pos((x+w), (y+0), (z+0)).tex(minU, maxV).normal(0, -1, 0).endVertex();
-			vb.pos((x+w), (y+0), (z+d)).tex(maxU, maxV).normal(0, -1, 0).endVertex();
-			vb.pos((x+0), (y+0), (z+d)).tex(maxU, minV).normal(0, -1, 0).endVertex();
-		}
-		
-		if (renderTop) {
-			vb.pos((x+0), (y+h), (z+0)).tex(minU, minV).normal(0, 1, 0).endVertex();
-			vb.pos((x+0), (y+h), (z+d)).tex(maxU, minV).normal(0, 1, 0).endVertex();
-			vb.pos((x+w), (y+h), (z+d)).tex(maxU, maxV).normal(0, 1, 0).endVertex();
-			vb.pos((x+w), (y+h), (z+0)).tex(minU, maxV).normal(0, 1, 0).endVertex();
-			
-		}
-		tess.draw();
-	}
-	
-	private static void legacyCube(float x, float y, float z, float w, float h, float d, TextureAtlasSprite tas, boolean renderTop, boolean renderBottom, boolean renderSides) {
-		Tessellator tess = Tessellator.getInstance();
-		BufferBuilder vb = tess.getBuffer();
-		
-		float minVX = tas.getInterpolatedV(x);
-		float maxVX = tas.getInterpolatedV(x+w);
-		float minVY = tas.getInterpolatedV(y);
-		float maxVY = tas.getInterpolatedV(y+h);
-		
-		float minUX = tas.getInterpolatedU(x);
-		float maxUX = tas.getInterpolatedU(x+w);
-		float minUZ = tas.getInterpolatedU(z);
-		float maxUZ = tas.getInterpolatedU(z+d);
-		
-		float s = 1/16f;
-		vb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
-		if (renderSides) {
-			vb.pos((x+0)*s, (y+h)*s, (z+0)*s).tex(minUX, maxVY).normal(0, 0, -1).endVertex();
-			vb.pos((x+w)*s, (y+h)*s, (z+0)*s).tex(maxUX, maxVY).normal(0, 0, -1).endVertex();
-			vb.pos((x+w)*s, (y+0)*s, (z+0)*s).tex(maxUX, minVY).normal(0, 0, -1).endVertex();
-			vb.pos((x+0)*s, (y+0)*s, (z+0)*s).tex(minUX, minVY).normal(0, 0, -1).endVertex();
-			
-			vb.pos((x+w)*s, (y+h)*s, (z+d)*s).tex(maxUX, maxVY).normal(0, 0, 1).endVertex();
-			vb.pos((x+0)*s, (y+h)*s, (z+d)*s).tex(minUX, maxVY).normal(0, 0, 1).endVertex();
-			vb.pos((x+0)*s, (y+0)*s, (z+d)*s).tex(minUX, minVY).normal(0, 0, 1).endVertex();
-			vb.pos((x+w)*s, (y+0)*s, (z+d)*s).tex(maxUX, minVY).normal(0, 0, 1).endVertex();
-			
-			
-			vb.pos((x+0)*s, (y+0)*s, (z+d)*s).tex(maxUZ, minVY).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0)*s, (y+h)*s, (z+d)*s).tex(maxUZ, maxVY).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0)*s, (y+h)*s, (z+0)*s).tex(minUZ, maxVY).normal(-1, 0, 0).endVertex();
-			vb.pos((x+0)*s, (y+0)*s, (z+0)*s).tex(minUZ, minVY).normal(-1, 0, 0).endVertex();
-			
-			vb.pos((x+w)*s, (y+0)*s, (z+0)*s).tex(minUZ, minVY).normal(1, 0, 0).endVertex();
-			vb.pos((x+w)*s, (y+h)*s, (z+0)*s).tex(minUZ, maxVY).normal(1, 0, 0).endVertex();
-			vb.pos((x+w)*s, (y+h)*s, (z+d)*s).tex(maxUZ, maxVY).normal(1, 0, 0).endVertex();
-			vb.pos((x+w)*s, (y+0)*s, (z+d)*s).tex(maxUZ, minVY).normal(1, 0, 0).endVertex();
-		}
-		
-		if (renderBottom) {
-			vb.pos((x+0)*s, (y+0)*s, (z+0)*s).tex(minUZ, minVX).normal(0, -1, 0).endVertex();
-			vb.pos((x+w)*s, (y+0)*s, (z+0)*s).tex(minUZ, maxVX).normal(0, -1, 0).endVertex();
-			vb.pos((x+w)*s, (y+0)*s, (z+d)*s).tex(maxUZ, maxVX).normal(0, -1, 0).endVertex();
-			vb.pos((x+0)*s, (y+0)*s, (z+d)*s).tex(maxUZ, minVX).normal(0, -1, 0).endVertex();
-		}
-		
-		if (renderTop) {
-			vb.pos((x+0)*s, (y+h)*s, (z+0)*s).tex(minUZ, minVX).normal(0, 1, 0).endVertex();
-			vb.pos((x+0)*s, (y+h)*s, (z+d)*s).tex(maxUZ, minVX).normal(0, 1, 0).endVertex();
-			vb.pos((x+w)*s, (y+h)*s, (z+d)*s).tex(maxUZ, maxVX).normal(0, 1, 0).endVertex();
-			vb.pos((x+w)*s, (y+h)*s, (z+0)*s).tex(minUZ, maxVX).normal(0, 1, 0).endVertex();
-			
-		}
-		tess.draw();
-	}
 }
