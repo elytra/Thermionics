@@ -78,9 +78,9 @@ public class BlockScaffoldCable extends BlockBase {
 	}
 	
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
 		if (entity instanceof EntityItem) return;
-		if (entity.isCollidedHorizontally) {
+		if (entity.collidedHorizontally) {
 			entity.motionY = 0.35;
 		} else if (entity.isSneaking()) {
 			entity.motionY = 0.08; //Stop, but also counteract EntityLivingBase-applied microgravity

@@ -49,7 +49,7 @@ public class BlockScaffold extends BlockBase {
 		super(Material.IRON);
 		this.setLightOpacity(0);
 		this.setRegistryName("scaffold."+subId);
-		this.setUnlocalizedName("thermionics.scaffold."+subId);
+		this.setTranslationKey("thermionics.scaffold."+subId);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
 		this.setHardness(1.5f);
@@ -59,7 +59,7 @@ public class BlockScaffold extends BlockBase {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public BlockRenderLayer getBlockLayer() {
+	public BlockRenderLayer getRenderLayer() {
 		return BlockRenderLayer.CUTOUT_MIPPED;
 	}
 	
@@ -102,10 +102,10 @@ public class BlockScaffold extends BlockBase {
 	}
 	
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
 		if (entity instanceof EntityItem) return;
 		
-		if (entity.isCollidedHorizontally) {
+		if (entity.collidedHorizontally) {
 			entity.motionY = 0.35;
 		} else if (entity.isSneaking()) {
 			entity.motionY = 0.08; //Stop, but also counteract EntityLivingBase-applied microgravity

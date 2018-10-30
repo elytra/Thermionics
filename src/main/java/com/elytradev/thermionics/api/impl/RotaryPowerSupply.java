@@ -102,9 +102,13 @@ public class RotaryPowerSupply implements IRotaryPowerSupply {
 			return;
 		} else {
 			if (torque>load) {
-				setTorqueSetting(torque-TRANSMISSION_SPEED);
-				if (torque<0) torque = 0;
-				if (torque<load) torque = load; //Prevent overshoot slamming us back up to cap
+				float target = torque - TRANSMISSION_SPEED;
+				if (target<load) target = load; //ACTUALLY prevent torque overshoot locking up the drive shaft.
+				if (target<0) target = 0;
+				
+				setTorqueSetting(target);
+				//if (torque<0) torque = 0;
+				//if (torque<load) torque = load; //Prevent overshoot slamming us back up to cap
 			} else {
 				//We're running at optimal speed! ^_^
 			}

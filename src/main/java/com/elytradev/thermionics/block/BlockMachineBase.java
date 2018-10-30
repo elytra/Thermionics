@@ -52,7 +52,7 @@ public class BlockMachineBase extends BlockBase implements IPreferredRenderState
 	public BlockMachineBase(String id) {
 		super(Material.IRON);
 		this.setRegistryName("machine."+id);
-		this.setUnlocalizedName("thermionics.machine."+id);
+		this.setTranslationKey("thermionics.machine."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setHardness(1.4f);
@@ -68,7 +68,7 @@ public class BlockMachineBase extends BlockBase implements IPreferredRenderState
 	
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta & 0x03));
+		return this.getDefaultState().withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 0x03));
 	}
 	
 	@Override

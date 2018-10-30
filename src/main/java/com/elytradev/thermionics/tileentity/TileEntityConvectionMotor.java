@@ -96,7 +96,7 @@ public class TileEntityConvectionMotor extends TileEntityMachine implements ITic
 		
 		
 		// # Check for redstone shutoff
-		if (world.isBlockIndirectlyGettingPowered(pos)!=0) {
+		if (world.getRedstonePowerFromNeighbors(pos)!=0) {
 			this.markActive(false);
 			this.rotaryPower.autoSetTorqueSetting(0f);
 			return;

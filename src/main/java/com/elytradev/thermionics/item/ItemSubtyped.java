@@ -43,7 +43,7 @@ public class ItemSubtyped<T extends Enum<T>> extends Item implements IMetaItemMo
 	
 	public ItemSubtyped(String id, T[] subtypes, boolean glowing) {
 		this.setRegistryName(id);
-		this.setUnlocalizedName("thermionics."+id);
+		this.setTranslationKey("thermionics."+id);
 		this.id = id;
 		enumValues = subtypes;
 		this.setHasSubtypes(true);
@@ -54,7 +54,7 @@ public class ItemSubtyped<T extends Enum<T>> extends Item implements IMetaItemMo
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
+	public String getTranslationKey(ItemStack stack) {
 		int meta = stack.getItemDamage() % enumValues.length;
 		return "item.thermionics."+id+"."+enumValues[meta].name().toLowerCase();
 	}

@@ -24,12 +24,8 @@
 
 package com.elytradev.thermionics.client;
 
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.elytradev.concrete.reflect.accessor.Accessor;
-import com.elytradev.concrete.reflect.accessor.Accessors;
 import com.elytradev.thermionics.Proxy;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.data.IPreferredRenderState;
@@ -41,17 +37,11 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import baubles.api.BaublesApi;
-import baubles.api.cap.BaublesContainer;
 import baubles.api.cap.IBaublesItemHandler;
-import baubles.client.BaublesRenderLayer;
-import baubles.common.Baubles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -59,7 +49,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -128,7 +117,7 @@ public class ClientProxy extends Proxy {
 	public void postInit() {
 		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
 			@Override
-			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
 				if (tintIndex!=1) return 0xFFFFFF;
 				//if (ThermionicsItems.SPIRIT_BOTTLE.isEmpty(stack)) return 0x00000000;
 				Spirit spirit = ThermionicsItems.SPIRIT_BOTTLE.getSpirit(stack);
@@ -140,7 +129,7 @@ public class ClientProxy extends Proxy {
 		
 		Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
 			@Override
-			public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+			public int colorMultiplier(ItemStack stack, int tintIndex) {
 				if (stack==null || stack.isEmpty()) return 0xFFFFFF;
 				NBTTagCompound tag = stack.getTagCompound();
 				if (tag==null || !tag.hasKey("Color")) return 0xFFFFFF;
@@ -207,15 +196,12 @@ public class ClientProxy extends Proxy {
 			.build();
 	
 	private static final int BAUBLE_AMULET = 0;
-	private static final int BAUBLE_RING1 = 1;
-	private static final int BAUBLE_RING2 = 2;
-	private static final int BAUBLE_BELT = 3;
-	private static final int BAUBLE_CROWN = 4;
-	private static final int BAUBLE_BODY = 5;
-	private static final int BAUBLE_CHARM = 6;
-	
-	
-	
+	//private static final int BAUBLE_RING1 = 1;
+	//private static final int BAUBLE_RING2 = 2;
+	//private static final int BAUBLE_BELT = 3;
+	//private static final int BAUBLE_CROWN = 4;
+	//private static final int BAUBLE_BODY = 5;
+	//private static final int BAUBLE_CHARM = 6;
 	
 	@SubscribeEvent
 	public void onPostRender(RenderWorldLastEvent evt) {

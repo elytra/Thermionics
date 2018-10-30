@@ -70,7 +70,7 @@ public class Scarf {
 	}
 	
 	private void unpackNodes(NBTTagList list, ArrayList<ScarfNode> scarf, ArrayList<ScarfNode> existing) {
-		if (list.hasNoTags()) return;
+		if (list.isEmpty()) return;
 		for(NBTBase nbt : list) {
 			if (!(nbt instanceof NBTTagCompound)) break;
 			ScarfNode node  = unpackSquare((NBTTagCompound)nbt);

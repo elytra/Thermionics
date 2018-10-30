@@ -50,10 +50,10 @@ public class ItemSpiritBottle extends Item {
 	public ItemSpiritBottle(String id) {
 		if (id==null) {
 			this.setRegistryName("thermionics", "spiritbottle");
-			this.setUnlocalizedName("thermionics.spiritbottle");
+			this.setTranslationKey("thermionics.spiritbottle");
 		} else {
 			this.setRegistryName("thermionics", "spiritbottle."+id);
-			this.setUnlocalizedName("thermionics.spiritbottle."+id);
+			this.setTranslationKey("thermionics.spiritbottle."+id);
 		}
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setMaxStackSize(16);
@@ -138,8 +138,8 @@ public class ItemSpiritBottle extends Item {
     }
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
-		if (isEmpty(stack)) return super.getUnlocalizedName(stack);
+	public String getTranslationKey(ItemStack stack) {
+		if (isEmpty(stack)) return super.getTranslationKey(stack);
 		
 		Spirit spirit = getSpirit(stack);
 		return (spirit==null) ? "item.thermionics.spiritbottle.ethanol" : "item.thermionics.spiritbottle."+spirit.getUnlocalizedDistilledName();

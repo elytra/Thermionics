@@ -67,7 +67,7 @@ public class ItemChunkUnloader extends Item implements IMetaItemModel {
 	
 	public ItemChunkUnloader() {
 		this.setRegistryName("chunkunloader");
-		this.setUnlocalizedName("thermionics.chunkunloader");
+		this.setTranslationKey("thermionics.chunkunloader");
 		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
@@ -100,7 +100,7 @@ public class ItemChunkUnloader extends Item implements IMetaItemModel {
 		}
 		
 		tag.setInteger("world", world.getWorldType().getId());
-		Chunk chunk = world.getChunkFromBlockCoords(pos);
+		Chunk chunk = world.getChunk(pos);
 		tag.setInteger("x", chunk.x);
 		tag.setInteger("z", chunk.z);
 		tag.setBoolean("ignoreClick", true);

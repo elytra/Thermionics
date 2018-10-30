@@ -52,7 +52,7 @@ public class BlockAxle extends BlockBase implements IPreferredRenderState {
 	public BlockAxle(Material material, String id) {
 		super(material);
 		this.setRegistryName("axle."+id);
-		this.setUnlocalizedName("thermionics.axle."+id);
+		this.setTranslationKey("thermionics.axle."+id);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setHardness(1.3f);
 		this.setResistance(15.0f);
@@ -112,7 +112,7 @@ public class BlockAxle extends BlockBase implements IPreferredRenderState {
 	}
 	
 	@Override
-	public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+	public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
 		if (state.getValue(AXIS)!=EnumFacing.Axis.Y) return; //Only vertical axles are also firepoles
 		if (entity instanceof EntityItem) return; //Items can't use firepoles
 		

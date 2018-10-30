@@ -52,7 +52,7 @@ public class BlockRoad extends BlockBase {
 		String registryName = "road";
 		if (level>0) registryName+="."+level;
 		this.setRegistryName(registryName);
-		this.setUnlocalizedName("thermionics."+registryName);
+		this.setTranslationKey("thermionics."+registryName);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setHarvestLevel("pickaxe", 0);
 		this.setHardness(1.4f);
@@ -91,7 +91,7 @@ public class BlockRoad extends BlockBase {
 	
 	@Override
 	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> list) {
-		if (itemIn.equals(this.getCreativeTabToDisplayOn())) {
+		if (itemIn.equals(this.getCreativeTab())) {
 			getVariants(Item.getItemFromBlock(this), list);
 		}
 	}

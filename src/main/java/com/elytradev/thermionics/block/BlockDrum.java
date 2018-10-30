@@ -50,7 +50,7 @@ public class BlockDrum extends Block implements ITileEntityProvider {
 	public BlockDrum() {
 		super(Material.IRON);
 		this.setRegistryName("drum");
-		this.setUnlocalizedName("thermionics.drum");
+		this.setTranslationKey("thermionics.drum");
 		this.setHardness(1.4f);
 		this.setResistance(10.0f);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
@@ -115,7 +115,7 @@ public class BlockDrum extends Block implements ITileEntityProvider {
 	
 	@SideOnly(Side.CLIENT)
 	@Override
-	public BlockRenderLayer getBlockLayer() {
+	public BlockRenderLayer getRenderLayer() {
 		//return BlockRenderLayer.TRANSLUCENT; //That didn't wind up working so well.
 		return BlockRenderLayer.SOLID;
 	}

@@ -40,7 +40,7 @@ public class ItemScarf extends Item implements IBauble {
 	public ItemScarf() {
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		this.setRegistryName("scarf");
-		this.setUnlocalizedName("thermionics.bauble.scarf");
+		this.setTranslationKey("thermionics.bauble.scarf");
 	}
 	
 	@Override

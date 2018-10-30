@@ -98,13 +98,13 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		super(4, -2, materialIn, Sets.newHashSet());
 		
 		this.setRegistryName(new ResourceLocation("thermionics","hammer."+materialName));
-		this.setUnlocalizedName("thermionics.hammer."+materialName);
+		this.setTranslationKey("thermionics.hammer."+materialName);
 		
         this.toolMaterial = materialIn;
         this.maxStackSize = 1;
         this.setMaxDamage(materialIn.getMaxUses() * 9);
-        this.efficiencyOnProperMaterial = materialIn.getEfficiencyOnProperMaterial();
-        this.damageVsEntity = 4 + materialIn.getDamageVsEntity();
+        this.efficiency = materialIn.getEfficiency();
+        this.attackDamage = 4 + materialIn.getAttackDamage();
         this.attackSpeed = -3.6f;
         this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 	}
@@ -114,13 +114,13 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		this.fakeToolMaterial = fakeToolMaterial;
 		
 		this.setRegistryName(new ResourceLocation("thermionics","hammer."+id));
-		this.setUnlocalizedName("thermionics.hammer."+id);
+		this.setTranslationKey("thermionics.hammer."+id);
 		
         this.toolMaterial = ToolMaterial.IRON;
         this.maxStackSize = 1;
         this.setMaxDamage(uses * 9);
-        this.efficiencyOnProperMaterial = efficiency;
-        this.damageVsEntity = 4 + damage;
+        this.efficiency = efficiency;
+        this.attackDamage = 4 + damage;
         this.attackSpeed = -3.6f;
         this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
@@ -195,13 +195,13 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 	}
 	
 	@Override
-	public float getStrVsBlock(ItemStack stack, IBlockState state) {
+	public float getDestroySpeed(ItemStack stack, IBlockState state) {
 		//Certain materials are just effective with a pickaxe, and by extension, hammers.
         Material material = state.getMaterial();
-        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK) return this.efficiencyOnProperMaterial;
+        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK) return this.efficiency;
         
-        if (WHITELIST.contains(state.getBlock())) return this.efficiencyOnProperMaterial;
-        else return super.getStrVsBlock(stack, state);
+        if (WHITELIST.contains(state.getBlock())) return this.efficiency;
+        else return super.getDestroySpeed(stack, state);
     }
 	
 	/**
@@ -249,7 +249,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(slot);
 		
         if (slot == EntityEquipmentSlot.MAINHAND) {
-            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.damageVsEntity, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.attackDamage, 0));
             multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", (double)this.attackSpeed, 0));
         }
 
@@ -257,7 +257,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
     }
 	
 	public float getEntityDamage() {
-		return this.damageVsEntity;
+		return this.attackDamage;
 	}
 
 	private static Random rnd = new Random();
@@ -290,7 +290,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		if (entity instanceof EntityMob) {
 			EntityMob mob = (EntityMob)entity;
 			mob.setAttackTarget(null);
-			mob.getNavigator().clearPathEntity();
+			mob.getNavigator().clearPath();
 			mob.getNavigator().tryMoveToXYZ(mob.posX+rnd.nextGaussian(), mob.posY+rnd.nextGaussian(), mob.posZ+rnd.nextGaussian(), 0.01f);
 			
 			ArrayList<EntityAITasks.EntityAITaskEntry> toRemove = new ArrayList<>();

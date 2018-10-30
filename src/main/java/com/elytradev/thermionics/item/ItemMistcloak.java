@@ -54,7 +54,7 @@ public class ItemMistcloak extends ItemBodyBauble implements IMetaItemModel {
 	}
 	
 	@Override
-	public String getUnlocalizedName(ItemStack stack) {
+	public String getTranslationKey(ItemStack stack) {
 		return (isAllomantic(stack)) ? NAME_MISTCLOAK : NAME_TASSELCLOAK;
 	}
 	

@@ -147,7 +147,8 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 
 	@Override
 	public void update() {
-		boolean curTickPower = world.isBlockIndirectlyGettingPowered(pos)!=0;
+		boolean curTickPower = //world.isBlockIndirectlyGettingPowered(pos)!=0;
+				world.getRedstonePowerFromNeighbors(pos)!=0;
 		
 		//TODO: Actually lock tanks
 		
@@ -170,6 +171,8 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 		}
 		
 		if (!tanksLocked) {
+			//FLUID DUPE BUG START
+			
 			if (curTickPower & !lastTickPower) {
 				//Lock the tanks on a rising current edge.
 				setTanksLocked(true);
@@ -183,6 +186,8 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 					itemStorage.setStackInSlot(SLOT_EMPTY_BUCKET_OUT, result.getResult());
 				}
 			}
+			
+			//FLUID DUPE BUG END
 		} else {
 			if (processTime<MAX_PROCESS_TIME) processTime++;
 			FluidStack in = inputTank.getFluid();

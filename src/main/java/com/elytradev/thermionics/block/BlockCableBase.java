@@ -49,7 +49,7 @@ public abstract class BlockCableBase extends BlockBase implements ITileEntityPro
 		super(Material.CLOTH);
 		this.setLightOpacity(0);
 		this.setRegistryName("cable."+subId);
-		this.setUnlocalizedName("thermionics.cable."+subId);
+		this.setTranslationKey("thermionics.cable."+subId);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
 		//Creepers, withers, and exploding machines should be pretty catastrophic to these blocks.

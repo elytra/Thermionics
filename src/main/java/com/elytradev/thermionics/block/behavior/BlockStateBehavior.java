@@ -157,7 +157,7 @@ public interface BlockStateBehavior {
 
 		@Override
 		public IBlockState getStateFromMeta(Block block, int meta) {
-			return block.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.getHorizontal(meta & 0x03));
+			return block.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.byHorizontalIndex(meta & 0x03));
 		}
 
 		@Override
@@ -194,7 +194,7 @@ public interface BlockStateBehavior {
 
 		@Override
 		public IBlockState getStateFromMeta(Block block, int meta) {
-			return block.getDefaultState().withProperty(BlockDirectional.FACING, EnumFacing.getFront(meta));
+			return block.getDefaultState().withProperty(BlockDirectional.FACING, EnumFacing.byIndex(meta));
 		}
 
 		@Override

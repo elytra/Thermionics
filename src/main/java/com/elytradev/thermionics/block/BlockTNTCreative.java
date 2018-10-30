@@ -40,7 +40,7 @@ public class BlockTNTCreative extends BlockBase {
 	public BlockTNTCreative() {
 		super(Material.TNT);
 		this.setRegistryName("creativetnt");
-		this.setUnlocalizedName("thermionics.creativetnt");
+		this.setTranslationKey("thermionics.creativetnt");
 		this.setHardness(0.5f);
 		this.setResistance(1f);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);

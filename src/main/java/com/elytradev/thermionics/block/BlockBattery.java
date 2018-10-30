@@ -58,7 +58,7 @@ public class BlockBattery extends BlockBase implements ITileEntityProvider, IPre
 	public BlockBattery(String id) {
 		super(Material.IRON);
 		this.setRegistryName("battery."+id);
-		this.setUnlocalizedName("thermionics.battery."+id);
+		this.setTranslationKey("thermionics.battery."+id);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
 		
 		this.setHarvestLevel("pickaxe", 0);

@@ -128,7 +128,7 @@ public class Thermionics {
 	
 	public static CreativeTabs TAB_THERMIONICS = new CreativeTabs("thermionics") {
 		@Override
-		public ItemStack getTabIconItem() {
+		public ItemStack createIcon() {
 			return new ItemStack(ThermionicsBlocks.FIREBOX);
 		}
 	};

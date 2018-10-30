@@ -36,7 +36,7 @@ import net.minecraft.util.NonNullList;
 public class ItemFabricSquare extends Item {
 	public ItemFabricSquare() {
 		this.setRegistryName("fabricsquare");
-		this.setUnlocalizedName("thermionics.fabricsquare");
+		this.setTranslationKey("thermionics.fabricsquare");
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);

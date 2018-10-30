@@ -66,6 +66,7 @@ public class BlockPotStill extends BlockMachineBase implements ITileEntityProvid
 		return new AxisAlignedBB(-0.25, 0.0, -0.25, 1.25, 1.75, 1.25);
 	}*/
 	
+	/*
 	//overrides light opacity if true >:|
 	@Override
 	public boolean isFullCube(IBlockState state) {
@@ -76,7 +77,7 @@ public class BlockPotStill extends BlockMachineBase implements ITileEntityProvid
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
-	}
+	}*/
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {

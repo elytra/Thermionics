@@ -241,9 +241,10 @@ public class ThermionicsRecipes {
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreDiamond",  new ItemStack(Items.DIAMOND,2), 10f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreEmerald",  new ItemStack(Items.EMERALD,2),  8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreLapis",    new ItemStack(Items.DYE, 10, 4),  8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT,2), 2f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT,2), 2f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.SAND,1), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.SAND,1), 8f, 20f));
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL,1), 8f, 20f));
 		
 		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 

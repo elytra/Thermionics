@@ -50,7 +50,7 @@ repositories {
 	ivy {
 		//Resolves baubles. Consider just dropping Baubles in your libs folder or rehosting it
 		name 'endless.blue dependency mirror'
-		artifactPattern "https://endless.blue/files/rehost/[module]-[revision].[ext]"
+		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
 	}
 }
 
@@ -81,7 +81,7 @@ artifacts {
 dependencies {
 	deobfCompile "com.elytradev:probedataproviderapi:MC1.12_ver1.1.1";
 
-	deobfCompile name: "Baubles", version: "1.12-1.5.2"
+	deobfCompile name: "Baubles", version: "1.12.2-1.5.2"
 	
 	deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
 	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
@@ -95,14 +95,16 @@ dependencies {
 
 group = "com.elytradev"
 archivesBaseName = "Thermionics"
-version = "MC1.12_ver1.1.1"
+version = "MC1.12.2_ver1.1.1"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-	version = '1.12.1-14.22.0.2446'
-	mappings = 'snapshot_20170817'
+	version = '1.12.2-14.23.5.2768';
+	mappings = 'stable_39';
+	//version = '1.12.1-14.22.0.2446'
+	//mappings = 'snapshot_20170817'
 
   runDir = "minecraft"
 

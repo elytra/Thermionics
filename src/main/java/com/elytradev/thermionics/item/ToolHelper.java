@@ -56,7 +56,8 @@ public class ToolHelper {
         boolean removed = iblockstate.getBlock().removedByPlayer(iblockstate, world, pos, player, canHarvest);
 
         if (removed) {
-            iblockstate.getBlock().onBlockDestroyedByPlayer(world, pos, iblockstate);
+        	iblockstate.getBlock().onPlayerDestroy(world, pos, iblockstate);
+            //iblockstate.getBlock().onBlockDestroyedByPlayer(world, pos, iblockstate);
         }
 
         return removed;

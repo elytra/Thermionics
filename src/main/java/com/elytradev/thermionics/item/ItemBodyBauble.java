@@ -35,7 +35,7 @@ public class ItemBodyBauble extends Item implements baubles.api.IBauble {
 
 	public ItemBodyBauble(String id) {
 		this.setRegistryName("bauble."+id);
-		this.setUnlocalizedName("thermionics.bauble."+id);
+		this.setTranslationKey("thermionics.bauble."+id);
 	}
 	
 	@Override
