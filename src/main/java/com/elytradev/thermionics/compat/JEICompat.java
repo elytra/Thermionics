@@ -65,7 +65,6 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
-import mezz.jei.gui.elements.DrawableResource;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -159,7 +158,7 @@ public class JEICompat implements IModPlugin {
 
 			@Override
 			public IDrawable getBackground() {
-				return new DrawableResource(new ResourceLocation("thermionics", "textures/gui/hammermill.png"), 0, 0, 126, 72, 0, 0, 0, 0, 126, 72);
+				return new JEIDrawableImage(new ResourceLocation("thermionics", "textures/gui/hammermill.png"), 0, 0, 126, 72, 0, 0, 0, 0, 126, 72);
 			}
 
 			@Override

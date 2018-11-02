@@ -36,16 +36,11 @@ repositories {
 		name = "Progwml6 maven"
 		url = "http://dvs1.progwml6.com/files/maven"
 	}
-	maven {
+	//maven {
 		// Fallback JEI Maven
-		name = "ModMaven"
-		url = "modmaven.k-4u.nl"
-	}
-
-	maven {
-		// location of the maven that hosts JEI files
-		url = "http://dvs1.progwml6.com/files/maven"
-	}
+	//	name = "ModMaven"
+	//	url = "modmaven.k-4u.nl"
+	//}
 	
 	ivy {
 		//Resolves baubles. Consider just dropping Baubles in your libs folder or rehosting it
@@ -155,4 +150,7 @@ license {
 
 	exclude "/doc/**";
 	exclude "/com/elytradev/concrete/**";
+	
+	//Copyrights other than the original:
+	exclude "**/JEIDrawableImage.java"
 }
