@@ -241,7 +241,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 	
 	public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         stack.damageItem(1, attacker);
-        return false;
+        return true; //Yes, increase the stat for mobs attacked.
     }
 	
 	public Multimap<String, AttributeModifier> getAttributeModifiers(EntityEquipmentSlot slot, ItemStack stack) {

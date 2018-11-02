@@ -76,8 +76,9 @@ public class PotStillRecipe implements ICustomRecipe<PotStillRecipe, FluidStack>
 	}
 
 	public boolean consumeIngredients(FluidTank input) {
-		if (!recipe.apply(input.getFluid())) return false;
-		return input.drain(recipe.getAmount(), true)!=null;
+		//if (!recipe.apply(input.getFluid())) return false;
+		return input.drainInternal(recipe.getAmount(), true) != null;
+		//return input.drain(recipe.getAmount(), true)!=null;
 	}
 	
 	/* If there was any justice in the world this would be an extension method instead */

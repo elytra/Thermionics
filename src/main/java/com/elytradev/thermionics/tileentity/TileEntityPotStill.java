@@ -26,6 +26,8 @@ package com.elytradev.thermionics.tileentity;
 
 import java.util.function.Predicate;
 
+import org.jline.utils.Log;
+
 import com.elytradev.concrete.inventory.ConcreteFluidTank;
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
@@ -203,9 +205,13 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 					int filled = outputTank.fillInternal(output, false);
 					int extracted = heat.extractHeat(HEAT_REQUIRED, true);
 					if (output.amount==filled && extracted==HEAT_REQUIRED) {
-						recipe.consumeIngredients(inputTank);
-						outputTank.fillInternal(output, true);
-						heat.extractHeat(HEAT_REQUIRED, false);
+						if (recipe.consumeIngredients(inputTank)) {
+							outputTank.fillInternal(output, true);
+							heat.extractHeat(HEAT_REQUIRED, false);
+						} else {
+							Log.warn("Unable to deduct ingredients!");
+						}
+						
 					}
 					
 				}
