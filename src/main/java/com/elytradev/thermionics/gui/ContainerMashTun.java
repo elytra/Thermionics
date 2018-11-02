@@ -53,7 +53,7 @@ public class ContainerMashTun extends ContainerMachine {
 				.withTooltip("%3$s\n\u00A77%1$d/%2$dmB"),
 				4, 1, 1, 2);
 		
-		panel.add(WItemSlot.of(container, 0, 2, 1), 2, 3);
+		panel.add(WItemSlot.of(container, 0, 2, 1), 3, 3);
 		
 		panel.add(new WBar(
 				new ResourceLocation("thermionics","textures/gui/progress.heat.bg.png"),

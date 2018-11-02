@@ -24,9 +24,16 @@
 
 package com.elytradev.thermionics.api.impl;
 
-import com.elytradev.thermionics.api.IRotaryRecipe;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.elytradev.thermionics.api.IRotaryRecipe;
+import com.elytradev.thermionics.item.ThermionicsItems;
+
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryOreRecipe implements IRotaryRecipe {
 	private final String input;
@@ -68,5 +75,24 @@ public class RotaryOreRecipe implements IRotaryRecipe {
 	
 	public String getInput() {
 		return input;
+	}
+
+	@Override
+	@Optional.Method(modid = "jei")
+	public void getIngredients(IIngredients ingredients) {
+		List<List<ItemStack>> inputs = new ArrayList<>();
+
+		if (!OreDictionary.doesOreNameExist(input)) {
+			ArrayList<ItemStack> items = new ArrayList<>();
+			items.add(new ItemStack(ThermionicsItems.CHUNK_UNLOADER));
+			inputs.add(items);
+		} else {
+			ArrayList<ItemStack> items = new ArrayList<>();
+			items.addAll(OreDictionary.getOres(input));
+			inputs.add(items);
+		}
+		
+		ingredients.setInputLists(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, output.copy());
 	}
 }

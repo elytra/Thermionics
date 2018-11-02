@@ -28,8 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.elytradev.thermionics.api.IRotaryRecipe;
+import com.elytradev.thermionics.item.ThermionicsItems;
 
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryRecipe implements IRotaryRecipe {
 	private final float torque;
@@ -80,5 +84,18 @@ public class RotaryRecipe implements IRotaryRecipe {
 
 	public ItemStack getInput() {
 		return input;
+	}
+
+	@Override
+	@Optional.Method(modid = "jei")
+	public void getIngredients(IIngredients ingredients) {
+		List<List<ItemStack>> inputs = new ArrayList<>();
+		
+		ArrayList<ItemStack> items = new ArrayList<>();
+		items.add(input.copy());
+		inputs.add(items);
+		
+		ingredients.setInputLists(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, output.copy());
 	}
 }

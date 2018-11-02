@@ -24,10 +24,14 @@
 
 package com.elytradev.thermionics.data;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import com.elytradev.thermionics.api.HammerMillRecipes;
+import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandler;
@@ -74,5 +78,9 @@ public class MachineRecipes {
 		}
 		
 		return null;
+	}
+
+	public static Collection<?> allHammerMill() {
+		return HammerMillRecipes.all();
 	}
 }

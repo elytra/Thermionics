@@ -490,9 +490,9 @@ public class ThermionicsRecipes {
 			if (!dusts.isEmpty()) {
 				ItemStack oneDust = dusts.get(0).copy();
 				ItemStack twoDust = oneDust.copy(); twoDust.setCount(2);
-				//if (OreDictionary.doesOreNameExist("ore"+key) && !OreDictionary.getOres("ore"+key).isEmpty()) {
+				if (OreDictionary.doesOreNameExist("ore"+key) && !OreDictionary.getOres("ore"+key).isEmpty()) {
 					HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ore"+key, twoDust, 10f, 30f));
-				//}
+				}
 				HammerMillRecipes.registerRecipe(new RotaryOreRecipe("ingot"+key, oneDust, 10f, 10f));
 			}
 		}

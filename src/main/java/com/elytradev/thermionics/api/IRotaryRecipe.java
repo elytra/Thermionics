@@ -24,12 +24,15 @@
 
 package com.elytradev.thermionics.api;
 
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
 
 /**
  * A recipe for any rotary machine that takes one solid input and produces one solid output.
  */
-public interface IRotaryRecipe {
+@Optional.Interface(modid="jei", iface="mezz.jei.api.recipe.IRecipeWrapper")
+public interface IRotaryRecipe extends IRecipeWrapper {
 	/**
 	 * Gets the amount of wrench force that must be applied for any work to be done towards this recipe
 	 */

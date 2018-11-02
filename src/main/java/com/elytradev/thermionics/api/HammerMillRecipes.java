@@ -25,6 +25,7 @@
 package com.elytradev.thermionics.api;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.annotation.Nullable;
 
@@ -46,5 +47,9 @@ public class HammerMillRecipes {
 			}
 		}
 		return null;
+	}
+
+	public static Collection<IRotaryRecipe> all() {
+		return recipes;
 	}
 }
