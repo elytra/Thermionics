@@ -100,9 +100,11 @@ public class TileEntityBattery extends TileEntity implements ITickable {
 	@Override
 	public <T> T getCapability(Capability<T> cap, EnumFacing side) {
 		EnumFacing front = EnumFacing.UP;
-		IBlockState state = world.getBlockState(pos);
-		if (state.getProperties().keySet().contains(BlockBattery.FACING)) {
-			front = state.getValue(BlockBattery.FACING);
+		if (pos!=null) {
+			IBlockState state = world.getBlockState(pos);
+			if (state.getProperties().keySet().contains(BlockBattery.FACING)) {
+				front = state.getValue(BlockBattery.FACING);
+			}
 		}
 		
 		//If it's going to throw an exception here in my code, I'd rather it did.

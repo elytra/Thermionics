@@ -12,6 +12,7 @@
 # Eclipse bits
 .classpath
 .project
+.directory
 /.settings/
 
 # Minecraft bits
