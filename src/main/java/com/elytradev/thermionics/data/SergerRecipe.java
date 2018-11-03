@@ -24,15 +24,25 @@
 
 package com.elytradev.thermionics.data;
 
-import com.elytradev.concrete.recipe.ICustomRecipe;
-import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.elytradev.concrete.recipe.ICustomRecipe;
+import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
+import com.elytradev.concrete.recipe.impl.ItemStackIngredient;
+import com.elytradev.concrete.recipe.impl.OreItemIngredient;
+
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
-public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack> {
+public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRecipeWrapper {
 	protected ResourceLocation registryName;
 	protected InventoryGridRecipe plan;
 	protected float revolutions = 300;
@@ -87,4 +97,41 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack> {
 	
 	public float getRevolutions() { return revolutions; }
 	public float getTorque() { return torque; }
+	
+	@Override
+	@Optional.Method(modid = "jei")
+	public void getIngredients(IIngredients ingredients) {
+		List<List<ItemStack>> inputs = new ArrayList<>();
+		
+		if (this.plan instanceof InspectableShapedInventoryRecipe) {
+			for(ItemIngredient ingredient : ((InspectableShapedInventoryRecipe)this.plan).getIngredients()) {
+				ArrayList<ItemStack> items = new ArrayList<>();
+				if (ingredient==null) {
+					//Add nothing
+				} else if (ingredient instanceof OreItemIngredient) {
+					String ore = ((OreItemIngredient)ingredient).getKey();
+					if (OreDictionary.doesOreNameExist(ore)) {
+						items.addAll(OreDictionary.getOres(ore));
+					} else {
+						//TODO: Add error ingredient
+					}
+				} else if (ingredient instanceof ItemStackIngredient) {
+					ItemStack proxy = ((ItemStackIngredient)ingredient).getItem().copy();
+					if (proxy.getMetadata()==OreDictionary.WILDCARD_VALUE) proxy.setItemDamage(0);
+					items.add(proxy);
+				} else if (ingredient instanceof WildcardNBTIngredient) {
+					items.add(((WildcardNBTIngredient)ingredient).getStack().copy());
+				} else {
+					//TODO: Add error ingredient
+				}
+				
+				inputs.add(items);
+			}
+		} else {
+			//TODO: This is an unexpected error condition but might still be worth adding 9 error ingredients for
+		}
+		
+		ingredients.setInputLists(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, plan.getOutput().copy());
+	}
 }

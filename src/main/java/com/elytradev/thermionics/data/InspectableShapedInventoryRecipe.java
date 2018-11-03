@@ -25,29 +25,21 @@
 package com.elytradev.thermionics.data;
 
 import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.impl.ShapedInventoryRecipe;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class WildcardNBTIngredient extends ItemIngredient {
-	private ItemStack item;
-	
-	public WildcardNBTIngredient(ItemStack stack) {
-		item = stack;
+public class InspectableShapedInventoryRecipe extends ShapedInventoryRecipe {
+
+	public InspectableShapedInventoryRecipe(ItemStack result, int width, int height, ItemIngredient item) {
+		super(result, width, height, item);
 	}
 	
-	public WildcardNBTIngredient(Item item) {
-		this.item = new ItemStack(item, 1, OreDictionary.WILDCARD_VALUE);
+	public InspectableShapedInventoryRecipe(ItemStack result, int gridWidth, int gridHeight, int recipeWidth, int recipeHeight, boolean alsoFlipped, ItemIngredient... recipe) {
+		super(result, gridWidth, gridHeight, recipeWidth, recipeHeight, alsoFlipped, recipe);
 	}
 	
-	@Override
-	public boolean apply(ItemStack input) {
-		if (item==null || input==null) return false;
-		return OreDictionary.itemMatches(item, input, false);
-	}
-	
-	public ItemStack getStack() {
-		return item;
+	public ItemIngredient[] getIngredients() {
+		return this.recipe;
 	}
 }

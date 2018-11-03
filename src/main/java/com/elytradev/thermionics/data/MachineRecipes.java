@@ -31,6 +31,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.elytradev.thermionics.api.HammerMillRecipes;
+import com.elytradev.thermionics.api.IRotaryRecipe;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 
 import net.minecraftforge.fluids.FluidTank;
@@ -80,7 +81,11 @@ public class MachineRecipes {
 		return null;
 	}
 
-	public static Collection<?> allHammerMill() {
+	public static Collection<IRotaryRecipe> allHammerMill() {
 		return HammerMillRecipes.all();
+	}
+
+	public static Collection<SergerRecipe> allSerger() {
+		return serger;
 	}
 }

@@ -38,6 +38,7 @@ import com.elytradev.thermionics.block.BlockBase;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.EnumDyeSource;
 import com.elytradev.thermionics.data.EnumServerDyeColor;
+import com.elytradev.thermionics.data.InspectableShapedInventoryRecipe;
 import com.elytradev.thermionics.data.MachineRecipes;
 import com.elytradev.thermionics.data.MashTunRecipe;
 import com.elytradev.thermionics.data.PotStillRecipe;
@@ -262,7 +263,7 @@ public class ThermionicsRecipes {
 		ItemIngredient anyScarf  = new WildcardNBTIngredient(ThermionicsItems.SCARF);
 		
 		SergerRecipe saddleRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.SADDLE), //Output
 						3, 3,                        //3x3 grid
 						3, 2,                        //3x2 recipe
@@ -276,7 +277,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(saddleRecipe);
 		
 		SergerRecipe diamondBardingRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.DIAMOND_HORSE_ARMOR),
 						3, 3,                        //3x3 grid
 						3, 3,                        //3x3 recipe
@@ -291,7 +292,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(diamondBardingRecipe);
 		
 		SergerRecipe goldBardingRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.GOLDEN_HORSE_ARMOR),
 						3, 3,                        //3x3 grid
 						3, 3,                        //3x3 recipe
@@ -306,7 +307,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(goldBardingRecipe);
 		
 		SergerRecipe ironBardingRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.IRON_HORSE_ARMOR),
 						3, 3,                        //3x3 grid
 						3, 3,                        //3x3 recipe
@@ -321,7 +322,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(ironBardingRecipe);
 		
 		SergerRecipe ribbonRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.RIBBON.ordinal()),
 					3, 3,  //3x3 serger grid
 					3, 1,  //3x1 recipe
@@ -334,7 +335,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(ribbonRecipe);
 		
 		SergerRecipe fabricRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.FABRIC_SQUARE, 1),
 					3, 3,  //3x3 serger grid
 					2, 2,  //2x2 recipe
@@ -349,7 +350,7 @@ public class ThermionicsRecipes {
 		
 		
 		SergerRecipe scarfRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.SCARF, 1),
 					3, 3,  //3x3 serger grid
 					3, 1,  //3x1 recipe
@@ -362,7 +363,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(scarfRecipe);
 		
 		SergerRecipe leftScarfRecipe = new ScarfConstructRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.SCARF, 1),
 					3, 3,  //3x3 serger grid
 					3, 1,  //3x1 recipe
@@ -376,7 +377,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(leftScarfRecipe);
 		
 		SergerRecipe rightScarfRecipe = new ScarfConstructRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.SCARF, 1),
 					3, 3,  //3x3 serger grid
 					3, 1,  //3x1 recipe
@@ -390,7 +391,7 @@ public class ThermionicsRecipes {
 		MachineRecipes.register(rightScarfRecipe);
 		
 		SergerRecipe tasselcloakRecipe = new SergerRecipe(
-				new ShapedInventoryRecipe(
+				new InspectableShapedInventoryRecipe(
 						new ItemStack(ThermionicsItems.MISTCLOAK, 1),
 						3, 3,  //3x3 serger grid
 						3, 3,  //3x3 recipe

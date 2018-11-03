@@ -24,6 +24,8 @@
 
 package com.elytradev.thermionics.compat;
 
+import java.util.ArrayList;
+
 /*
  * MIT License
  *
@@ -48,14 +50,13 @@ package com.elytradev.thermionics.compat;
  * SOFTWARE.
  */
 
-import java.util.ArrayList;
-import java.util.Locale;
-
 import com.elytradev.concrete.inventory.gui.client.ConcreteGui;
 import com.elytradev.thermionics.api.IRotaryRecipe;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.data.MachineRecipes;
+import com.elytradev.thermionics.data.SergerRecipe;
 import com.elytradev.thermionics.gui.ContainerHammerMill;
+import com.elytradev.thermionics.gui.ContainerSerger;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -76,6 +77,36 @@ public class JEICompat implements IModPlugin {
 	
 	@Override
 	public void register(IModRegistry registry) {
+		//TODO: Localize
+		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.FIREBOX), ItemStack.class,
+				"Burns any furnace fuel (or lava) to create Heat. Heat can be consumed by machines like the Oven or Convection Motor."
+				);
+		
+		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.CABLE_HEAT), ItemStack.class,
+				"Heat diffuses very efficiently through these hollow copper tubes. Use them to bring heat to machines that need it."
+				);
+		
+		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.OVEN), ItemStack.class,
+				"Cooks or smelts any item a Furnace would. Doesn't waste part of a coal block - if there's too much, the heat is just stored."
+				);
+		
+		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.MOTOR_CONVECTION), ItemStack.class,
+				"Converts Heat into rotational energy, which can then be delivered directly to an adjacent machine, or indirectly through Axles and Gearboxes.",
+				"Motors run more slowly when they encounter more resistance (torque load). Resistance depends on how many machines are attached and what they're processing!"
+				);
+		
+		ArrayList<ItemStack> axles = new ArrayList<>();
+		axles.add(new ItemStack(ThermionicsBlocks.AXLE_WOOD));
+		axles.add(new ItemStack(ThermionicsBlocks.AXLE_IRON));
+		registry.addIngredientInfo(axles, ItemStack.class,
+				"Axles deliver rotational energy from Motors to Gearboxes or rotary machines. Axles must be placed in a straight line between two rotary devices so that they visually connect in order to deliver rotation.",
+				"In order to 'turn' or move power more than 16 blocks, you need to use a Gearbox."
+				);
+		
+		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.GEARBOX), ItemStack.class,
+				"Gearboxes turn, split, and extend any rotary power delivered to them. If split, the torque load on the motor(s) is the *sum* of the loads on the entire system! This can slow things to a crawl, and make running multiple machines from a weak motor undesirable."
+				);
+		
 		/*
 		registry.addIngredientInfo(
 				new ItemStack(ArsenalItems.SPELL_FOCUS, 1, EnumSpellFocus.DRAIN_LIFE.ordinal()),
@@ -93,12 +124,16 @@ public class JEICompat implements IModPlugin {
 				);
 		
 		*/
-		System.out.println("Registering HammerMill with JEI. "+MachineRecipes.allHammerMill().size()+" recipes found.");
+		//System.out.println("Registering HammerMill with JEI. "+MachineRecipes.allHammerMill().size()+" recipes found.");
 		registry.addRecipeCatalyst(new ItemStack(ThermionicsBlocks.HAMMER_MILL), "thermionics:hammer_mill");
 		registry.addRecipes(MachineRecipes.allHammerMill(), "thermionics:hammer_mill");
 		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerHammerMill.class, "thermionics:hammer_mill", 0, 1, 2, 36);
 		registry.addRecipeClickArea(ConcreteGui.class, 18*4, 18*1, 18, 18, "thermionics:hammer_mill");
 		
+		registry.addRecipeCatalyst(new ItemStack(ThermionicsBlocks.SERGER), "thermionics:serger");
+		registry.addRecipes(MachineRecipes.allSerger(), "thermionics:serger");
+		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerSerger.class, "thermionics:serger", 0, 9, 10, 36);
+		//registry.addRecipeClickArea(ConcreteGui.class, 18*4, 18*1, 18, 18, "thermionics:serger"); //Need a separate GUI subclass per machine for JEI to work properly!
 	}
 	
 	/*
@@ -153,7 +188,7 @@ public class JEICompat implements IModPlugin {
 
 			@Override
 			public String getModName() {
-				return "magicarsenal";
+				return "thermionics";
 			}
 
 			@Override
@@ -185,6 +220,70 @@ public class JEICompat implements IModPlugin {
 				//TODO: Format these floats so we only see a few decimal places
 				minecraft.fontRenderer.drawString("Torque: "+torque, 10, 18*2 + 8, 0xFF444444);
 				minecraft.fontRenderer.drawString("Revolutions: "+revolutions, 10, 18*3 + 4, 0xFF444444);
+				
+			}
+			
+		});
+		
+		registry.addRecipeCategories(new IRecipeCategory<SergerRecipe>() {
+			//protected int radiance;
+			//protected int emc;
+			protected float torque = 0;
+			protected float revolutions = 0;
+			
+			@Override
+			public String getUid() {
+				return "thermionics:serger";
+			}
+
+			@Override
+			public String getTitle() {
+				return I18n.translateToLocal("tile.thermionics.machine.serger.name");
+			}
+
+			@Override
+			public String getModName() {
+				return "thermionics";
+			}
+
+			@Override
+			public IDrawable getBackground() {
+				return new JEIDrawableImage(new ResourceLocation("thermionics", "textures/gui/serger.png"), 0, 0, 108, 72, 0, 0, 0, 0, 108, 72);
+			}
+
+			@Override
+			public void setRecipe(IRecipeLayout recipeLayout, SergerRecipe recipeWrapper, IIngredients ingredients) {
+				int leftMargin = 0;
+				int topMargin  = 0;
+				recipeLayout.getItemStacks().init(0, true,  leftMargin + 18*0, topMargin + 18*0);
+				recipeLayout.getItemStacks().init(1, true,  leftMargin + 18*1, topMargin + 18*0);
+				recipeLayout.getItemStacks().init(2, true,  leftMargin + 18*2, topMargin + 18*0);
+				recipeLayout.getItemStacks().init(3, true,  leftMargin + 18*0, topMargin + 18*1);
+				recipeLayout.getItemStacks().init(4, true,  leftMargin + 18*1, topMargin + 18*1);
+				recipeLayout.getItemStacks().init(5, true,  leftMargin + 18*2, topMargin + 18*1);
+				recipeLayout.getItemStacks().init(6, true,  leftMargin + 18*0, topMargin + 18*2);
+				recipeLayout.getItemStacks().init(7, true,  leftMargin + 18*1, topMargin + 18*2);
+				recipeLayout.getItemStacks().init(8, true,  leftMargin + 18*2, topMargin + 18*2);
+				
+				recipeLayout.getItemStacks().init(9, false, leftMargin + 18*4, topMargin + 18*1);
+				
+				recipeLayout.getItemStacks().set(ingredients);
+				
+				
+				//recipeLayout.setRecipeTransferButton(184-16, topMargin + 18*4);
+				
+				torque = recipeWrapper.getTorque();
+				revolutions = recipeWrapper.getRevolutions();
+			}
+			
+			@Override
+			public void drawExtras(Minecraft minecraft) {
+				IRecipeCategory.super.drawExtras(minecraft);
+				
+				//TODO FIXME: Localize
+				//TODO: Format these floats so we only see a few decimal places
+				minecraft.fontRenderer.drawString("Torque: "+torque, 10, 18*3 + 8, 0xFF444444);
+				minecraft.fontRenderer.drawString("Revolutions: "+revolutions, 10, 18*4 + 4, 0xFF444444);
 				
 			}
 			

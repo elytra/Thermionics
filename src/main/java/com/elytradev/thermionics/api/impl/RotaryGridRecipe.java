@@ -26,7 +26,7 @@ package com.elytradev.thermionics.api.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -34,9 +34,12 @@ import org.apache.commons.lang3.Validate;
 
 import com.elytradev.thermionics.api.IRotaryGridRecipe;
 
+import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RotaryGridRecipe implements IRotaryGridRecipe {
 	private Object[] ingredients = new Object[9];
@@ -68,7 +71,7 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 				}
 				lastKey = null;
 			} else if (o instanceof Character) {
-				Validate.isTrue(lastKey==null, "Orphaned character key '%1$c' in recipe!", Optional.ofNullable(lastKey));
+				Validate.isTrue(lastKey==null, "Orphaned character key '%1$c' in recipe!", java.util.Optional.ofNullable(lastKey));
 				lastKey = (Character)o;
 			} else if (o instanceof ItemStack) {
 				Validate.notNull(lastKey, "ItemStack '%1$s' in recipe must be prefixed with a Character key!", o);
@@ -181,5 +184,32 @@ public class RotaryGridRecipe implements IRotaryGridRecipe {
 		}
 		
 		return explanation;
+	}
+	
+	@Override
+	@Optional.Method(modid = "jei")
+	public void getIngredients(IIngredients ingredients) {
+		List<List<ItemStack>> inputs = new ArrayList<>();
+		
+		for(Object ingredient : this.ingredients) {
+			ArrayList<ItemStack> items = new ArrayList<>();
+			if (ingredient==null) {
+				//Add nothing
+			} else if (ingredient instanceof String) {
+				String ore = (String)ingredient;
+				if (OreDictionary.doesOreNameExist(ore)) {
+					items.addAll(OreDictionary.getOres(ore));
+				} else {
+					//TODO: Add error ingredient
+				}
+			} else if (ingredient instanceof ItemStack) {
+				items.add(((ItemStack)ingredient).copy());
+			}
+			
+			inputs.add(items);
+		}
+		
+		ingredients.setInputLists(ItemStack.class, inputs);
+		ingredients.setOutput(ItemStack.class, result.copy());
 	}
 }

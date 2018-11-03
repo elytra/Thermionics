@@ -24,8 +24,10 @@
 
 package com.elytradev.thermionics.api;
 
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
 
 /**
@@ -38,7 +40,8 @@ import net.minecraftforge.items.IItemHandler;
  * 
  * <p>The crafting grid is assumed to be the first 9 slots of the provided inventory in both access methods.
  */
-public interface IRotaryGridRecipe {
+@Optional.Interface(modid="jei", iface="mezz.jei.api.recipe.IRecipeWrapper")
+public interface IRotaryGridRecipe extends IRecipeWrapper {
 	
 	/**
 	 * Gets the amount of wrench force that must be applied for any work to be done towards this recipe
