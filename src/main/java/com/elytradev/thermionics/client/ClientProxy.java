@@ -204,7 +204,7 @@ public class ClientProxy extends Proxy {
 			}
 		}
 	}
-	
+	/*
 	private double softCap(double existing, double cap, double add) {
 		if (cap<0) cap = -cap;
 		
@@ -245,7 +245,7 @@ public class ClientProxy extends Proxy {
 		if (result>cap) return cap;
 		if (result<-cap) return -cap;
 		return result;
-	}
+	}*/
 	
 	private Cache<Entity, Scarf> scarfCache = CacheBuilder.newBuilder()
 			.weakKeys()

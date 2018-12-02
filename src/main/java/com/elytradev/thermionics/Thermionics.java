@@ -51,6 +51,7 @@ import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.api.impl.RotaryPowerSupply;
 import com.elytradev.thermionics.api.impl.WeaponSkillInfo;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
+import com.elytradev.thermionics.compat.ChiselCompat;
 import com.elytradev.thermionics.compat.ProbeDataSupport;
 import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.item.ThermionicsItems;
@@ -223,6 +224,9 @@ public class Thermionics {
 	@EventHandler
 	public void onInit(FMLInitializationEvent e) {
 		proxy.init();
+		
+		ChiselCompat.init(); //Doesn't need Loader check, only uses IMC
+		
 		//TODO: When smores has ore voting stabilized, update and re-enable this
 		//NBTTagCompound oresTag = new NBTTagCompound();
 		//oresTag.setBoolean("oreCopper", true);
