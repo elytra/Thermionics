@@ -52,6 +52,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -184,6 +185,18 @@ public class ClientProxy extends Proxy {
 					float sway = swayAmplitudePerTipsy * player.getActivePotionEffect(Thermionics.POTION_TIPSY).getAmplifier() * swayBase;
 					player.rotationYaw += sway;
 					//player.cameraYaw += sway;
+				}
+			}
+			
+			if (player.isPotionActive(Thermionics.POTION_EFFORTLESS_SPEED)) {
+				int magnitude = player.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED).getAmplifier();
+				
+				if (player.movementInput.forwardKeyDown) {
+					Vec3d motionXZ = Vec3d.fromPitchYaw(player.rotationPitch, player.rotationYaw).scale(0.05f * (magnitude+1));
+					System.out.println(motionXZ);
+					player.motionX += motionXZ.x;
+					player.motionZ += motionXZ.z;
+					
 				}
 			}
 		}

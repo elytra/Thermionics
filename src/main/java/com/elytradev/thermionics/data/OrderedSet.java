@@ -27,6 +27,7 @@ package com.elytradev.thermionics.data;
 import java.util.LinkedHashSet;
 
 public class OrderedSet<E> extends LinkedHashSet<E> {
+	private static final long serialVersionUID = -7286507813439827582L;
 	private E head = null;
 	private E tail = null;
 	

@@ -50,8 +50,6 @@ import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntitySpider;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -64,7 +62,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -293,19 +290,19 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 			mob.getNavigator().clearPath();
 			mob.getNavigator().tryMoveToXYZ(mob.posX+rnd.nextGaussian(), mob.posY+rnd.nextGaussian(), mob.posZ+rnd.nextGaussian(), 0.01f);
 			
-			ArrayList<EntityAITasks.EntityAITaskEntry> toRemove = new ArrayList<>();
+			//ArrayList<EntityAITasks.EntityAITaskEntry> toRemove = new ArrayList<>();
 			for(EntityAITasks.EntityAITaskEntry entry : mob.tasks.taskEntries) {
 				if (entry.action instanceof EntityAILookIdle) {
 					entry.using = true;
 					entry.action.startExecuting();
 					
-					Thermionics.LOG.info("Found and enabled EntityAILookIdle");
+					//Thermionics.LOG.info("Found and enabled EntityAILookIdle");
 					//((EntityAILookIdle)entry.action).idleTime = 50; //Without reflecting into this field with an accessor, we get 1-2 seconds of "stun" on supported mobs
 				} else {
 					if (entry.using) {
 						entry.using = false;
 						entry.action.resetTask();
-						Thermionics.LOG.info("Found and disabled AITasks:"+entry.action.getClass().getSimpleName());
+						//Thermionics.LOG.info("Found and disabled AITasks:"+entry.action.getClass().getSimpleName());
 					}
 				}
 			}

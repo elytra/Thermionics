@@ -26,10 +26,10 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.block.BlockBattery;
+import com.elytradev.thermionics.compat.ProbeDataSupport;
 import com.elytradev.thermionics.data.NoExtractEnergyStorageView;
 import com.elytradev.thermionics.data.NoReceiveEnergyStorageView;
 import com.elytradev.thermionics.data.ObservableEnergyStorage;
-import com.elytradev.thermionics.data.ProbeDataSupport;
 import com.elytradev.thermionics.data.RelativeDirection;
 import com.elytradev.thermionics.transport.RFTransport;
 

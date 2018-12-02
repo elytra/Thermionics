@@ -28,8 +28,9 @@ import net.minecraft.util.IStringSerializable;
 
 public enum EnumIngredient implements IStringSerializable {
 	RIBBON("ribbon"),
-	GEAR_BRASS("gear_brass");
-
+	GEAR_BRASS("gear_brass"),
+	ERROR("error");
+	
 	private final String name;
 	
 	EnumIngredient(String name) { this.name = name; }

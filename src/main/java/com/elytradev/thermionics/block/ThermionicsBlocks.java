@@ -37,6 +37,7 @@ import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 import com.elytradev.thermionics.tileentity.TileEntityMashTun;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityPotStill;
+import com.elytradev.thermionics.tileentity.TileEntityRotaryGenerator;
 import com.elytradev.thermionics.tileentity.TileEntitySerger;
 
 import net.minecraft.block.Block;
@@ -75,6 +76,7 @@ public class ThermionicsBlocks {
 	//Rotarymachines
 	public static BlockHammerMill      HAMMER_MILL;
 	public static BlockSerger          SERGER;
+	public static BlockRotaryGenerator GENERATOR_ROTARY;
 	
 	//RFmachines
 	public static BlockBattery         BATTERY_LEAD;
@@ -120,6 +122,7 @@ public class ThermionicsBlocks {
 		//Rotarymachines
 		HAMMER_MILL      = block(r, new BlockHammerMill());
 		SERGER           = block(r, new BlockSerger());
+		GENERATOR_ROTARY = block(r, new BlockRotaryGenerator());
 		
 		//RFmachines
 		BATTERY_LEAD     = block(r, new BlockBattery("lead"));
@@ -132,25 +135,23 @@ public class ThermionicsBlocks {
 		SCAFFOLD_BASIC   = block(r, new BlockScaffold("basic"));
 		ROAD             = block(r, new BlockRoad(0));
 		ROAD_COMPRESSED  = block(r, new BlockRoad(1));
-
-		//TODO: Fix battery item registration
-		//registerBlockAndItem(leadBattery, new ItemBlockBattery(leadBattery));
-		//registerBlockAndItem(creativeBattery, new ItemBlockBattery(creativeBattery));
 			
 		//registerBlock(new BlockMotorBase("redstone"));
 		
-		GameRegistry.registerTileEntity(TileEntityCableRF.class,         "thermionics:cable");
-		GameRegistry.registerTileEntity(TileEntityBattery.class,         "thermionics:battery.lead");
-		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, "thermionics:battery.creative");
-		GameRegistry.registerTileEntity(TileEntityDrum.class,            "thermionics:drum");
-		GameRegistry.registerTileEntity(TileEntityFirebox.class,         "thermionics:machine.firebox");
-		GameRegistry.registerTileEntity(TileEntityOven.class,            "thermionics:machine.oven");
-		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       "thermionics:cable.heat");
-		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, "thermionics:machine.convectionmotor");
-		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      "thermionics:machine.hammermill");
-		GameRegistry.registerTileEntity(TileEntitySerger.class,          "thermionics:machine.serger");
-		GameRegistry.registerTileEntity(TileEntityMashTun.class,         "thermionics:machine.mash_tun");
-		GameRegistry.registerTileEntity(TileEntityPotStill.class,        "thermionics:machine.pot_still");
+		GameRegistry.registerTileEntity(TileEntityCableRF.class,         new ResourceLocation("thermionics:cable"));
+		GameRegistry.registerTileEntity(TileEntityBattery.class,         new ResourceLocation("thermionics:battery.lead"));
+		GameRegistry.registerTileEntity(TileEntityBatteryCreative.class, new ResourceLocation("thermionics:battery.creative"));
+		GameRegistry.registerTileEntity(TileEntityDrum.class,            new ResourceLocation("thermionics:drum"));
+		GameRegistry.registerTileEntity(TileEntityFirebox.class,         new ResourceLocation("thermionics:machine.firebox"));
+		GameRegistry.registerTileEntity(TileEntityOven.class,            new ResourceLocation("thermionics:machine.oven"));
+		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       new ResourceLocation("thermionics:cable.heat"));
+		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, new ResourceLocation("thermionics:machine.convectionmotor"));
+		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      new ResourceLocation("thermionics:machine.hammermill"));
+		GameRegistry.registerTileEntity(TileEntitySerger.class,          new ResourceLocation("thermionics:machine.serger"));
+		GameRegistry.registerTileEntity(TileEntityMashTun.class,         new ResourceLocation("thermionics:machine.mash_tun"));
+		GameRegistry.registerTileEntity(TileEntityPotStill.class,        new ResourceLocation("thermionics:machine.pot_still"));
+		GameRegistry.registerTileEntity(TileEntityRotaryGenerator.class, new ResourceLocation("thermionics:machine.generator"));
+		
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
 		
 		

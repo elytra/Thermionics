@@ -26,7 +26,7 @@ package com.elytradev.thermionics.tileentity;
 
 import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.block.BlockMachineBase;
-import com.elytradev.thermionics.data.ProbeDataSupport;
+import com.elytradev.thermionics.compat.ProbeDataSupport;
 import com.elytradev.thermionics.data.RelativeDirection;
 
 import net.minecraft.block.BlockDirectional;

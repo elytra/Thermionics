@@ -1,0 +1,28 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"thermionics:generator",
+		"transform":"forge:default-block",
+		"x":0,
+		"y":0,
+		"uvlock":true,
+		"textures":{
+			"body":"thermionics:blocks/machine/top",
+			"stator":"thermionics:blocks/machine/copper_plating"
+		}
+	},
+	
+	"variants": {
+		"facing": {
+			"north": { "x": 0, "y":  0},
+			"east" : { "x": 0, "y": 90},
+			"south": { "x": 0, "y":180},
+			"west" : { "x": 0, "y":270}
+		},
+		"active" : {
+			"true": {},
+			"false": {}
+		}
+    }
+}

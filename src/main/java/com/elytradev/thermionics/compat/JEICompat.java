@@ -58,6 +58,7 @@ import com.elytradev.thermionics.data.SergerRecipe;
 import com.elytradev.thermionics.gui.ContainerHammerMill;
 import com.elytradev.thermionics.gui.ContainerSerger;
 
+import mezz.jei.api.IJeiHelpers;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
@@ -74,9 +75,12 @@ import net.minecraft.util.text.translation.I18n;
 @SuppressWarnings("deprecation")
 @JEIPlugin
 public class JEICompat implements IModPlugin {
+	private IModRegistry modRegistry;
 	
 	@Override
 	public void register(IModRegistry registry) {
+		this.modRegistry = registry;
+		
 		//TODO: Localize
 		registry.addIngredientInfo(new ItemStack(ThermionicsBlocks.FIREBOX), ItemStack.class,
 				"Burns any furnace fuel (or lava) to create Heat. Heat can be consumed by machines like the Oven or Convection Motor."
@@ -135,39 +139,7 @@ public class JEICompat implements IModPlugin {
 		registry.getRecipeTransferRegistry().addRecipeTransferHandler(ContainerSerger.class, "thermionics:serger", 0, 9, 10, 36);
 		//registry.addRecipeClickArea(ConcreteGui.class, 18*4, 18*1, 18, 18, "thermionics:serger"); //Need a separate GUI subclass per machine for JEI to work properly!
 	}
-	
-	/*
-	private static String[] spellInfo(String spell, EnumElement elem, EnumElement elem2, ResourceLocation resource) {
-		ArrayList<String> result = new ArrayList<>();
-		result.add(format("info.magicarsenal.label.spell", local("spell.magicarsenal."+spell)));
-		result.add(format("info.magicarsenal.label.elements", element(elem), element(elem2)));
-		if (resource!=null) {
-			result.add(format("info.magicarsenal.label.resource", resource(resource)));
-		}
-		
-		String effectText = local("spell.magicarsenal."+spell+".desc");
-		if (effectText!=null && !effectText.equals("spell.magicarsenal."+spell+".desc")) {
-			result.add("");
-			result.add(format("info.magicarsenal.label.effect", effectText));
-		}
-		
-		return result.toArray(new String[result.size()]);
-	}*/
-	
-	private static String local(String key) {
-		return I18n.translateToLocal(key);
-	}
-	
-	private static String format(String key, Object... args) {
-		return I18n.translateToLocalFormatted(key, args);
-	}
-	
-	private static String resource(ResourceLocation resource) {
-		String domain = resource.getNamespace();
-		String resourceName = resource.getPath();
-		return local("resource."+domain+"."+resourceName);
-	}
-	
+
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registry) {
 		registry.addRecipeCategories(new IRecipeCategory<IRotaryRecipe>() {
@@ -193,7 +165,10 @@ public class JEICompat implements IModPlugin {
 
 			@Override
 			public IDrawable getBackground() {
-				return new JEIDrawableImage(new ResourceLocation("thermionics", "textures/gui/hammermill.png"), 0, 0, 126, 72, 0, 0, 0, 0, 126, 72);
+				return modRegistry.getJeiHelpers().getGuiHelper().createDrawable(
+						new ResourceLocation("thermionics", "textures/gui/hammermill.png"),
+						0, 0, 126, 72, 126, 72);
+				//return new JEIDrawableImage(new ResourceLocation("thermionics", "textures/gui/hammermill.png"), 0, 0, 126, 72, 0, 0, 0, 0, 126, 72);
 			}
 
 			@Override
@@ -204,9 +179,6 @@ public class JEICompat implements IModPlugin {
 				recipeLayout.getItemStacks().init(1, false, leftMargin + 18*4, topMargin + 18*0);
 				
 				recipeLayout.getItemStacks().set(ingredients);
-				
-				
-				//recipeLayout.setRecipeTransferButton(184-16, topMargin + 18*4);
 				
 				torque = recipeWrapper.getRequiredTorque();
 				revolutions = recipeWrapper.getRequiredRevolutions();

@@ -30,8 +30,6 @@ import com.elytradev.concrete.inventory.ValidatedInventoryView;
 import com.elytradev.concrete.inventory.ValidatedItemHandlerView;
 import com.elytradev.concrete.inventory.Validators;
 import com.elytradev.thermionics.Thermionics;
-import com.elytradev.thermionics.api.IRotaryGridRecipe;
-import com.elytradev.thermionics.api.SergerRecipes;
 import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.data.IMachineProgress;
 import com.elytradev.thermionics.data.MachineRecipes;

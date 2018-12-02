@@ -129,15 +129,11 @@ processResources {
 
 license {
 	sourceSets = [project.sourceSets.main]
-	//style {
-    //    java = 'JAVADOC' // Sets Java license header style to JAVADOC (/**)
-    //}
-    //header = file('LICENSE')
-
-
-    include '**/*.java';
-
-    exclude "**/mcmod.info";
+	
+	
+	include '**/*.java';
+	
+	exclude "**/mcmod.info";
 	exclude "**/*.json";
 	exclude "**/*.png";
 	exclude "**/*.mcmeta";
@@ -147,7 +143,6 @@ license {
 	//Should be covered by the above
 	exclude "**/*.mtl";
 	exclude "**/*.obj";
-
 	exclude "/doc/**";
 	exclude "/com/elytradev/concrete/**";
 	

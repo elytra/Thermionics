@@ -34,9 +34,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableSet;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
-
 public class Registry<K extends Comparable<K>, V> implements Iterable<V> {
 	private BiMap<K, V> items = HashBiMap.create();
 	private final Class<V> superType;

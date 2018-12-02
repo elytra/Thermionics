@@ -160,7 +160,7 @@ public class TileEntityPotStill extends TileEntityMachine implements ITickable, 
 			ItemStack outputItem = itemStorage.getStackInSlot(SLOT_FULL_BUCKET_OUT);
 			FluidStack outputFluid = outputTank.getFluid();
 			//Are there bottles to fill, is there room to put them, is there fluid to fill them with, and is there *enough* of that fluid?
-			if (!bottles.isEmpty() && outputItem.getCount()<outputItem.getMaxStackSize() && outputFluid!=null && outputFluid.amount>250) {
+			if (!bottles.isEmpty() && outputItem.getCount()<outputItem.getMaxStackSize() && outputFluid!=null && outputFluid.amount>=250) {
 				ItemStack outBottle = new ItemStack(ThermionicsItems.SPIRIT_BOTTLE);
 				outBottle.setTagCompound(outputFluid.tag.copy());
 				

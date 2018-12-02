@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.elytradev.thermionics.data;
+package com.elytradev.thermionics.compat;
 
 import java.util.List;
 
@@ -32,11 +32,12 @@ import com.elytradev.probe.api.IUnit;
 import com.elytradev.probe.api.UnitDictionary;
 import com.elytradev.probe.api.impl.ProbeData;
 import com.elytradev.probe.api.impl.SIUnit;
-import com.elytradev.probe.api.impl.Unit;
 import com.elytradev.thermionics.CapabilityProvider;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IHeatStorage;
 import com.elytradev.thermionics.api.IRotaryPowerSupply;
+import com.elytradev.thermionics.data.IMachineProgress;
+import com.elytradev.thermionics.data.ITransferRate;
 import com.elytradev.thermionics.tileentity.TileEntityMachine;
 import com.google.common.collect.ImmutableList;
 

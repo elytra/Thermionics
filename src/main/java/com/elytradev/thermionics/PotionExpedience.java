@@ -27,7 +27,6 @@ package com.elytradev.thermionics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +40,6 @@ public class PotionExpedience extends Potion {
 		super(false, 0x428cae);
 		setPotionName("effect.moveSpeed.effortless");
 		setRegistryName("thermionics", "effortless_speed");
-		registerPotionAttributeModifier(SharedMonsterAttributes.MOVEMENT_SPEED, "3f07f6c9-a059-4592-8bf2-365802a412bf", 0.8D, 2); //original: "91AEAA56-376B-4498-935B-2F7F68070635" -now stacks with Speed potion
 		setBeneficial();
 	}
 	

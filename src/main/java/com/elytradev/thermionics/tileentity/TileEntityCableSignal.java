@@ -31,8 +31,6 @@ import com.elytradev.thermionics.api.impl.SignalStorage;
 import net.minecraft.tileentity.TileEntity;
 
 public class TileEntityCableSignal extends TileEntity {
-	private static final int MAX_TICK_COUNTER = 5;
-	private int tickCounter = 0;
 	CapabilityProvider capabilities = new CapabilityProvider();
 	SignalStorage signal;
 	

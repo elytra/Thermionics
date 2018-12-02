@@ -52,7 +52,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class BlockBattery extends BlockBase implements ITileEntityProvider, IPreferredRenderState {
-	public static final int CAPACITY = 80_000;
+	public static final int CAPACITY = 2_000_000;
 	public static PropertyEnum<EnumFacing> FACING = BlockDirectional.FACING;
 	
 	public BlockBattery(String id) {

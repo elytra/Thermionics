@@ -51,13 +51,12 @@ import com.elytradev.thermionics.api.impl.RotaryPowerConsumer;
 import com.elytradev.thermionics.api.impl.RotaryPowerSupply;
 import com.elytradev.thermionics.api.impl.WeaponSkillInfo;
 import com.elytradev.thermionics.block.ThermionicsBlocks;
-import com.elytradev.thermionics.data.ProbeDataSupport;
+import com.elytradev.thermionics.compat.ProbeDataSupport;
 import com.elytradev.thermionics.gui.EnumGui;
 import com.elytradev.thermionics.item.ThermionicsItems;
 import com.elytradev.thermionics.network.SpawnParticleEmitterMessage;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -72,8 +71,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -97,8 +94,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(modid=Thermionics.MODID, version="@VERSION@", name="Thermionics|Core")
@@ -253,25 +248,6 @@ public class Thermionics {
 	
 	public static Thermionics instance() {
 		return instance;
-	}
-	
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void updateFOV(FOVUpdateEvent event) {
-		if (event.getEntity().getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
-			event.setNewfov(1.0f);
-		}
-	}
-	
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public void onFovModifier(EntityViewRenderEvent.FOVModifier event) {
-		if (event.getEntity() instanceof EntityLivingBase) {
-			EntityLivingBase living = (EntityLivingBase)event.getEntity();
-			if (living.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED)!=null) {
-				event.setFOV( Minecraft.getMinecraft().gameSettings.fovSetting );
-			}
-		}
 	}
 	
 	@SubscribeEvent(priority=EventPriority.LOWEST)

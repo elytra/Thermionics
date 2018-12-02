@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 
 import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.IRotaryRecipe;
-import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandler;

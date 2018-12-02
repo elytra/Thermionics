@@ -24,8 +24,6 @@
 
 package com.elytradev.thermionics.tileentity;
 
-import java.util.Collection;
-
 import com.elytradev.concrete.inventory.ConcreteItemStorage;
 import com.elytradev.concrete.inventory.IContainerInventoryHolder;
 import com.elytradev.concrete.inventory.StandardMachineSlots;
