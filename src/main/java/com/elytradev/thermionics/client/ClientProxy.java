@@ -184,22 +184,67 @@ public class ClientProxy extends Proxy {
 					float swayBase = MathHelper.cos(swayTheta);
 					float sway = swayAmplitudePerTipsy * player.getActivePotionEffect(Thermionics.POTION_TIPSY).getAmplifier() * swayBase;
 					player.rotationYaw += sway;
-					//player.cameraYaw += sway;
 				}
 			}
 			
 			if (player.isPotionActive(Thermionics.POTION_EFFORTLESS_SPEED)) {
-				int magnitude = player.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED).getAmplifier();
+				System.out.println(player.motionY);
 				
-				if (player.movementInput.forwardKeyDown) {
-					Vec3d motionXZ = Vec3d.fromPitchYaw(player.rotationPitch, player.rotationYaw).scale(0.05f * (magnitude+1));
-					System.out.println(motionXZ);
-					player.motionX += motionXZ.x;
-					player.motionZ += motionXZ.z;
+				
+				if (player.motionY < 0 && player.motionY > -0.08) { //Air has no sliding friction, so let's not have jumps send us rocketing forwards faster than running.
+					int magnitude = player.getActivePotionEffect(Thermionics.POTION_EFFORTLESS_SPEED).getAmplifier();
 					
+					if (player.movementInput.forwardKeyDown) {
+						Vec3d motionXZ = Vec3d.fromPitchYaw(player.rotationPitch, player.rotationYaw).scale(0.05f * (magnitude+1));
+						player.motionX += motionXZ.x;
+						player.motionZ += motionXZ.z;
+						
+					}
 				}
 			}
 		}
+	}
+	
+	private double softCap(double existing, double cap, double add) {
+		if (cap<0) cap = -cap;
+		
+		if (existing<cap && existing>-cap) return hardCap(existing, cap, add);
+		
+		
+		if (existing>0) { //existing > cap
+			if (add>0) {
+				return existing; //can't add past the cap
+			} else {
+				double result = existing+add;
+				if (result<-cap) {
+					//We snapped out past the other boundary
+					return -cap;
+				} else {
+					//We're either in-bounds, or closer to in-bounds than we were before.
+					return result;
+				}
+			}
+		} else { // existing < -cap
+			if (add<0) {
+				return existing; //can't add past the cap
+			} else {
+				double result = existing+add;
+				if (result>cap) {
+					//We snapped out past the other boundary
+					return cap;
+				} else {
+					//We're either in-bounds, or closer to in-bounds than we were before.
+					return result;
+				}
+			}
+		}
+	}
+	
+	private double hardCap(double existing, double cap, double add) {
+		double result = existing+add;
+		if (result>cap) return cap;
+		if (result<-cap) return -cap;
+		return result;
 	}
 	
 	private Cache<Entity, Scarf> scarfCache = CacheBuilder.newBuilder()

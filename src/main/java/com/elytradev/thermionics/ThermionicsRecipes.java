@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import com.elytradev.concrete.recipe.FluidIngredient;
 import com.elytradev.concrete.recipe.ItemIngredient;
 import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
-import com.elytradev.concrete.recipe.impl.ShapedInventoryRecipe;
 import com.elytradev.thermionics.api.HammerMillRecipes;
 import com.elytradev.thermionics.api.Spirits;
 import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
@@ -476,9 +475,9 @@ public class ThermionicsRecipes {
 		}
 		
 		ShapelessRecipes recipe = new ShapelessRecipes("thermionics:chisel",
-				prev.copy(),
+				first.copy(),
 				NonNullList.from(null,
-						Ingredient.fromStacks(first.copy())
+						Ingredient.fromStacks(prev.copy())
 				));
 		recipe.setRegistryName(block.getRegistryName()+"_"+i);
 		registry.register(recipe);
