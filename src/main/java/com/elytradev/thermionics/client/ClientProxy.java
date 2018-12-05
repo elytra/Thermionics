@@ -31,6 +31,7 @@ import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.data.IPreferredRenderState;
 import com.elytradev.thermionics.item.IMetaItemModel;
 import com.elytradev.thermionics.item.ItemBlockEquivalentState;
+import com.elytradev.thermionics.item.ItemIngredient;
 import com.elytradev.thermionics.item.Spirit;
 import com.elytradev.thermionics.item.ThermionicsItems;
 import com.google.common.cache.Cache;
@@ -78,9 +79,10 @@ public class ClientProxy extends Proxy {
 	
 	@Override
 	public void registerItemModel(Item item) {
+		
 		ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
 		NonNullList<ItemStack> variantList = NonNullList.create();
-		item.getSubItems(Thermionics.TAB_THERMIONICS, variantList);
+		item.getSubItems(item.getCreativeTab(), variantList);
 		if (item instanceof ItemBlock && ((ItemBlock)item).getBlock() instanceof IPreferredRenderState) {
 			String state = ((IPreferredRenderState)((ItemBlock)item).getBlock()).getPreferredRenderState();
 			ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, state));
@@ -98,7 +100,7 @@ public class ClientProxy extends Proxy {
 				ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(new ResourceLocation(Thermionics.MODID, models[i]), "inventory"));
 			}
 		} else {
-			if (variantList.size()==1) {
+			if (variantList.size()<=1) {
 				ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(loc, "inventory"));
 			} else {
 				for(ItemStack subItem : variantList) {
@@ -188,7 +190,7 @@ public class ClientProxy extends Proxy {
 			}
 			
 			if (player.isPotionActive(Thermionics.POTION_EFFORTLESS_SPEED)) {
-				System.out.println(player.motionY);
+				//System.out.println(player.motionY);
 				
 				
 				if (player.motionY < 0 && player.motionY > -0.08) { //Air has no sliding friction, so let's not have jumps send us rocketing forwards faster than running.

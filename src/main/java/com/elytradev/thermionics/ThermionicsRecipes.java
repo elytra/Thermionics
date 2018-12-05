@@ -24,6 +24,7 @@
 
 package com.elytradev.thermionics;
 
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import com.elytradev.concrete.recipe.FluidIngredient;
@@ -51,6 +52,7 @@ import com.elytradev.thermionics.item.ThermionicsItems;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -66,6 +68,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.OreIngredient;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -91,7 +94,8 @@ public class ThermionicsRecipes {
 					result,
 					NonNullList.from(null,
 							Ingredient.fromItem(ThermionicsItems.FABRIC_SQUARE),
-							Ingredient.fromStacks(new ItemStack(Items.DYE, 1, dye.getDyeDamage()))
+							new OreIngredient("dye"+capitalize(dye.getDyeColorName()))
+							//Ingredient.fromStacks(new ItemStack(Items.DYE, 1, dye.getDyeDamage()))
 					));
 			recipe(r, recipe);
 		}
@@ -235,6 +239,8 @@ public class ThermionicsRecipes {
 		millRecipes("Uranium");
 		millRecipes("Cobalt");
 		millRecipes("Ardite");
+		millRecipes("Aluminum");
+		millRecipes("Duralumin");
 		
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal",     new ItemStack(Items.COAL,3),     8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreRedstone", new ItemStack(Items.REDSTONE,6), 8f, 20f));
@@ -250,16 +256,39 @@ public class ThermionicsRecipes {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
 		}
 		
-		ItemIngredient potato    = ItemIngredient.of(Items.POTATO);
+		//ItemIngredient potato    = ItemIngredient.of(Items.POTATO);
 		ItemIngredient leather   = ItemIngredient.of("leather");
 		ItemIngredient ingotIron = ItemIngredient.of("ingotIron");
 		ItemIngredient ingotGold = ItemIngredient.of("ingotGold");
 		ItemIngredient diamond   = ItemIngredient.of("gemDiamond");
 		ItemIngredient string    = ItemIngredient.of(Items.STRING);
 		ItemIngredient ribbon    = ItemIngredient.of(new ItemStack(ThermionicsItems.INGREDIENT,1, EnumIngredient.RIBBON.ordinal()));
-		ItemIngredient fabric    = ItemIngredient.of(ThermionicsItems.FABRIC_SQUARE);
+		//ItemIngredient fabric    = ItemIngredient.of(ThermionicsItems.FABRIC_SQUARE);
 		ItemIngredient anyFabric = new WildcardNBTIngredient(ThermionicsItems.FABRIC_SQUARE);
 		ItemIngredient anyScarf  = new WildcardNBTIngredient(ThermionicsItems.SCARF);
+		
+		
+		//Dust Alloying
+		dustAlloy(r, ThermionicsItems.DUST_BRASS, "dustCopper", "dustCopper", "dustCopper", "dustZinc");
+		dustAlloy(r, ThermionicsItems.DUST_INVAR, "dustIron", "dustIron", "dustIron", "dustNickel");
+		dustAlloy(r, ThermionicsItems.DUST_DURALUMIN, "dustAluminum", "dustAluminum", "dustAluminum", "dustCopper");
+		dustAlloy(r, ThermionicsItems.DUST_ELECTRUM, "dustSilver", "dustGold");
+		//dustAlloy(r, ThermionicsItems.DUST_SILVERED_LEAD, "dustLead", "dustLead", "dustLead", "dustSilver"); //disabled; not really helping
+		
+		final float DUST_SMELT_XP = 0.35f;
+		GameRegistry.addSmelting(ThermionicsItems.DUST_IRON,     new ItemStack(Items.IRON_INGOT), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_GOLD,     new ItemStack(Items.GOLD_INGOT), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_COPPER,   new ItemStack(ThermionicsItems.INGOT_COPPER), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_SILVER,   new ItemStack(ThermionicsItems.INGOT_SILVER), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_LEAD,     new ItemStack(ThermionicsItems.INGOT_LEAD), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_NICKEL,   new ItemStack(ThermionicsItems.INGOT_NICKEL), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_ZINC,     new ItemStack(ThermionicsItems.INGOT_ZINC), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_ELECTRUM, new ItemStack(ThermionicsItems.INGOT_ELECTRUM), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_BRASS,    new ItemStack(ThermionicsItems.INGOT_BRASS), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_INVAR,    new ItemStack(ThermionicsItems.INGOT_INVAR), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_ALUMINUM, new ItemStack(ThermionicsItems.INGOT_ALUMINUM), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_SILVERED_LEAD, new ItemStack(ThermionicsItems.INGOT_SILVERED_LEAD), DUST_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.DUST_DURALUMIN, new ItemStack(ThermionicsItems.INGOT_DURALUMIN), DUST_SMELT_XP);
 		
 		SergerRecipe saddleRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
@@ -446,6 +475,12 @@ public class ThermionicsRecipes {
 		return t;
 	}
 	
+	public static void dustAlloy(IForgeRegistry<IRecipe> registry, Item output, String... ingredients) {
+		ShapelessOreRecipe recipe = new ShapelessOreRecipe(new ResourceLocation("thermionics", "dust_alloy"), new ItemStack(output, ingredients.length, 0), (Object[])ingredients);
+		recipe.setRegistryName(makeUnique(registry, "dust_alloy."+output.getRegistryName()));
+		registry.register(recipe);
+	}
+	
 	public static String makeUnique(IForgeRegistry<IRecipe> registry, String baseName) {
 		String result = baseName.replace(':', '.');
 		if (!registry.containsKey(new ResourceLocation("thermionics",result))) return "thermionics:"+result;
@@ -544,5 +579,10 @@ public class ThermionicsRecipes {
 			}
 			return out;
 		}
+	}
+	
+	private static String capitalize(String s) {
+		if (s.length()<1) return "";
+		return (""+s.charAt(0)).toUpperCase(Locale.ROOT) + s.substring(1);
 	}
 }

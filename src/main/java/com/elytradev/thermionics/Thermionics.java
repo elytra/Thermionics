@@ -54,6 +54,7 @@ import com.elytradev.thermionics.block.ThermionicsBlocks;
 import com.elytradev.thermionics.compat.ChiselCompat;
 import com.elytradev.thermionics.compat.ProbeDataSupport;
 import com.elytradev.thermionics.gui.EnumGui;
+import com.elytradev.thermionics.item.EnumIngredient;
 import com.elytradev.thermionics.item.ThermionicsItems;
 import com.elytradev.thermionics.network.SpawnParticleEmitterMessage;
 
@@ -126,6 +127,13 @@ public class Thermionics {
 		@Override
 		public ItemStack createIcon() {
 			return new ItemStack(ThermionicsBlocks.FIREBOX);
+		}
+	};
+	
+	public static CreativeTabs TAB_THERMIONICS_INGREDIENTS = new CreativeTabs("thermionics.ingredients") {
+		@Override
+		public ItemStack createIcon() {
+			return new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.GEAR_BRASS.ordinal());
 		}
 	};
 	
@@ -204,7 +212,6 @@ public class Thermionics {
 			
 		});
 		
-		MinecraftForge.EVENT_BUS.register(this);
 		BigExplosionHandler.instance().init();
 	}
 	
@@ -227,15 +234,6 @@ public class Thermionics {
 		
 		ChiselCompat.init(); //Doesn't need Loader check, only uses IMC
 		
-		//TODO: When smores has ore voting stabilized, update and re-enable this
-		//NBTTagCompound oresTag = new NBTTagCompound();
-		//oresTag.setBoolean("oreCopper", true);
-		//oresTag.setBoolean("ingotCopper", true);
-		//oresTag.setBoolean("dustCopper", true);
-		//oresTag.setBoolean("gearCopper", true);
-		//oresTag.setBoolean("plateCopper", true);
-		//FMLInterModComms.sendMessage("smores", "recipeVote", oresTag);
-		
 		//Thermionics machines are *unusually* safe for charset to carry around
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.FIREBOX.getRegistryName());
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.OVEN.getRegistryName());
@@ -243,6 +241,10 @@ public class Thermionics {
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.HAMMER_MILL.getRegistryName());
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.MOTOR_CONVECTION.getRegistryName());
 		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.SERGER.getRegistryName());
+		
+		//I thought for sure these would get picked up automatically, but they didn't. Okay then.
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.ROAD.getRegistryName());
+		FMLInterModComms.sendMessage("charset", "addCarry", ThermionicsBlocks.ROAD_COMPRESSED.getRegistryName());
 	}
 	
 	@EventHandler

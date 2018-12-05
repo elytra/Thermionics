@@ -1,4 +1,6 @@
+#Tabs
 itemGroup.thermionics=Thermionics
+itemGroup.thermionics.ingredients=Thermionics Ingredients
 
 #Ingredients
 item.thermionics.allomanticpowder.copper.name=Allomantic Copper
@@ -9,6 +11,41 @@ item.thermionics.allomanticpowder.steel.name=Allomantic Steel
 item.thermionics.fabricsquare.name=Fabric Square
 item.thermionics.ingredient.ribbon.name=Ribbon
 item.thermionics.ingredient.gear_brass.name=Brass Gear
+item.thermionics.ingredient.error.name=Error
+
+item.thermionics.ingredient.gravel.pyrite.name=Pyrite Gravel
+item.thermionics.ingredient.gravel.pentlandite.name=Pentlandite Gravel
+item.thermionics.ingredient.gravel.sylvanite.name=Sylvanite Gravel
+item.thermionics.ingredient.gravel.chalcopyrite.name=Chalcopyrite Gravel
+item.thermionics.ingredient.gravel.galena.name=Galena Gravel
+item.thermionics.ingredient.gravel.bauxite.name=Bauxite Gravel
+item.thermionics.ingredient.gravel.sphalerite.name=Sphalerite Gravel
+
+item.thermionics.ingredient.dust.iron.name=Iron Dust
+item.thermionics.ingredient.dust.nickel.name=Nickel Dust
+item.thermionics.ingredient.dust.gold.name=Gold Dust
+item.thermionics.ingredient.dust.copper.name=Copper Dust
+item.thermionics.ingredient.dust.silver.name=Silver Dust
+item.thermionics.ingredient.dust.lead.name=Lead Dust
+item.thermionics.ingredient.dust.aluminum.name=Aluminum Dust
+item.thermionics.ingredient.dust.zinc.name=Zinc Dust
+item.thermionics.ingredient.dust.electrum.name=Electrum Dust
+item.thermionics.ingredient.dust.invar.name=Invar Dust
+item.thermionics.ingredient.dust.brass.name=Brass Dust
+item.thermionics.ingredient.dust.silvered_lead.name=Argentiferous Lead Dust
+item.thermionics.ingredient.dust.duralumin.name=Duralumin Dust
+
+item.thermionics.ingredient.ingot.nickel.name=Nickel Ingot
+item.thermionics.ingredient.ingot.copper.name=Copper Ingot
+item.thermionics.ingredient.ingot.silver.name=Silver Ingot
+item.thermionics.ingredient.ingot.lead.name=Lead Ingot
+item.thermionics.ingredient.ingot.aluminum.name=Aluminum Ingot
+item.thermionics.ingredient.ingot.zinc.name=Zinc Ingot
+item.thermionics.ingredient.ingot.electrum.name=Electrum Ingot
+item.thermionics.ingredient.ingot.invar.name=Invar Ingot
+item.thermionics.ingredient.ingot.brass.name=Brass Ingot
+item.thermionics.ingredient.ingot.silvered_lead.name=Argentiferous Lead Ingot
+item.thermionics.ingredient.ingot.duralumin.name=Duralumin Ingot
 
 #Tools
 item.thermionics.hammer.iron.name=Iron Hammer

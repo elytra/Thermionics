@@ -50,7 +50,7 @@ public class ItemSubtyped<T extends Enum<T>> extends Item implements IMetaItemMo
 		this.setMaxDamage(0);
 		this.setMaxStackSize(64);
 		this.glowing = glowing;
-		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		this.setCreativeTab(Thermionics.TAB_THERMIONICS_INGREDIENTS);
 	}
 	
 	@Override
