@@ -33,7 +33,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -41,7 +40,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 
 public class ThermionicsItems {
 	
-
+	//HRT
+	public static ItemHandyRescueTool                RESCUE_TOOL;
+	
 	//Unified Hammer
 	public static ItemHammer                         HAMMER;
 	
@@ -131,6 +132,8 @@ public class ThermionicsItems {
 				item(r, i);
 			}
 		}
+		
+		ThermionicsItems.RESCUE_TOOL        = item(r, new ItemHandyRescueTool());
 		
 		//Unified Hammer
 		ThermionicsItems.HAMMER             = item(r, new ItemHammer(ToolMaterial.IRON,    "iron"));

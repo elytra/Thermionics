@@ -251,6 +251,8 @@ public class ThermionicsRecipes {
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.SAND,1), 8f, 20f));
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL,1), 8f, 20f));
+		//Special case: Let silvered lead be ground back down into silvered lead dust so it can be separated
+		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(ThermionicsItems.INGOT_SILVERED_LEAD),     new ItemStack(ThermionicsItems.DUST_SILVERED_LEAD),     8f, 20f));
 		
 		for(EnumDyeSource dyeSource : EnumDyeSource.values()) {
 			HammerMillRecipes.registerRecipe(new RotaryRecipe(dyeSource.getExemplar(), dyeSource.createOutputStack(), 2f, 20f)); 
@@ -289,6 +291,16 @@ public class ThermionicsRecipes {
 		GameRegistry.addSmelting(ThermionicsItems.DUST_ALUMINUM, new ItemStack(ThermionicsItems.INGOT_ALUMINUM), DUST_SMELT_XP);
 		GameRegistry.addSmelting(ThermionicsItems.DUST_SILVERED_LEAD, new ItemStack(ThermionicsItems.INGOT_SILVERED_LEAD), DUST_SMELT_XP);
 		GameRegistry.addSmelting(ThermionicsItems.DUST_DURALUMIN, new ItemStack(ThermionicsItems.INGOT_DURALUMIN), DUST_SMELT_XP);
+		
+		final float GRAVEL_SMELT_XP = 0.25f;
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_PYRITE,       new ItemStack(Items.IRON_INGOT), GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_SYLVANITE,    new ItemStack(Items.GOLD_INGOT), GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_PENTLANDITE,  new ItemStack(ThermionicsItems.INGOT_NICKEL),   GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_CHALCOPYRITE, new ItemStack(ThermionicsItems.INGOT_COPPER),   GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_GALENA,       new ItemStack(ThermionicsItems.INGOT_LEAD),     GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_BAUXITE,      new ItemStack(ThermionicsItems.INGOT_ALUMINUM), GRAVEL_SMELT_XP);
+		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_SPHALERITE,   new ItemStack(ThermionicsItems.INGOT_ZINC),     GRAVEL_SMELT_XP);
+		
 		
 		SergerRecipe saddleRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(

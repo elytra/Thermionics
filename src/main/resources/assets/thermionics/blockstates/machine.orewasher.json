@@ -1,0 +1,28 @@
+{
+	"forge_marker":1,
+	
+	"defaults":{
+		"model":"thermionics:machine.orewasher",
+		"uvlock": false,
+		"textures":{
+			"face":"thermionics:blocks/machine/orewasher",
+			"side":"thermionics:blocks/machine/side",
+			"top":"thermionics:blocks/machine/top",
+			"bottom":"thermionics:blocks/machine/bottom",
+			"particle":"thermionics:blocks/machine/top"
+		}
+	},
+	
+	"variants": {
+		"facing": {
+			"north": { "x": 0, "y":  0},
+			"east" : { "x": 0, "y": 90},
+			"south": { "x": 0, "y":180},
+			"west" : { "x": 0, "y":270}
+		},
+		"active" : {
+			"true": {},
+			"false": {}
+		}
+    }
+}

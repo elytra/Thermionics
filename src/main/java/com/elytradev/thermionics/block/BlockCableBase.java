@@ -25,6 +25,7 @@
 package com.elytradev.thermionics.block;
 
 import com.elytradev.thermionics.Thermionics;
+import com.elytradev.thermionics.api.IWrenchRemoval;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -37,7 +38,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public abstract class BlockCableBase extends BlockBase implements ITileEntityProvider {
+public abstract class BlockCableBase extends BlockBase implements ITileEntityProvider, IWrenchRemoval {
 	public static PropertyBool NORTH = PropertyBool.create("north");
 	public static PropertyBool EAST  = PropertyBool.create("east");
 	public static PropertyBool SOUTH = PropertyBool.create("south");
@@ -148,5 +149,10 @@ public abstract class BlockCableBase extends BlockBase implements ITileEntityPro
 	@Override
 	public boolean isOpaqueCube(IBlockState state) {
 		return false;
+	}
+	
+	@Override
+	public void wrenchRemove(World world, BlockPos pos, EnumFacing side) {
+		world.destroyBlock(pos, true);
 	}
 }

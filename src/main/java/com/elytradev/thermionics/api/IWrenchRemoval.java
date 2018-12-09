@@ -22,43 +22,14 @@
  * SOFTWARE.
  */
 
-package com.elytradev.thermionics.gui;
+package com.elytradev.thermionics.api;
 
-import com.elytradev.concrete.inventory.gui.ConcreteContainer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.tileentity.TileEntity;
-
-public enum EnumGui {
-	FIREBOX         (ContainerFirebox::new),
-	OVEN            (ContainerOven::new),
-	CONVECTION_MOTOR(ContainerMotor::new),
-	HAMMER_MILL     (ContainerHammerMill::new),
-	SERGER          (ContainerSerger::new),
-	POT_STILL       (ContainerPotStill::new),
-	MASH_TUN        (ContainerMashTun::new),
-	ORE_WASHER      (ContainerOreWasher::new);
-	
-	private final GuiSupplier supplier;
-	
-	EnumGui(GuiSupplier supplier) {
-		this.supplier = supplier;
-	}
-	
-	public ConcreteContainer createContainer(IInventory player, IInventory tile, TileEntity te) {
-		return supplier.apply(player, tile, te);
-	}
-	
-	public int id() {
-		return ordinal();
-	}
-	
-	public static EnumGui forId(int i) {
-		if (i<0 || i>=values().length) return FIREBOX;
-		return values()[i];
-	}
-	
-	public static interface GuiSupplier {
-		public ConcreteContainer apply(IInventory player, IInventory tile, TileEntity te);
-	}
+/** Interface for blocks or entities which can be removed with HRT or other configurator tools */
+public interface IWrenchRemoval {
+	/** Usually called by the shift+rightclick of a wrench-type configurator tool. */
+	public void wrenchRemove(World world, BlockPos pos, EnumFacing side);
 }
