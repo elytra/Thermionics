@@ -149,6 +149,13 @@ public class ThermionicsRecipes {
 				"c", "c", "c", 'c', "ingotCopper"
 				));
 		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.OMNI_DUCT,4),
+				"sss", "lrc", "sss", 's', "stone", 'l', "ingotLead", 'c', "ingotCopper", 'r', "dustRedstone"
+				));
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:tools"), new ItemStack(ThermionicsItems.RESCUE_TOOL),
+				"iin", "is ", " s ", 'i', "ingotIron", 's', "stickWood", 'n', "nuggetIron"
+				));
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:hammers"), ItemHammer.createTool("ingotIron"),
 				"I", "s", "s", 'I', "blockIron", 's', "stickWood"

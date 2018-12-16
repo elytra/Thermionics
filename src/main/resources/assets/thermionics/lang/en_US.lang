@@ -74,6 +74,7 @@ tile.thermionics.cable.rf.name=Energy Cable
 tile.thermionics.cable.redstone.name=Signal Cable
 tile.thermionics.cable.rf_redstone.name=Signal/Energy Cable
 tile.thermionics.cable.heat.name=Copper Heat Pipe
+tile.thermionics.omniduct.name=Omniduct
 
 #Axles
 tile.thermionics.axle.wood.name=Wood Axle

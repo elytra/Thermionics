@@ -162,9 +162,9 @@ public class Thermionics {
 		CONTEXT = NetworkContext.forChannel("tmxfx");
 		CONTEXT.register(SpawnParticleEmitterMessage.class);
 		
-		if (Loader.isModLoaded("probedataprovider")) {
+		//if (Loader.isModLoaded("probedataprovider")) {
 			ProbeDataSupport.init();
-		}
+		//}
 		
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.register(proxy);

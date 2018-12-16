@@ -34,10 +34,10 @@ import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumActionResult;
@@ -78,6 +78,11 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 	}
 	
 	@Override
+	public boolean onBlockDestroyed(ItemStack stack, World worldIn, IBlockState state, BlockPos pos, EntityLivingBase entityLiving) {
+		return true; //Does not cost dura!
+	}
+	
+	@Override
 	public Set<String> getToolClasses(ItemStack stack) {
 		return TOOL_CLASSES;
 	}
@@ -101,6 +106,21 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 		}
 		
 		return EnumActionResult.PASS;
+	}
+	
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+		return false;
+	}
+	
+	@Override
+	public int getItemEnchantability(ItemStack stack) {
+		return 0;
+	}
+	
+	@Override
+	public int getItemEnchantability() {
+		return 0;
 	}
 	
 	/*// Positioning still needs to be tweaked

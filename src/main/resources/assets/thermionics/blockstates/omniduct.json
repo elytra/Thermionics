@@ -1,0 +1,69 @@
+{
+
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "pipe": "thermionics:blocks/cable/omniduct",
+      "particle": "thermionics:blocks/cable/omniduct"
+    },
+    "uvlock": false,
+    "transform": "forge:default-block",
+    "model":"thermionics:cable.node"
+  },
+  "variants": {
+  	
+    "down": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "down": {
+            "model": "thermionics:cable.leg.wide",
+            "x": 180
+          }
+        }
+      }
+    },
+    "up": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "up": {
+            "model": "thermionics:cable.leg.wide"
+          }
+        }
+      }
+    },
+    "north": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "north": { "model": "thermionics:cable.leg.wide", "x": 90 }
+        }
+      }
+    },
+    "south": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "south": { "model": "thermionics:cable.leg.wide", "x": 90, "y": 180 }
+        }
+      }
+    },
+    "west": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "west": { "model": "thermionics:cable.leg.wide", "x": 90, "y": 270 }
+        }
+      }
+    },
+    "east": {
+      "false": {},
+      "true": {
+        "submodel": {
+          "east": { "model": "thermionics:cable.leg.wide", "x": 90, "y": 90 }
+        }
+      }
+    }
+  }
+}

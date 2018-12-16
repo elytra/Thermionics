@@ -35,6 +35,7 @@ import com.elytradev.thermionics.tileentity.TileEntityDrum;
 import com.elytradev.thermionics.tileentity.TileEntityFirebox;
 import com.elytradev.thermionics.tileentity.TileEntityHammerMill;
 import com.elytradev.thermionics.tileentity.TileEntityMashTun;
+import com.elytradev.thermionics.tileentity.TileEntityOmniDuct;
 import com.elytradev.thermionics.tileentity.TileEntityOreWasher;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityPotStill;
@@ -56,6 +57,7 @@ public class ThermionicsBlocks {
 	//Cabling
 	public static BlockCableRF         CABLE_RF;
 	public static BlockHeatPipe        CABLE_HEAT;
+	public static BlockOmniDuct        OMNI_DUCT;
 	
 	//Fluid Storage
 	public static BlockDrum            DRUM;
@@ -103,6 +105,7 @@ public class ThermionicsBlocks {
 		//Cabling
 		CABLE_RF         = block(r, new BlockCableRF("rf"));
 		CABLE_HEAT       = block(r, new BlockHeatPipe());
+		OMNI_DUCT        = block(r, new BlockOmniDuct());
 		
 		//Fluid Storage
 		DRUM             = block(r, new BlockDrum());
@@ -148,6 +151,7 @@ public class ThermionicsBlocks {
 		GameRegistry.registerTileEntity(TileEntityFirebox.class,         new ResourceLocation("thermionics:machine.firebox"));
 		GameRegistry.registerTileEntity(TileEntityOven.class,            new ResourceLocation("thermionics:machine.oven"));
 		GameRegistry.registerTileEntity(TileEntityCableHeat.class,       new ResourceLocation("thermionics:cable.heat"));
+		GameRegistry.registerTileEntity(TileEntityOmniDuct.class,        new ResourceLocation("thermionics:omniduct"));
 		GameRegistry.registerTileEntity(TileEntityConvectionMotor.class, new ResourceLocation("thermionics:machine.convectionmotor"));
 		GameRegistry.registerTileEntity(TileEntityHammerMill.class,      new ResourceLocation("thermionics:machine.hammermill"));
 		GameRegistry.registerTileEntity(TileEntitySerger.class,          new ResourceLocation("thermionics:machine.serger"));

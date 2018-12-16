@@ -84,11 +84,18 @@ public class ProbeDataSupport {
 		internal.registerRFInspector(te, provider);
 	}
 	
+	public static Object getGenericSupport(TileEntity te) {
+		return internal.getGenericSupport(te);
+	}
+	
 	private static interface Internal {
 		void init();
 		void registerMachineInspector(TileEntityMachine te, CapabilityProvider provider);
 		void registerRFInspector(TileEntity te, CapabilityProvider provider);
+		Object getGenericSupport(TileEntity te);
 	}
+	
+	
 	
 	private static class InternalDummy implements Internal {
 		@Override
@@ -99,6 +106,9 @@ public class ProbeDataSupport {
 
 		@Override
 		public void registerRFInspector(TileEntity te, CapabilityProvider provider) {}
+		
+		@Override
+		public Object getGenericSupport(TileEntity te) { return null; }
 	}
 	
 	private static class InternalActual implements Internal {
@@ -131,12 +141,15 @@ public class ProbeDataSupport {
 		}
 		
 		
+		public Object getGenericSupport(TileEntity te) {
+			return new MachineInspector(te);
+		}
 		
 		@Optional.Interface(modid="probedataprovider", iface="com.elytradev.probe.api.IProbeDataProvider")
 		public static class MachineInspector implements IProbeDataProvider {
-			private final TileEntityMachine machine;
+			private final TileEntity machine;
 			
-			public MachineInspector(TileEntityMachine machine) {
+			public MachineInspector(TileEntity machine) {
 				this.machine = machine;
 			}
 			

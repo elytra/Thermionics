@@ -30,6 +30,12 @@ import net.minecraft.world.World;
 
 /** Interface for blocks or entities which can be removed with HRT or other configurator tools */
 public interface IWrenchRemoval {
-	/** Usually called by the shift+rightclick of a wrench-type configurator tool. */
-	public void wrenchRemove(World world, BlockPos pos, EnumFacing side);
+	/**
+	 * Removes this block cleanly. Called either from the shift+rightclick of the wrench, or as the result of a multi-
+	 * dismantle block break.
+	 */
+	public default void wrenchRemove(World world, BlockPos pos, EnumFacing side) {
+		//TODO: Play adjustment sound?
+		world.destroyBlock(pos, true);
+	}
 }
