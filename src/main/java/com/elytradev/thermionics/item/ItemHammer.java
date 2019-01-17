@@ -98,6 +98,7 @@ public class ItemHammer extends ItemTool implements IAuxDestroyBlock, IOreRepair
 		this.setTranslationKey("thermionics.hammer."+materialName);
 		
         this.toolMaterial = materialIn;
+        this.fakeToolMaterial = null;
         this.maxStackSize = 1;
         this.setMaxDamage(materialIn.getMaxUses() * 9);
         this.efficiency = materialIn.getEfficiency();
