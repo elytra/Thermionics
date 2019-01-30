@@ -39,6 +39,7 @@ import com.elytradev.thermionics.tileentity.TileEntityOmniDuct;
 import com.elytradev.thermionics.tileentity.TileEntityOreWasher;
 import com.elytradev.thermionics.tileentity.TileEntityOven;
 import com.elytradev.thermionics.tileentity.TileEntityPotStill;
+import com.elytradev.thermionics.tileentity.TileEntityRFMotor;
 import com.elytradev.thermionics.tileentity.TileEntityRotaryGenerator;
 import com.elytradev.thermionics.tileentity.TileEntitySerger;
 
@@ -71,6 +72,7 @@ public class ThermionicsBlocks {
 	
 	//Motors
 	public static BlockConvectionMotor MOTOR_CONVECTION;
+	public static BlockRFMotor         MOTOR_RF;
 	
 	//Gears & Meshing
 	public static BlockGearbox         GEARBOX;
@@ -119,6 +121,7 @@ public class ThermionicsBlocks {
 		
 		//Motors
 		MOTOR_CONVECTION = block(r, new BlockConvectionMotor());
+		MOTOR_RF         = block(r, new BlockRFMotor());
 		
 		//Gears & Meshing
 		GEARBOX          = block(r, new BlockGearbox());
@@ -159,6 +162,7 @@ public class ThermionicsBlocks {
 		GameRegistry.registerTileEntity(TileEntityPotStill.class,        new ResourceLocation("thermionics:machine.pot_still"));
 		GameRegistry.registerTileEntity(TileEntityRotaryGenerator.class, new ResourceLocation("thermionics:machine.generator"));
 		GameRegistry.registerTileEntity(TileEntityOreWasher.class,       new ResourceLocation("thermionics:machine.orewasher"));
+		GameRegistry.registerTileEntity(TileEntityRFMotor.class,         new ResourceLocation("thermionics:machine.rf_motor"));
 		
 		//GameRegistry.registerTileEntity(TileEntityCableSignal.class, "thermionics:cable.signal");
 		

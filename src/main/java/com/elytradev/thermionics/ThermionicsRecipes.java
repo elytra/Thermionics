@@ -119,10 +119,25 @@ public class ThermionicsRecipes {
 				"bbb", "b b", "bcb", 'b', "ingotBrass", 'c', "ingotCopper"));
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.MOTOR_CONVECTION),
-				"IcI", "ctc", "IsI",
-				'I', "blockIron",
+				"ici", "ctc", "isi",
+				'i', "ingotIron",
 				'c', "ingotCopper",
 				't', new ItemStack(Blocks.REDSTONE_TORCH),
+				's', "ingotSilver"));
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.MOTOR_RF),
+				"igi", "gtg", "isi",
+				'i', "ingotIron",
+				'g', "gearBrass",
+				't', new ItemStack(Blocks.REDSTONE_TORCH),
+				's', "ingotSilver"));
+		
+		
+		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.GENERATOR_ROTARY),
+				"gcg", "cRc", "gsg",
+				'g', "gearBrass",
+				'c', "ingotCopper",
+				'R', new ItemStack(Blocks.REDSTONE_BLOCK),
 				's', "ingotSilver"));
 		
 		recipe(r, new ShapedOreRecipe(new ResourceLocation("thermionics:blocks"), new ItemStack(ThermionicsBlocks.GEARBOX),

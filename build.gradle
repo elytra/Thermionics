@@ -27,9 +27,10 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
-	maven {
-		url = 'https://repo.elytradev.com'
-	}
+	mavenLocal();
+	//maven {
+	//	url = 'https://repo.elytradev.com'
+	//}
 	
 	maven {
 		// Primary JEI Maven
@@ -41,18 +42,18 @@ repositories {
 	//	name = "ModMaven"
 	//	url = "modmaven.k-4u.nl"
 	//}
-	
+	/*
 	ivy {
 		//Resolves baubles. Consider just dropping Baubles in your libs folder or rehosting it
 		name 'endless.blue dependency mirror'
 		artifactPattern "https://endless.blue/files/ivy/[module]-[revision].[ext]"
-	}
+	}*/
 }
 
 
 def mc_version='1.12.1';
 def jei_version="4.7.8.92";
-def concrete_version="0.3.6-SNAPSHOT";
+def concrete_version="0.4-SNAPSHOT";
 //def concrete_modules=[]; //For eclipse import
 def concrete_modules=["common","inventory","recipe","network","reflect"];
 def project_package='com.elytradev.thermionics';
@@ -61,6 +62,7 @@ shadowJar {
 	classifier = ''
 	relocate 'com.elytradev.concrete', project_package + '.repackage.com.elytradev.concrete'
 	configurations = [project.configurations.shadow]
+	exclude 'META-INF/**'
 }
 
 reobf {
@@ -74,9 +76,9 @@ artifacts {
 }
 
 dependencies {
-	deobfCompile "com.elytradev:probedataproviderapi:MC1.12_ver1.1.1";
+	deobfCompile "com.elytradev:ProbeDataProviderAPI:MC1.12_ver1.1.1";
 
-	deobfCompile name: "Baubles", version: "1.12.2-1.5.2"
+	deobfCompile group: "com.azanor.baubles", name: "Baubles", version: "1.12-1.5.2"
 	
 	deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}:api"
 	runtime "mezz.jei:jei_${mc_version}:${jei_version}"
@@ -90,7 +92,7 @@ dependencies {
 
 group = "com.elytradev"
 archivesBaseName = "Thermionics"
-version = "MC1.12.2_ver1.1.1"
+version = "MC1.12.2_ver1.1.2"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

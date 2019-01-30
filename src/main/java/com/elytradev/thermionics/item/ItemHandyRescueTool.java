@@ -24,20 +24,28 @@
 
 package com.elytradev.thermionics.item;
 
+import java.util.List;
 import java.util.Set;
 
+import com.elytradev.thermionics.StringExtras;
 import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IWrenchRemoval;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.EnumActionResult;
@@ -46,6 +54,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 	private static final Set<String> TOOL_CLASSES = ImmutableSet.of("axe", "wrench");
@@ -55,6 +65,9 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 	private static final Set<String> DISMANTLE_WHITELIST = Sets.newHashSet(
 			"thermaldynamics:duct_0", "thermaldynamics:duct_16", "thermaldynamics:duct_32" //Thermal Dynamics fluxducts, itemducts, and fluiducts
 			);
+	private static final Set<String> ROTATE_BLACKLIST = Sets.newHashSet(
+			//"minecraft:wooden_door", "minecraft:spruce_door", "minecraft:birch_door", "minecraft:oak_door", 
+			);
 	
 	public ItemHandyRescueTool() {
 		super(8.0f, -3.1f, ToolMaterial.IRON, EFFECTIVE_ON);
@@ -63,6 +76,8 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 		this.setTranslationKey("thermionics.hrt");
 		
 		this.setCreativeTab(Thermionics.TAB_THERMIONICS);
+		
+		this.attackDamage = 0.5f;
 	}
 
 	public float getDestroySpeed(ItemStack stack, IBlockState state) {
@@ -83,8 +98,25 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 	}
 	
 	@Override
+	public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
+		return true; //HRT is invincible
+	}
+	
+	@Override
 	public Set<String> getToolClasses(ItemStack stack) {
 		return TOOL_CLASSES;
+	}
+	
+	@Override
+	public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot equipmentSlot) {
+		Multimap<String, AttributeModifier> multimap = super.getItemAttributeModifiers(equipmentSlot);
+
+        if (equipmentSlot == EntityEquipmentSlot.MAINHAND) {
+            multimap.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(), new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", (double)this.attackDamage, 0));
+            multimap.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", (double)this.attackSpeed, 0));
+        }
+
+        return multimap;
 	}
 	
 	@Override
@@ -102,6 +134,14 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 			//special-case some other mods' blocks
 			if (DISMANTLE_WHITELIST.contains(state.getBlock().getRegistryName().toString())) {
 				world.destroyBlock(pos, true);
+			}
+		} else {
+			//Try to rotate like a normal wrench
+			IBlockState state = world.getBlockState(pos);
+			if (!ROTATE_BLACKLIST.contains(state.getBlock().getRegistryName().toString()) && !(state.getBlock() instanceof BlockDoor)) {
+				if (state.getBlock().rotateBlock(world, pos, side)) {
+					return EnumActionResult.SUCCESS;
+				}
 			}
 		}
 		
@@ -136,4 +176,11 @@ public class ItemHandyRescueTool extends ItemTool implements IMetaItemModel {
 			return new String[] {"hrt"};
 		}
 	//}
+		
+		@Override
+		@SideOnly(Side.CLIENT)
+		public void addInformation(ItemStack stack, World world, List<String> tooltip, ITooltipFlag flag) {
+			StringExtras.addInformation("tooltip.thermionics.hrt", "§e", tooltip);
+			StringExtras.addInformation("tooltip.thermionics.hrt.extra", "§9§o", tooltip);
+		}
 }

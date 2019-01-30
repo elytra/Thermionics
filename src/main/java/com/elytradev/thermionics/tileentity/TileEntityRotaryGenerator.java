@@ -40,7 +40,15 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 public class TileEntityRotaryGenerator extends TileEntityMachine implements ITickable {
-	public static final int RF_PER_REV = 20;
+	
+	/* The baseline RF for a piece of coal is about 40,000RF.
+	 * 1 furnace fuel tick is 1H, so 1 coal is worth 1600H.
+	 * 3H = 4P, where P is the rotary power unit of *power* (torque * revolutions)
+	 * so 1 coal (1600H) is worth 2133.33333P
+	 * That drives the crank at 20 torque for 106.666666666 revolutions
+	 * so at 375RF per rev, that'll yield 40,000RF per piece of coal. (18.75 RF per P)
+	 */
+	public static float RF_PER_POWER = 18.75f;
 	
 	private RotaryPowerConsumer rotaryPower = new RotaryPowerConsumer();
 	private ObservableEnergyStorage rf = new ObservableEnergyStorage(8000);
@@ -99,7 +107,7 @@ public class TileEntityRotaryGenerator extends TileEntityMachine implements ITic
 		}
 		
 		float consumed = rotaryPower.getBufferedRevolutions();
-		int generated = (int)(consumed * RF_PER_REV);
+		int generated = (int)(consumed * 20 * RF_PER_POWER);
 		rotaryPower.clearRevolutions();
 		
 		if (generated>0) rf.receiveEnergy(generated, false);

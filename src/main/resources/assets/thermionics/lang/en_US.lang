@@ -49,6 +49,8 @@ item.thermionics.ingredient.ingot.duralumin.name=Duralumin Ingot
 
 #Tools
 item.thermionics.hrt.name=Handy Rescue Tool
+tooltip.thermionics.hrt=Works as a wrench or an axe.
+tooltip.thermionics.hrt.extra=HRT is really good for reconfiguring hardware.
 
 item.thermionics.hammer.iron.name=Iron Hammer
 item.thermionics.hammer.gold.name=Gold Hammer
@@ -87,6 +89,7 @@ tile.thermionics.battery.creative.name=Creative Battery
 #Boxmachines
 tile.thermionics.machine.firebox.name=Firebox
 tile.thermionics.machine.convectionmotor.name=Convection Motor
+tile.thermionics.machine.rf_motor.name=RF Motor
 tile.thermionics.machine.gearbox.name=Gearbox
 tile.thermionics.machine.oven.name=Oven
 tile.thermionics.machine.mash_tun.name=Mash Tun

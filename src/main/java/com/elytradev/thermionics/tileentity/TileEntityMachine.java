@@ -84,6 +84,6 @@ public class TileEntityMachine extends TileEntity {
 	public void markActive(boolean active) {
 		IBlockState cur = world.getBlockState(pos);
 		if (cur.getValue(BlockMachineBase.ACTIVE)==active) return;
-		world.setBlockState(pos, cur.withProperty(BlockMachineBase.ACTIVE,active), 2);
+		world.setBlockState(pos, cur.withProperty(BlockMachineBase.ACTIVE,active), 3);
 	}
 }
