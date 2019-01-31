@@ -32,7 +32,10 @@ import com.elytradev.concrete.recipe.ItemIngredient;
 import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
 import com.elytradev.concrete.recipe.impl.ItemStackIngredient;
 import com.elytradev.concrete.recipe.impl.OreItemIngredient;
+import com.elytradev.concrete.recipe.impl.ShapedInventoryRecipe;
+import com.elytradev.concrete.recipe.impl.ShapelessInventoryRecipe;
 
+import blue.endless.jankson.JsonObject;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.inventory.IInventory;
@@ -42,8 +45,8 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRecipeWrapper {
-	protected ResourceLocation registryName;
+public class SergerRecipe implements IRecipeWrapper {
+	//protected transient ResourceLocation registryName;
 	protected InventoryGridRecipe plan;
 	protected float revolutions = 300;
 	protected float torque = 8;
@@ -58,6 +61,7 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRe
 		this.revolutions = revolutions;
 	}
 	
+	/*
 	@Override
 	public SergerRecipe setRegistryName(ResourceLocation name) {
 		this.registryName = name;
@@ -67,9 +71,9 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRe
 	@Override
 	public ResourceLocation getRegistryName() {
 		return this.registryName;
-	}
+	}*/
 
-	@Override
+	//@Override
 	public ItemStack getOutput() {
 		return plan.getOutput();
 	}
@@ -81,11 +85,11 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRe
 	public ItemStack getOutput(IItemHandler inventory) {
 		return plan.getOutput(inventory);
 	}
-
+	/*
 	@Override
 	public Class<SergerRecipe> getRegistryType() {
 		return SergerRecipe.class;
-	}
+	}*/
 	
 	public boolean matches(IItemHandler inventory) {
 		return plan.matches(inventory);
@@ -133,5 +137,23 @@ public class SergerRecipe implements ICustomRecipe<SergerRecipe, ItemStack>, IRe
 		
 		ingredients.setInputLists(ItemStack.class, inputs);
 		ingredients.setOutput(ItemStack.class, plan.getOutput().copy());
+	}
+	
+	public static SergerRecipe fromJson(JsonObject json, String recipeName) {
+		Float revolutions = json.get(Float.class, "revolutions"); if (revolutions==null) revolutions = 300f;
+		Float torque = json.get(Float.class, "torque"); if (torque==null) torque = 8f;
+		InventoryGridRecipe plan = null;
+		if (json.containsKey("pattern")) {
+			plan = MachineRecipes.shapedFromJson(json, recipeName, 3, 3);
+			if (plan==null) return null;
+		} else if (json.containsKey("ingredients")) {
+			plan = MachineRecipes.shapelessFromJson(json, recipeName);
+			if (plan==null) return null;
+		} else {
+			return null;
+		}
+		
+		SergerRecipe recipe = new SergerRecipe(plan, torque, revolutions);
+		return recipe;
 	}
 }

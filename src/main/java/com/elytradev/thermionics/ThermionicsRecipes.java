@@ -24,6 +24,10 @@
 
 package com.elytradev.thermionics;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Locale;
 import java.util.Map.Entry;
 
@@ -31,6 +35,7 @@ import com.elytradev.concrete.recipe.FluidIngredient;
 import com.elytradev.concrete.recipe.ItemIngredient;
 import com.elytradev.concrete.recipe.impl.InventoryGridRecipe;
 import com.elytradev.thermionics.api.HammerMillRecipes;
+import com.elytradev.thermionics.api.IRotaryRecipe;
 import com.elytradev.thermionics.api.Spirits;
 import com.elytradev.thermionics.api.impl.RotaryOreRecipe;
 import com.elytradev.thermionics.api.impl.RotaryRecipe;
@@ -50,6 +55,11 @@ import com.elytradev.thermionics.item.ItemHammer;
 import com.elytradev.thermionics.item.Spirit;
 import com.elytradev.thermionics.item.ThermionicsItems;
 
+import blue.endless.jankson.Jankson;
+import blue.endless.jankson.JsonElement;
+import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.JsonPrimitive;
+import blue.endless.jankson.impl.SyntaxError;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -78,6 +88,8 @@ public class ThermionicsRecipes {
 	
 	@SubscribeEvent
 	public static void onRegisterRecipes(RegistryEvent.Register<IRecipe> event) {
+		Thermionics.LOG.info("Loading recipes...");
+		
 		//LOG.info("Registering recipes");
 		IForgeRegistry<IRecipe> r = event.getRegistry();
 		
@@ -264,15 +276,15 @@ public class ThermionicsRecipes {
 		millRecipes("Aluminum");
 		millRecipes("Duralumin");
 		
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal",     new ItemStack(Items.COAL,3),     8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreRedstone", new ItemStack(Items.REDSTONE,6), 8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreDiamond",  new ItemStack(Items.DIAMOND,2), 10f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreEmerald",  new ItemStack(Items.EMERALD,2),  8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreLapis",    new ItemStack(Items.DYE, 10, 4),  8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreCoal",     new ItemStack(Items.COAL,3),     8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreRedstone", new ItemStack(Items.REDSTONE,6), 8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreDiamond",  new ItemStack(Items.DIAMOND,2), 10f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreEmerald",  new ItemStack(Items.EMERALD,2),  8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryOreRecipe("oreLapis",    new ItemStack(Items.DYE, 10, 4),  8f, 20f));
 		//HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Items.FLINT,2), 2f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.SAND,1), 8f, 20f));
-		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL,1), 8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.SANDSTONE), new ItemStack(Blocks.SAND,4), 8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.GRAVEL), new ItemStack(Blocks.SAND,1), 8f, 20f));
+		//HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(Blocks.COBBLESTONE), new ItemStack(Blocks.GRAVEL,1), 8f, 20f));
 		//Special case: Let silvered lead be ground back down into silvered lead dust so it can be separated
 		HammerMillRecipes.registerRecipe(new RotaryRecipe(new ItemStack(ThermionicsItems.INGOT_SILVERED_LEAD),     new ItemStack(ThermionicsItems.DUST_SILVERED_LEAD),     8f, 20f));
 		
@@ -281,12 +293,12 @@ public class ThermionicsRecipes {
 		}
 		
 		//ItemIngredient potato    = ItemIngredient.of(Items.POTATO);
-		ItemIngredient leather   = ItemIngredient.of("leather");
-		ItemIngredient ingotIron = ItemIngredient.of("ingotIron");
-		ItemIngredient ingotGold = ItemIngredient.of("ingotGold");
-		ItemIngredient diamond   = ItemIngredient.of("gemDiamond");
+		//ItemIngredient leather   = ItemIngredient.of("leather");
+		//ItemIngredient ingotIron = ItemIngredient.of("ingotIron");
+		//ItemIngredient ingotGold = ItemIngredient.of("ingotGold");
+		//ItemIngredient diamond   = ItemIngredient.of("gemDiamond");
 		ItemIngredient string    = ItemIngredient.of(Items.STRING);
-		ItemIngredient ribbon    = ItemIngredient.of(new ItemStack(ThermionicsItems.INGREDIENT,1, EnumIngredient.RIBBON.ordinal()));
+		//ItemIngredient ribbon    = ItemIngredient.of(new ItemStack(ThermionicsItems.INGREDIENT,1, EnumIngredient.RIBBON.ordinal()));
 		//ItemIngredient fabric    = ItemIngredient.of(ThermionicsItems.FABRIC_SQUARE);
 		ItemIngredient anyFabric = new WildcardNBTIngredient(ThermionicsItems.FABRIC_SQUARE);
 		ItemIngredient anyScarf  = new WildcardNBTIngredient(ThermionicsItems.SCARF);
@@ -324,6 +336,132 @@ public class ThermionicsRecipes {
 		GameRegistry.addSmelting(ThermionicsItems.GRAVEL_SPHALERITE,   new ItemStack(ThermionicsItems.INGOT_ZINC),     GRAVEL_SMELT_XP);
 		
 		
+		String[] defaultRecipes = {
+				"{ 'type': 'thermionics:serger', 'torque':  6, 'revolutions': 10, 'result': 'thermionics:fabricsquare', 'pattern': [ 'ss', 'ss' ], 'key': { 's': 'minecraft:string' } }",
+				"{ 'type': 'thermionics:serger', 'torque': 10, 'revolutions': 30, 'result': 'minecraft:saddle', 'pattern': [ 'lll', 'i i' ], 'key': { 'l': 'leather', 'i': 'ingotIron' } }",
+				"{ 'type': 'thermionics:serger', 'torque': 15, 'revolutions': 30, 'flippable': true, 'result': 'minecraft:diamond_horse_armor', 'pattern': [ '  d', 'ddd', 'ddd' ], 'key': { 'd': 'gemDiamond' } }",
+				"{ 'type': 'thermionics:serger', 'torque':  6, 'revolutions': 30, 'flippable': true, 'result': 'minecraft:golden_horse_armor', 'pattern': [ '  d', 'ddd', 'ddd' ], 'key': { 'd': 'ingotGold' } }",
+				"{ 'type': 'thermionics:serger', 'torque': 15, 'revolutions': 30, 'flippable': true, 'result': 'minecraft:iron_horse_armor', 'pattern': [ '  d', 'ddd', 'ddd' ], 'key': { 'd': 'ingotIron' } }",
+				"{ 'type': 'thermionics:serger', 'torque':  6, 'revolutions': 10, 'result': { 'item': 'thermionics:ingredient', 'meta':0 }, 'pattern': [ 'sss' ], 'key': { 's': 'minecraft:string' } }",
+				"{ 'type': 'thermionics:serger', 'torque':  6, 'revolutions': 10, 'result': 'thermionics:scarf', 'pattern': [ 'rfr' ], 'key': { 'r': { 'item': 'thermionics:ingredient', 'meta':0 }, 'f': { 'item': 'thermionics:fabricsquare', 'ignore_nbt': true } } }",
+				"{ 'type': 'thermionics:serger', 'torque':  6, 'revolutions': 10, 'result': 'thermionics:bauble.cloak', 'pattern': [ 'f f', 'fff', 'rrr' ], 'key': { 'r': { 'item': 'thermionics:ingredient', 'meta':0 }, 'f': { 'item': 'thermionics:fabricsquare', 'ignore_nbt': true } } }",
+				
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:coal', 'count': 3 }, 'ingredient': 'oreCoal' }",
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:redstone', 'count': 6 }, 'ingredient': 'oreRedstone' }",
+				"{ 'type': 'thermionics:hammer_mill', 'torque': 10, 'revolutions': 20, 'result': { 'item': 'minecraft:diamond', 'count': 2 }, 'ingredient': 'oreDiamond' }",
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:emerald', 'count': 2 }, 'ingredient': 'oreEmerald' }",
+				"{ 'type': 'thermionics:hammer_mill', 'torque': 10, 'revolutions':  4, 'result': { 'item': 'minecraft:dye', 'count': 10, 'meta': 4 }, 'ingredient': 'oreLapis' }",
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:sand', 'count': 4 }, 'ingredient': { 'item': 'minecraft:sandstone', 'meta': '*' } }", //Sandstone -> Sand
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:sand' }, 'ingredient': 'minecraft:gravel' }", //Gravel -> Sand
+				"{ 'type': 'thermionics:hammer_mill', 'torque':  8, 'revolutions': 20, 'result': { 'item': 'minecraft:gravel' }, 'ingredient': 'minecraft:cobblestone' }", //Cobblestone -> Gravel
+		};
+		Jankson jankson = Jankson.builder().build();
+		
+		File recipesFolder = new File(Thermionics.CONFIG_FOLDER, "recipes");
+		if (recipesFolder.exists()) {
+			//Do nothing
+		} else {
+			if (recipesFolder.mkdir()) {
+				
+				//Pour all the default recipes down into files
+				for(int i=0; i<defaultRecipes.length; i++) {
+					String recipeName = "defaultRecipe";
+					JsonObject obj;
+					try {
+						obj = jankson.load(defaultRecipes[i]);
+						JsonElement resultElem = obj.get("result");
+						if (resultElem instanceof JsonPrimitive) {
+							String resultString = ((JsonPrimitive) resultElem).asString();
+							if (resultString.indexOf(':')>=0) {
+								recipeName = new ResourceLocation(resultString).getPath();
+							} else recipeName = resultString;
+						} else {
+							ItemStack stack = MachineRecipes.itemStackFromJson(resultElem);
+							if (stack==null || stack.isEmpty()) throw new SyntaxError("can't parse result.");
+							recipeName = stack.getItem().getRegistryName().getPath();
+						}
+					} catch (SyntaxError ex) {
+						ex.printStackTrace();
+						continue;
+					}
+					
+					File recipeFile = new File(recipesFolder, recipeName+i+".json");
+					try (FileWriter out = new FileWriter(recipeFile)) {
+						out.write(obj.toJson(false, true));
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		for(File f : recipesFolder.listFiles()) {
+			String recipeName = f.getName();
+			if (recipeName.endsWith(".json") || recipeName.endsWith(".jkson")) {
+				try {
+					JsonObject jsonRecipe = jankson.load(f);
+					
+					String recipeType = jsonRecipe.get(String.class, "type");
+					if (recipeType==null) {
+						Thermionics.LOG.warn("Can't load recipe \""+recipeName+"\": No type defined!");
+						continue;
+					}
+					switch(recipeType) {
+					case "thermionics:serger": {
+						SergerRecipe recipe = SergerRecipe.fromJson(jsonRecipe, recipeName);
+						if (recipe!=null) MachineRecipes.register(recipe);
+						break;
+					}
+					case "thermionics:hammer_mill": {
+						IRotaryRecipe recipe = RotaryRecipe.fromJson(jsonRecipe, recipeName);
+						HammerMillRecipes.registerRecipe(recipe);
+						break;
+					}
+					default:
+						Thermionics.LOG.warn("Can't load recipe \""+recipeName+"\": Can't load recipes of type \""+recipeType+"\".");
+					}
+				} catch (IOException ioex) {
+					ioex.printStackTrace();
+				} catch (SyntaxError ex) {
+					System.out.println("While parsing \""+recipeName+"\": "+ex.getCompleteMessage());
+				}
+			}
+		}
+		
+		/*
+		int i = 0;
+		for(String s : defaultRecipes) {
+			try {
+				JsonObject jsonRecipe = jankson.load(s);
+				String recipeName = "defaultRecipe"+i+".json";
+				
+				String recipeType = jsonRecipe.get(String.class, "type");
+				if (recipeType==null) {
+					Thermionics.LOG.warn("Can't load recipe \""+recipeName+"\": No type defined!");
+					i++;
+					continue;
+				}
+				switch(recipeType) {
+				case "thermionics:serger": {
+					SergerRecipe recipe = SergerRecipe.fromJson(jsonRecipe, recipeName);
+					if (recipe!=null) MachineRecipes.register(recipe);
+					break;
+				}
+				case "thermionics:hammer_mill": {
+					IRotaryRecipe recipe = RotaryRecipe.fromJson(jsonRecipe, recipeName);
+					HammerMillRecipes.registerRecipe(recipe);
+					break;
+				}
+				default:
+					Thermionics.LOG.warn("Can't load recipe \""+recipeName+"\": Can't load recipes of type \""+recipeType+"\".");
+				}
+			} catch (SyntaxError ex) {
+				Thermionics.LOG.warn(ex.getCompleteMessage());
+			}
+			i++;
+		}*/
+		/*
 		SergerRecipe saddleRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.SADDLE), //Output
@@ -337,7 +475,8 @@ public class ThermionicsRecipes {
 				30  //Done after 30 complete axle rotations
 				);
 		MachineRecipes.register(saddleRecipe);
-		
+		*/
+		/*
 		SergerRecipe diamondBardingRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.DIAMOND_HORSE_ARMOR),
@@ -351,8 +490,8 @@ public class ThermionicsRecipes {
 				15, //Lots of torque for hard materials
 				30  //Done after 30 complete axle rotations
 				);
-		MachineRecipes.register(diamondBardingRecipe);
-		
+		MachineRecipes.register(diamondBardingRecipe);*/
+		/*
 		SergerRecipe goldBardingRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.GOLDEN_HORSE_ARMOR),
@@ -366,8 +505,8 @@ public class ThermionicsRecipes {
 				6,  //Nothing to it
 				30  //Done after 30 complete axle rotations
 				);
-		MachineRecipes.register(goldBardingRecipe);
-		
+		MachineRecipes.register(goldBardingRecipe);*/
+		/*
 		SergerRecipe ironBardingRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 						new ItemStack(Items.IRON_HORSE_ARMOR),
@@ -381,8 +520,8 @@ public class ThermionicsRecipes {
 				15, //Lots of torque for hard materials
 				30  //Done after 30 complete axle rotations
 				);
-		MachineRecipes.register(ironBardingRecipe);
-		
+		MachineRecipes.register(ironBardingRecipe);*/
+		/*
 		SergerRecipe ribbonRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.INGREDIENT, 1, EnumIngredient.RIBBON.ordinal()),
@@ -394,8 +533,17 @@ public class ThermionicsRecipes {
 				6,  //soft fabric crafting
 				10  //*fast*
 				);
-		MachineRecipes.register(ribbonRecipe);
-		
+		MachineRecipes.register(ribbonRecipe);*/
+		/*
+		String fabricRecipeJson = "{ 'type': 'thermionics:serger', 'torque': 6, 'revolutions': 10, 'result': 'thermionics:fabricsquare', 'pattern': [ \"ss\" \"ss\" ], 'key': { 's': 'minecraft:string' } }";
+		SergerRecipe fabricRecipe;
+		try {
+			fabricRecipe = SergerRecipe.fromJson(Jankson.builder().build().load(fabricRecipeJson), "testRecipe.json");
+			MachineRecipes.register(fabricRecipe);
+		} catch (SyntaxError e) {
+			e.printStackTrace();
+		}*/
+		/*
 		SergerRecipe fabricRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.FABRIC_SQUARE, 1),
@@ -407,10 +555,10 @@ public class ThermionicsRecipes {
 				),
 				6,  //soft fabric crafting
 				10  //*fast*
-				);
-		MachineRecipes.register(fabricRecipe);
+				);*/
 		
 		
+		/*
 		SergerRecipe scarfRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 					new ItemStack(ThermionicsItems.SCARF, 1),
@@ -422,7 +570,7 @@ public class ThermionicsRecipes {
 				6,  //soft fabric crafting
 				10  //*fast*
 				);
-		MachineRecipes.register(scarfRecipe);
+		MachineRecipes.register(scarfRecipe);*/
 		
 		SergerRecipe leftScarfRecipe = new ScarfConstructRecipe(
 				new InspectableShapedInventoryRecipe(
@@ -451,7 +599,7 @@ public class ThermionicsRecipes {
 				false
 				);
 		MachineRecipes.register(rightScarfRecipe);
-		
+		/*
 		SergerRecipe tasselcloakRecipe = new SergerRecipe(
 				new InspectableShapedInventoryRecipe(
 						new ItemStack(ThermionicsItems.MISTCLOAK, 1),
@@ -465,7 +613,7 @@ public class ThermionicsRecipes {
 					6,  //soft fabric crafting
 					10  //*fast*
 				);
-		MachineRecipes.register(tasselcloakRecipe);
+		MachineRecipes.register(tasselcloakRecipe);*/
 		
 		//### MASH TUN and POT STILL###
 		for(Entry<ResourceLocation, Spirit> entry : Spirits.REGISTRY.getEntries()) {

@@ -24,6 +24,7 @@
 
 package com.elytradev.thermionics;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
@@ -102,6 +103,7 @@ public class Thermionics {
 	public static final String MODID = "thermionics";
 	public static Logger LOG;
 	public static Configuration CONFIG;
+	public static File CONFIG_FOLDER;
 	//public static boolean CONFIG_ENFORCE_COMPATIBILITY = true;
 	public static final SoundEvent SOUNDEVENT_SMAAAAAAASH  = new SoundEvent(new ResourceLocation("thermionics","smash")).setRegistryName("smash");
 	@Instance(MODID)
@@ -144,11 +146,26 @@ public class Thermionics {
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent e) {
+		LOG = e.getModLog();
+		
+		File globalConfigFolder = e.getSuggestedConfigurationFile().getParentFile();
+		if (globalConfigFolder!=null) {
+			CONFIG_FOLDER = new File(globalConfigFolder, "thermionics");
+			if (!CONFIG_FOLDER.exists()) {
+				if (!CONFIG_FOLDER.mkdir()) {
+					CONFIG_FOLDER = null;
+				} else {
+					LOG.info("New config folder created.");
+					
+					//
+				}
+			}
+		}
 		//Skip for now; we have no keys yet
 		//CONFIG = new Configuration(e.getSuggestedConfigurationFile());
 		//CONFIG.save();
 		
-		LOG = e.getModLog();
+		
 		//LOG = LogManager.getLogger(Thermionics.MODID);
 		
 		CapabilityManager.INSTANCE.register(IHeatStorage.class, new DefaultHeatStorageSerializer(), HeatStorage::new);

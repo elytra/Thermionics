@@ -27,9 +27,18 @@ package com.elytradev.thermionics.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.elytradev.concrete.recipe.ItemIngredient;
+import com.elytradev.concrete.recipe.impl.ItemStackIngredient;
+import com.elytradev.concrete.recipe.impl.OreItemIngredient;
+import com.elytradev.thermionics.Thermionics;
 import com.elytradev.thermionics.api.IRotaryRecipe;
+import com.elytradev.thermionics.data.MachineRecipes;
 import com.elytradev.thermionics.item.ThermionicsItems;
 
+import blue.endless.jankson.JsonElement;
+import blue.endless.jankson.JsonNull;
+import blue.endless.jankson.JsonObject;
+import blue.endless.jankson.JsonPrimitive;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.Optional;
@@ -97,5 +106,48 @@ public class RotaryRecipe implements IRotaryRecipe {
 		
 		ingredients.setInputLists(ItemStack.class, inputs);
 		ingredients.setOutput(ItemStack.class, output.copy());
+	}
+
+	public static IRotaryRecipe fromJson(JsonObject jsonRecipe, String recipeName) {
+		Float torque = jsonRecipe.get(Float.class, "torque");
+		Float revolutions = jsonRecipe.get(Float.class, "revolutions");
+		if (torque==null) torque = 10f;
+		if (revolutions==null) revolutions = 300f;
+		
+		if (!jsonRecipe.containsKey("result")) {
+			Thermionics.LOG.warn("Problem reading result of recipe \""+recipeName+"\": result was missing!");
+			return null;
+		}
+		ItemStack output = MachineRecipes.itemStackFromJson(jsonRecipe.get("result"));
+		if (output==null || output.isEmpty()) {
+			Thermionics.LOG.warn("Problem reading result of recipe \""+recipeName+"\": can't create an item from "+jsonRecipe.get("result").toJson(false, false));
+			return null;
+		}
+		
+		JsonElement elem = jsonRecipe.get("ingredient");
+		ItemIngredient ingredient = null;
+		if (elem==null || elem instanceof JsonNull) {
+			Thermionics.LOG.warn("Problem reading ingredient for recipe \""+recipeName+"\": ingredient was missing or null!");
+			return null;
+		} else if (elem instanceof JsonPrimitive) {
+			ingredient = MachineRecipes.ingredientFromString(((JsonPrimitive)elem).asString());
+		} else if (elem instanceof JsonObject) {
+			ingredient = MachineRecipes.ingredientFromObject((JsonObject) elem);
+		}
+		
+		if (ingredient==null) {
+			Thermionics.LOG.warn("Problem reading ingredient for recipe \""+recipeName+"\": Couldn't build an ingredient from \""+((JsonPrimitive)elem).asString()+"\"");
+			return null;
+		}
+		if (ingredient instanceof ItemStackIngredient) {
+			ItemStack stack = ((ItemStackIngredient)ingredient).getItem();
+			return new RotaryRecipe(stack, output, torque, revolutions);
+		} else if (ingredient instanceof OreItemIngredient) {
+			String key = ((OreItemIngredient)ingredient).getKey();
+			return new RotaryOreRecipe(key, output, torque, revolutions);
+		} else {
+			Thermionics.LOG.warn("Problem reading ingredient for recipe \""+recipeName+"\": A strange internal error happened!");
+			return null;
+		}
 	}
 }

@@ -35,7 +35,7 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 
 public class MashTunRecipe implements ICustomRecipe<MashTunRecipe, FluidStack> {
-	private ResourceLocation registryName;
+	private transient ResourceLocation registryName;
 	private ItemIngredient item;
 	private int count;
 	private int water;
