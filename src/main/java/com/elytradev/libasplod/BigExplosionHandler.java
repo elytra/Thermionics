@@ -45,7 +45,7 @@ public class BigExplosionHandler {
 	@Nullable
 	public Scheduler getOrCreateScheduler(World w) {
 		if (w.isRemote) return null;
-		int wid = w.getWorldType().getId();
+		int wid = w.provider.getDimension();
 		synchronized(schedulers) {
 			if (schedulers.containsKey(wid)) return schedulers.get(wid);
 			Scheduler scheduler = new Scheduler(wid);
@@ -77,7 +77,7 @@ public class BigExplosionHandler {
 	@SubscribeEvent
 	public void onWorldUnload(WorldEvent.Unload event) {
 		if (event.getWorld().isRemote) return;
-		Integer worldid = event.getWorld().getWorldType().getId();
+		Integer worldid = event.getWorld().provider.getDimension();
 		synchronized(schedulers) {
 			if (schedulers.containsKey(worldid)) {
 				String worldName = event.getWorld().getWorldInfo().getWorldName();

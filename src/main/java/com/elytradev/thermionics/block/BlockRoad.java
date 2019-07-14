@@ -90,7 +90,7 @@ public class BlockRoad extends BlockBase {
 	
 	@Override
 	public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> list) {
-		if (itemIn.equals(this.getCreativeTab())) {
+		if (itemIn.equals(CreativeTabs.SEARCH) || itemIn.equals(this.getCreativeTab())) {
 			getVariants(Item.getItemFromBlock(this), list);
 		}
 	}
