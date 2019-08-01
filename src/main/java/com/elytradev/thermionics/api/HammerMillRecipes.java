@@ -35,7 +35,7 @@ public class HammerMillRecipes {
 	private static ArrayList<IRotaryRecipe> recipes = new ArrayList<>();
 	
 	public static void registerRecipe(IRotaryRecipe recipe) {
-		recipes.add(recipe);
+		recipes.add(0, recipe);
 	}
 	
 	@Nullable
